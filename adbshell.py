@@ -36,8 +36,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.4.1Beta'
-builddate='2020-3-15 23:55:09'
+version='0.5Beta'
+builddate='2020-3-18 23:36:49'
 run=0
 p=platform.system()
 qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp' 
