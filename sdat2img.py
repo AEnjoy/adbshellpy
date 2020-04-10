@@ -4,7 +4,7 @@
 #          FILE: sdat2img.py
 #       AUTHORS: xpirt - luxi78 - howellzhu
 #          DATE: 2018-10-27 10:33:21 CEST
-#          汉化: 神郭
+#          Copy: 神郭
 #====================================================
 
 from __future__ import print_function
@@ -27,7 +27,7 @@ def main(TRANSFER_LIST_FILE, NEW_DATA_FILE, OUTPUT_IMAGE_FILE):
         src_set = src.split(',')
         num_set =  [int(item) for item in src_set]
         if len(num_set) != num_set[0]+1:
-            print('以下数据分析到RangeSet时出错:\n{}'.format(src), file=sys.stderr)
+            print('以下数据分析到RangeSet时出错:\n {}'.format(src), file=sys.stderr)
             sys.exit(1)
 
         return tuple ([ (num_set[i], num_set[i+1]) for i in range(1, len(num_set), 2) ])
@@ -133,9 +133,12 @@ if __name__ == '__main__':
         try:
             input = raw_input
         except NameError: pass
-        input('按 ENTER 退出...')
-        sys.exit()
-
+        if os.path.exists('system.new.dat') and os.path.exists('system.transfer.list'):
+            NEW_DATA_FILE='system.new.dat'
+            TRANSFER_LIST_FILE='system.transfer.list'
+        else:
+            input('按 ENTER 退出...')
+            sys.exit()
     try:
         OUTPUT_IMAGE_FILE = str(sys.argv[3])
     except IndexError:
