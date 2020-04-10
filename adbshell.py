@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-# This is the devoloper-building Version
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 try:
@@ -32,26 +31,25 @@ def errexit(arg): #异常信息
     if arg== 4:
         print('请输入有效数据!')
         a=input('按 ENTER 继续')
-    if arg==5:
-        print('W:网络出现错误!')
 if sys.hexversion < 0x03060000:
     errexit(3)
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6alpha'
-builddate='2020-3-30 00:09:41'
+version='0.5.2Beta'
+builddate='2020-4-10 23:06:45'
 run=0
-aapt=None
 p=platform.system()
 checkflag=True
-Permissionshow=True
-branch='alpha'
+branch='beta'
 qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp' 
 github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.5.1Beta→0.5.2Beta 2020-4-10 23:06:45
+1.添加功能:黑域,shizuku 激活
+
 0.5Beta→0.5.1Beta   2020-3-29 15:46:54
 1.修复了强制检测adb是否安装的bug
 2.优化了部分输出内容
@@ -103,7 +101,6 @@ if os.path.exists('adbshell.ini') ==False:
     conf.add_section('adbshell')
     conf.set('adbshell', 'platform', p)
     conf.set('adbshell', 'adbfile', adbfile)
-    conf.set('adbshell', 'aaptfile', str(aapt))
     conf.set('adbshell', 'checkflag', str(checkflag))
     conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
     with open('adbshell.ini', 'w') as ini:
@@ -114,11 +111,9 @@ else:
     #getboolean
     try:
         checkflag=conf.getboolean('adbshell','checkflag')
-        aapt=conf.getboolean('adbshell','aaptfile')
     except:
         #旧版本升级上来
         conf.set('adbshell', 'checkflag', str(checkflag))
-        conf.set('adbshell', 'aaptfile', str(aapt))
         with open('adbshell.ini', 'w') as ini:
             conf.write(ini)
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
@@ -276,6 +271,14 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             return
         if inputtext =='changes':
             print(changes)
+            parseinput(1)
+            return
+        if inputtext=='piebridge':
+            adbcommand().shell('sh /data/data/me.piebridge.brevent/brevent.sh')
+            parseinput(1)
+            return
+        if inputtext=='shizuku':
+            adbcommand().shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
             parseinput(1)
             return
         if inputtext=='push':
@@ -485,7 +488,6 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             parseinput(1)
             return
         if inputtext=='compile':
-            print('W:在Android Q或更新的版本,编译应用可能会带来某些严重的问题')
             mode=input('编译模式[默认-m speed]>>>')
             func=input('编译参数[默认-f]>>>')
             pkg=input("编译对象[默认-a]>>>")
@@ -1073,7 +1075,7 @@ def adbmode():#adbmode parseinput(1)
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
     ┃  工具箱指令:  ┃  help>  back   cls  set>   exit                              ┃
-    ┃           re-install      update      environment      changes               ┃
+    ┃           re-install      update      environment      changes                ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                             ┃
     ┃ 设备链接指令: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)  ┃
@@ -1081,6 +1083,7 @@ def adbmode():#adbmode parseinput(1)
     ┃ 应用高级指令: ┃ install> uninstall> compile> disable> enable> clear> applist>┃
     ┃ 文件传输指令: ┃ pull        push                                             ┃
     ┃    System   : ┃ windowmode>  input>  settings>  dumpsys>  screencap>         ┃
+    ┃   Activate  : ┃ piebridge(黑域) shizuku                                      ┃
      -------------------------------ADBSystemTOOLBOX----------------------------------
     ''')
     parseinput(1)
@@ -1148,7 +1151,7 @@ def usage():
     """)
     errexit(2)
 
-def IsPassInstall():#检测adb安装 已弃用
+def IsPassInstall():#检测adb安装
     options , args = getopt.getopt(sys.argv[1:], 'nc')
     for name, value in options:
         if name in ('-nc','--ncheck'):
@@ -1184,51 +1187,9 @@ def ParseArguments(args): #解析参数
             break
     return cmd, opt, arg
 
-def apkinstallmode(install=False,file=[]):#开发计划2
-    #aapt support
-    global p ,conf ,aapt ,Permissionshow
-    def permissions(file):
-        return os.popen(aapt+' d permissions "'+file+'"') 
-    def installaapt():
-        if checkinternet()==False:
-            errexit(5)
-            return
-        if p=='Linux':
-            url='https://dl.google.com/android/repository/build-tools_r29.0.3-linux.zip'
-            urllib.request.urlretrieve(url,'build-tools.zip') 
-            z=zip.ZipFile('build-tools.zip','r')
-            z.extractall(path='build-tools')
-            z.close()
-            aapt='build-tools/aapt'
-            conf.set("adbshell", "aaptfile", aapt)
-            conf.write(open("adbshell.ini", "w"))
-        if p=='Windows':
-            url='https://dl.google.com/android/repository/build-tools_r29.0.3-windows.zip'
-            urllib.request.urlretrieve(url,'build-tools.zip') 
-            z=zip.ZipFile('build-tools.zip','r')
-            z.extractall(path='build-tools')
-            z.close()
-            aapt='build-tools\aapt.exe'
-            conf.set("adbshell", "aaptfile", aapt)
-            conf.write(open("adbshell.ini", "w"))       
-    if install==True:#apk安装模式
-        if os.path.exists(aapt)==False:
-            installaapt()
-        #开始apk安装
-        print('您将要安装Android应用程序,个数:'+str(len(file))+' 您确定要安装吗?y/n')
-        a=input('>>>')
-        if a=='n' or a=='N':
-            return
-        for i in range(len(file)):
-            nowfile=file[i]
-            print('正在安装的程序:'+str(i)+'/'+str(len(file))+' 文件:'+nowfile)
-            if Permissionshow:
-                print(' 程序权限:'+permissions(nowfile))
-            adbcommand().install(nowfile)
-        print('安装完成!')
-        errexit(2)
-        sys.exit(0)
-        #pass
+def apkinstallmode(install=False):#开发计划2
+    if install==True:
+        pass
 
 def main(args):
   global checkflag
@@ -1258,7 +1219,7 @@ def main(args):
   conf.set('adbshell', 'adbfile', adbfile)
   with open('adbshell.ini', 'w') as ini:
       conf.write(ini)
-  apkinstallmode(opt.apkinstall,opt.apkfile)
+  apkinstallmode(opt.apkinstall)
   if p == "Windows":
       main_windows()
   if p == "Linux":
