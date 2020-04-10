@@ -36,16 +36,28 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.4.1Beta'
-builddate='2020-3-15 23:55:09'
+version='0.5.2Beta'
+builddate='2020-4-10 23:06:45'
 run=0
 p=platform.system()
+checkflag=True
+branch='beta'
 qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp' 
 github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
-0.4.2Beta→0.5Beta   2020年3月18日23:30:08
+0.5.1Beta→0.5.2Beta 2020-4-10 23:06:45
+1.添加功能:黑域,shizuku 激活
+
+0.5Beta→0.5.1Beta   2020-3-29 15:46:54
+1.修复了强制检测adb是否安装的bug
+2.优化了部分输出内容
+3.adb在下载前将会进行网络连通检测
+4.默认直接进入主界面
+5.添加了程序版本分支标记
+
+0.4.2Beta→0.5Beta   2020-3-18 23:36:49
 1.Bug修复
 2.功能可用:pull/push
 3.更新了QQ群加群链接
@@ -89,12 +101,21 @@ if os.path.exists('adbshell.ini') ==False:
     conf.add_section('adbshell')
     conf.set('adbshell', 'platform', p)
     conf.set('adbshell', 'adbfile', adbfile)
+    conf.set('adbshell', 'checkflag', str(checkflag))
     conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
 else:
     conf = configparser.ConfigParser()
     conf.read('adbshell.ini')
+    #getboolean
+    try:
+        checkflag=conf.getboolean('adbshell','checkflag')
+    except:
+        #旧版本升级上来
+        conf.set('adbshell', 'checkflag', str(checkflag))
+        with open('adbshell.ini', 'w') as ini:
+            conf.write(ini)
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
 
@@ -204,21 +225,29 @@ class adbcommand:
     def pull(self,urlp,urlc):
         adbcommand()._adbc("pull "+'"'+urlp+'" "'+urlc+'"')
 
+def checkinternet():
+    exit_code = os.system('ping www.baidu.com')
+    if exit_code:
+        return False
+    else:
+        return True
 def clear():
     if p == "Windows":
         os.system('cls')
     if p == "Linux":
         os.system('clear')
 
-def parseinput(a=0):#0 一级目录 1二级目录(adbmode) 2二级目录(othermode)
+def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermode)
     inputtext=input('>>>')
     inputtext=inputtext.replace(" ", "")
     global run , p ,github,adbfile , conf ,changes
-    if a==0: #1级目录
+    if a==0: #1级目录 已弃用
+        pass
+    if a==1:#2级目录(adbmode)
         if inputtext == '':
-            parseinput(0)
+            parseinput(1)
             return
-        if inputtext == 'adbmode':
+        if inputtext == 'adbmode': #已弃用
             adbmode()
             return
         if inputtext == 'help':
@@ -227,10 +256,11 @@ def parseinput(a=0):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             return
         if inputtext == 'back':
             print('E:您已处于主菜单!')
-            parseinput(0)
+            parseinput(1)
             return
         if inputtext == 're-install':
-            install(p)
+            #重新安装
+            install(p,2)
             run=0
             Console()
             return
@@ -241,9 +271,16 @@ def parseinput(a=0):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             return
         if inputtext =='changes':
             print(changes)
-            parseinput(0)
+            parseinput(1)
             return
-    if a==1:#2级目录(adbmode)
+        if inputtext=='piebridge':
+            adbcommand().shell('sh /data/data/me.piebridge.brevent/brevent.sh')
+            parseinput(1)
+            return
+        if inputtext=='shizuku':
+            adbcommand().shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
+            parseinput(1)
+            return
         if inputtext=='push':
             print('push:从本地中复制一个文件(夹)至手机')
             urlp=input('远端路径>>>')
@@ -451,10 +488,16 @@ def parseinput(a=0):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             parseinput(1)
             return
         if inputtext=='compile':
-            mode=input('编译模式>>>')
-            func=input('编译参数>>>')
-            pkg=input("编译对象>>>")
-            mode, func, pkg = mode, func, pkg . replace(" ", "")
+            mode=input('编译模式[默认-m speed]>>>')
+            func=input('编译参数[默认-f]>>>')
+            pkg=input("编译对象[默认-a]>>>")
+            func, pkg = func, pkg . replace(" ", "")
+            if mode=='':
+                mode='-m speed'
+            if func =='':
+                func='-f'
+            if pkg=='':
+                pkg='-a'
             '''
             if mode=='':#func pkg
                 if func=='':#pkg
@@ -490,7 +533,7 @@ def parseinput(a=0):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
                 parseinput(1)
                 return
             '''
-            print('执行该操作将消耗一定时间,请坐和放款')
+            print('执行该操作将消耗一定时间,请坐和放宽')
             start=datetime.datetime.now()
             print('当前时间: '+str(start))
             adbcommand().adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
@@ -1032,6 +1075,7 @@ def adbmode():#adbmode parseinput(1)
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
     ┃  工具箱指令:  ┃  help>  back   cls  set>   exit                              ┃
+    ┃           re-install      update      environment      changes                ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                             ┃
     ┃ 设备链接指令: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)  ┃
@@ -1039,6 +1083,7 @@ def adbmode():#adbmode parseinput(1)
     ┃ 应用高级指令: ┃ install> uninstall> compile> disable> enable> clear> applist>┃
     ┃ 文件传输指令: ┃ pull        push                                             ┃
     ┃    System   : ┃ windowmode>  input>  settings>  dumpsys>  screencap>         ┃
+    ┃   Activate  : ┃ piebridge(黑域) shizuku                                      ┃
      -------------------------------ADBSystemTOOLBOX----------------------------------
     ''')
     parseinput(1)
@@ -1067,26 +1112,34 @@ def Console():
     *                           Inspired by CoolApkUser: 晨钟酱                      *
     **********************************Welcome*****************************************
     '''+'Version:'+version +'   buildDate:'+builddate+'\r\n')
-    print('''
+    '''print:
     **********************************Console*****************************************
     *command:         输入命令后按Enter继续 直接按Enter进入adb工具箱                 *
     *       adbmode back help re-install cls set update environment changes exit     *
     **********************************Console*****************************************
-    ''')
-    parseinput(0)
+    '''
+    adbmode()
+    #parseinput(1)
+    #parseinput(0) #默认不再处理0 而是直接进入1处理
 
 class _Options(object):
   help = False
+  installcheck = False
+  command= None #开发计划3
+  apkfile=[] #开发计划2
+  apkinstall= False #开发计划2
 
 def usage():
     print("""
-    用法:adbshell.py [args or Console] 不可用
+    用法:adbshell.py [apkfile(s)] [args or Console -MORE] 
+    [apkfile(s)] [开发中]
+    安装apk文件至手机 支持多个文件
     [args]
-    -nc --ncheck 跳过adb安装检测 不可用
+    -nc --ncheck 跳过adb安装检测 
     -h --help help 显示帮助
-    [Console]
-    adbmode      进入ADBSystemTOOLBOX主界面,内含多种工具
-    back         返回至上一级界面
+    [Console][已弃用]
+    -adbmode      进入ADBSystemTOOLBOX主界面,内含多种工具
+    back         返回至上一级界面[不可用]
     help         console内显示该帮助,console内不支持-h -nc等
     re-install   重新安装adbfiles依赖(升级adbfills)
     cls          清空输出的内容
@@ -1094,6 +1147,7 @@ def usage():
     update       升级ADBSystemTOOLBOX程序,将访问GitHub获取升级
     environment  显示程序运行环境变量的设置及其它信息
     exit         退出程序
+    -MORE        程序内部的各种功能
     """)
     errexit(2)
 
@@ -1106,27 +1160,54 @@ def IsPassInstall():#检测adb安装
             return False
 
 def ParseArguments(args): #解析参数
-  cmd = None
-  opt = _Options()
-  arg = []
-  for i in range(len(args)):
-    a = args[i]
-    if a == '-h' or a == '--help':
-      opt.help = True
-    elif not a.startswith('-'):
-      cmd = a
-      arg = args[i + 1:]
-      break
-  return cmd, opt, arg
+    cmd = None
+    opt = _Options()
+    arg = []
+    check = None
+    if len(args)==0:
+        return cmd, opt, arg
+    if os.path.exists(args[1]):
+        #文件输入 for处理apk文件,加入清单
+        opt.apkinstall=True
+        for i in range(len(args)):
+            if os.path.exists(args[i]):
+                opt.apkfile.append(args[i])
+            else:
+                break
+        #apk file End
+    for i in range(len(args)):
+        a = args[i]
+        if a == '-h' or a == '--help':
+            opt.help = True
+        if a == '-nc'or a == '--ncheck':
+            opt.installcheck = False
+        elif not a.startswith('-'):
+            cmd = a
+            arg = args[i + 1:]
+            break
+    return cmd, opt, arg
+
+def apkinstallmode(install=False):#开发计划2
+    if install==True:
+        pass
 
 def main(args):
+  global checkflag
   cmd, opt, args = ParseArguments(args)
+  c=['shutdown','rec','bl','edl','sideload','download','install','uninstall','compile',
+      'shell','root','start_server','kill_server','devices','tcpipconnect','usb','reboot',
+      'disable','enable','clear','applist','pull','push','windowmode','input','settings',
+      'dumpsys','screencap'
+     ]#内置命令
+  if cmd in c:#开发计划3
+      pass
+  checkflag=opt.installcheck
   if sys.hexversion < 0x03060000:
       errexit(3)
   if opt.help == True:
       usage()
       sys.exit(0)
-  if os.path.exists('adb') == False:
+  if os.path.exists('adb') == False: #adb文件夹不存在
       install(p)
   '''
   if IsPassInstall()==False: #判断是否跳过adb安装检测(一般用于test,需要脚本目录下有adb文件夹)
@@ -1138,6 +1219,7 @@ def main(args):
   conf.set('adbshell', 'adbfile', adbfile)
   with open('adbshell.ini', 'w') as ini:
       conf.write(ini)
+  apkinstallmode(opt.apkinstall)
   if p == "Windows":
       main_windows()
   if p == "Linux":
@@ -1157,16 +1239,32 @@ def main_windows():
     #二级菜单
     #print('debug')
 
-def install(p):
+def install(p,check=0):
     global uselinuxpkgmanagertoinstalladb
     global adbfile
     global conf
+    global checkflag
     adbcommand().kill_server()
     '''
     try:
         os.rmdir('adb')
         os.rmdir('platform-tools')
     '''
+    if check==1 or checkflag==False:
+        #Pass Adb Installed Check
+        return
+    if check==0 and checkflag==True and os.path.exists(adbfile)==True:
+        #文件存在
+        return
+
+    if check==2:
+        pass
+    #Internet Check
+    if checkinternet()==False:
+        print('W:您的网络似乎出现了故障,adb将不会安装.这有可能导致工具箱无法使用,您可能需要手动设置adb文件.')
+        return
+    #install or re-install
+    print('ADB正在安装中:')
     if p == 'Windows':
         url = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip'
         #r = requests.get(url,)
@@ -1282,3 +1380,4 @@ if not adbfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb
         conf.write(open("adbshell.ini", "w"))
 if __name__ == '__main__':
     main(sys.argv[1:])
+    #main(sys.argv[0:])
