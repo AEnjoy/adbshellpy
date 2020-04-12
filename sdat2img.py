@@ -4,9 +4,18 @@
 #          FILE: sdat2img.py
 #       AUTHORS: xpirt - luxi78 - howellzhu
 #          DATE: 2018-10-27 10:33:21 CEST
-#          Copy: 神郭
+#       Chinese: 神郭
 #====================================================
-
+'''
+相对于原版的改进:
+1.中文
+2.Python3
+3.如若当前路径下存在system.new.dat和system.transfer.list,则不需要输入命令直接运行
+例:
+./sdat2img.py
+./sdat2img.py system.transfer.list system.new.dat
+./sdat2img.py system.transfer.list system.new.dat system.img
+'''
 from __future__ import print_function
 import sys, os, errno
 
@@ -125,7 +134,7 @@ if __name__ == '__main__':
         TRANSFER_LIST_FILE = str(sys.argv[1])
         NEW_DATA_FILE = str(sys.argv[2])
     except IndexError:
-        print('\n用法: sdat2img.py <transfer_list> <system_new_file> [system_img]\n')
+        print('\n用法: sdat2img.py [<transfer_list> <system_new_file>] [system_img]\n')
         print('    <transfer_list>: transfer list 文件')
         print('    <system_new_file>: system new dat 文件')
         print('    [system_img]: 输出 system 镜像\n\n')
