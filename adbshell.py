@@ -36,7 +36,7 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.5.2Beta'
+version='0.5.3Beta'
 builddate='2020-4-10 23:06:45'
 run=0
 p=platform.system()
@@ -47,6 +47,9 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.5.2Beta→0.5.3Beta 2020-4-14 20:57:52
+1.应用程序编译默认不载带-f参数
+
 0.5.1Beta→0.5.2Beta 2020-4-10 23:06:45
 1.添加功能:黑域,shizuku 激活
 
@@ -175,7 +178,7 @@ class adbcommand:
     class adb_shell():
         def shell_cmd(self,func=''):
             adbcommand().shell('cmd '+func)
-        def shell_cmd_compile(self,method='-m speed',func='-f',pkg='-a'):
+        def shell_cmd_compile(self,method='-m speed',func=' ',pkg='-a'):
             adbcommand().adb_shell().shell_cmd('package compile '+method+' '+func+' '+pkg)
         def shell_pm(self,func=''):
             adbcommand().shell('pm '+func)
@@ -489,13 +492,13 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             return
         if inputtext=='compile':
             mode=input('编译模式[默认-m speed]>>>')
-            func=input('编译参数[默认-f]>>>')
+            func=input('编译参数[默认 为空]>>>')
             pkg=input("编译对象[默认-a]>>>")
             func, pkg = func, pkg . replace(" ", "")
             if mode=='':
                 mode='-m speed'
-            if func =='':
-                func='-f'
+            '''if func =='':
+                func='-f'''
             if pkg=='':
                 pkg='-a'
             '''
@@ -956,7 +959,7 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
                 --split SPLIT: compile only the given split name
                 See:https://source.android.google.cn/devices/tech/dalvik/jit-compiler
                 编译模式>>>[<mode>default=-m speed or --reset]-m mode:算法,支持assume-verified,extract,verify,quicken,space-profile,space,speed-profile,speed,everything模式,-r REASON:编译的对象,支持first-boot,boot,install,bg-dexopt,ab-ota,inactive,shared
-                编译参数>>>[<func>default=-f] -f强制编译甚至是不需要的程序 --check-prof (true | false)在进行dexopt时查看配置文件 --split SPLIT: compile only the given split name
+                编译参数>>>[<func>可选] -f强制编译甚至是不需要的程序 --check-prof (true | false)在进行dexopt时查看配置文件 --split SPLIT: compile only the given split name
                 编译对象>>>[<pkg>default=-a] -a 所有程序包 pkg:指定的一个程序包
                 ''')
                 errexit(2)
