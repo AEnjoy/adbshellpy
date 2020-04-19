@@ -1,5 +1,8 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+#   adbshell_alpha.py
+#       By : 神郭
+#  Version : 0.6.x Alpha 1
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 try:
@@ -39,6 +42,9 @@ def errexit(arg): #异常信息
     if arg== 4:
         print('请输入有效数据!')
         a=input('按 ENTER 继续')
+    if arg==5:
+        print('W:网络出现问题,请检查网络!')
+        
 if sys.hexversion < 0x03060000:
     errexit(3)
 #else
@@ -55,6 +61,9 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.x Alpha 1 2020-4-20 01:46:33
+1.代码块拆分
+
 0.5.2Beta→0.5.3Beta 2020-4-14 20:57:52
 1.应用程序编译默认不载带-f参数
 
@@ -431,11 +440,6 @@ def main(args):
       sys.exit(0)
   if os.path.exists('adb') == False: #adb文件夹不存在
       install(p)
-  '''
-  if IsPassInstall()==False: #判断是否跳过adb安装检测(一般用于test,需要脚本目录下有adb文件夹)
-      if os.path.exists('adb') == False:
-          install(p)
-  '''
   conf = configparser.ConfigParser()
   conf.read('adbshell.ini')
   conf.set('adbshell', 'adbfile', adbfile)
@@ -450,16 +454,10 @@ def main(args):
       errexit(1)
 
 def main_linux():
-    #install
     Console()#一级菜单
     #二级菜单
-    #print('debug')
-
 def main_windows():
-    #install
     Console()#一级菜单
-    #二级菜单
-    #print('debug')
 
 def install(p,check=0):
     global uselinuxpkgmanagertoinstalladb
@@ -483,15 +481,13 @@ def install(p,check=0):
         pass
     #Internet Check
     if checkinternet()==False:
+        errexit(5)
         print('W:您的网络似乎出现了故障,adb将不会安装.这有可能导致工具箱无法使用,您可能需要手动设置adb文件.')
         return
     #install or re-install
     print('ADB正在安装中:')
     if p == 'Windows':
         url = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip'
-        #r = requests.get(url,)
-        #with open("adb.zip", "wb") as code:
-        #     code.write(r.content)
         urllib.request.urlretrieve(url,'adb.zip') #兼容性强
         z=zip.ZipFile('adb.zip','r')
         z.extractall()
@@ -501,8 +497,6 @@ def install(p,check=0):
         except Exception as errinform:
             print(errinform+'改为默认platform-tools')
             adbfile_=r'platform-tools\adb.exe'
-            #conf = configparser.ConfigParser()
-            #conf.read('adbshell.ini')
             conf.set('adbshell', 'adbfile', adbfile_)
             with open('adbshell.ini', 'w') as ini:
                 conf.write(ini)
@@ -525,8 +519,6 @@ def install(p,check=0):
                 os.system('sudo pacman -s adb')
                 os.system('sudo yum install -y adb')
                 adbfile='adb'
-                #conf = configparser.ConfigParser()
-                #conf.read('adbshell.ini')
                 conf.set('adbshell', 'adbfile', adbfile)
                 with open('adbshell.ini', 'w') as ini:
                     conf.write(ini)
@@ -534,8 +526,6 @@ def install(p,check=0):
             if inputtext=='n' or inputtext=='N':
                 print('Donot Use Linux Pkg Manager To Install Adb files.')
                 uselinuxpkgmanagertoinstalladb='disable'
-                #conf = configparser.ConfigParser()
-                #conf.read('adbshell.ini')
                 conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
                 with open('adbshell.ini', 'w') as ini:
                     conf.write(ini)
@@ -544,9 +534,6 @@ def install(p,check=0):
         if platform.machine()=='AMD64':#AMD64 linux x86 or x86_64
             url = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip'
             urllib.request.urlretrieve(url,'adb.zip')
-            #r = requests.get(url)
-            #with open("adb.zip", "wb") as code:
-            #     code.write(r.content)
             z=zip.ZipFile('adb.zip','r')
             z.extractall()
             z.close()
@@ -603,4 +590,3 @@ if not adbfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-    #main(sys.argv[0:])
