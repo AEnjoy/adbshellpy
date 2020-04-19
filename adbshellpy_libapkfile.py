@@ -4,7 +4,7 @@
 #       By : 神郭
 #  Version : 1.0
 import sys,os
-import zipfile as z
+import zipfile as zip
 class adbshellpyinformation:
     p=None
     branch=None

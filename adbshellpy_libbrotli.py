@@ -21,7 +21,7 @@ class adbshellpyinformation:
     conf=None    
 def main(INPUT_FILE='system.new.dat.br',OUTPUT_FILE='system.new.dat',flag=1):
     if flag==1:
-        f=open(INPUT_FIL)
+        f=open(INPUT_FILE)
         f=b.decompress(f.read())
         ofile=open(OUTPUT_FILE, 'wb')
         os.write(ofile,f)
@@ -29,7 +29,7 @@ def main(INPUT_FILE='system.new.dat.br',OUTPUT_FILE='system.new.dat',flag=1):
         ofile.close()
         sys.exit()
     if flag==2:
-        f=open(INPUT_FIL)
+        f=open(INPUT_FILE)
         f=b.compress(f.read())
         ofile=open(OUTPUT_FILE, 'wb')
         os.write(ofile,f)
