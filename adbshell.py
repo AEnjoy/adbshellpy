@@ -36,8 +36,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.5.3Beta'
-builddate='2020-4-10 23:06:45'
+version='0.5.4Beta'
+builddate='2020-4-21 00:17:19'
 run=0
 p=platform.system()
 checkflag=True
@@ -47,6 +47,10 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.5.3Beta→0.5.4Beta 2020-4-21 00:17:19
+1.修复第一次运行adb不安装的bug
+2.修复shell wm overscan闪退bug
+
 0.5.2Beta→0.5.3Beta 2020-4-14 20:57:52
 1.应用程序编译默认不载带-f参数
 
@@ -200,7 +204,7 @@ class adbcommand:
             adbcommand().adb_shell().shell_wm('density '+func)
         def shell_wm_size(self,func=''):#''列出当前显示的分辨率。 'axb'设置分辨率，注意手机的格式为“横向x纵向” 'reset'恢复默认
             adbcommand().adb_shell().shell_wm('size '+func)
-        def shell_wm_overscan(self,a,b,c,d):
+        def shell_wm_overscan(self,a='',b='',c='',d=''):
             adbcommand().adb_shell().shell_wm('overscan '+ a + ',' + b + ',' + ',' + c + ',' + d)#adb shell wm overscan a,b,c,d
         def shell_input(self,func=''):
             adbcommand().shell('input '+func)
@@ -227,7 +231,54 @@ class adbcommand:
         adbcommand()._adbc("push "+'"'+urlc+'" "'+urlp+'"')
     def pull(self,urlp,urlc):
         adbcommand()._adbc("pull "+'"'+urlp+'" "'+urlc+'"')
-
+class update():
+    global builddate,version,branch,qqgroup,github
+    ver=version
+    bra=branch
+    vdate=version
+    def isnewversionavailable(self,b=''):
+        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
+        try:
+            urllib.request.urlretrieve(url,'version.txt')
+        except:
+            print('网络错误!')
+            return True
+        f=open('version.txt')
+        if f.read()==self.ver:
+            f.close()
+            os.remove('version.txt')
+            return False
+        else: 
+            f.close()
+            os.remove('version.txt')
+            return True
+    def updatecheck(self):
+        if self.isnewversionavailable():
+            a=input('您当前使用的adbshellpy存在新版本,是否更新?y/n')
+            return
+        else:
+            print('您当前使用的adbshellpy为最新版本,无需更新.')
+            return
+    def download_lib(self,libname): #No .py 后缀
+        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
+        try:
+            urllib.request.urlretrieve(url,libname+'.py')
+        except:
+            print('Library :'+libname+' 加载失败!')
+            return 1
+        return 0
+    def download_update(self):
+        if self.bra=='master':
+            self.download_lib('adbshell')
+        if self.bra=='dev':
+            self.download_lib('adbshell_alpha')
+        print('Done')
+    def qqgroupopen(self):
+        import webbrowser
+        webbrowser.open(qqgroup)
+    def githubopen(self):
+        import webbrowser
+        webbrowser.open(github)
 def checkinternet():
     exit_code = os.system('ping www.baidu.com')
     if exit_code:
@@ -409,14 +460,14 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             if inputtext=='overscan':
                 inputtext=input('...overscan>>>')
                 if inputtext=='reset':
-                    adbcommand().adb_shell().shell_wm_overscan(func='reset')
+                    adbcommand().adb_shell().shell_wm_overscan('reset')
                     parseinput(1)
                     return
                 if inputtext=='':
                     adbcommand().adb_shell().shell_wm_overscan()
                     parseinput(1)
                     return
-                adbcommand().adb_shell().shell_wm_overscan(func=inputtext)
+                adbcommand().adb_shell().shell_wm_overscan(inputtext)
                 parseinput(1)
                 return
             if inputtext=='size':
@@ -596,11 +647,11 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             parseinput(1)
             return
         if inputtext=='usb':
-            adbcommand.usb()
+            adbcommand().usb()
             parseinput(1)
             return
         if inputtext=='tcpipconnect':
-            adbcommand.tcpip()
+            adbcommand().tcpip()
             parseinput(1)
             return
         if inputtext=='devices':
@@ -1053,7 +1104,7 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
                 parseinput(0)
                 return
                 #print('E:暂未开放setting,请手动编辑adbshell.ini')
-                errexit(2)
+            errexit(2)
     #通用指令
     if inputtext == 'cls':
         clear()
@@ -1253,13 +1304,14 @@ def install(p,check=0):
         os.rmdir('adb')
         os.rmdir('platform-tools')
     '''
+    '''
     if check==1 or checkflag==False:
         #Pass Adb Installed Check
         return
     if check==0 and checkflag==True and os.path.exists(adbfile)==True:
         #文件存在
         return
-
+    '''
     if check==2:
         pass
     #Internet Check
@@ -1280,7 +1332,7 @@ def install(p,check=0):
         try:
             os.rename('platform-tools','adb')
         except Exception as errinform:
-            print(errinform+'改为默认platform-tools')
+            print(str(errinform)+'改为默认platform-tools')
             adbfile_=r'platform-tools\adb.exe'
             #conf = configparser.ConfigParser()
             #conf.read('adbshell.ini')
@@ -1293,7 +1345,7 @@ def install(p,check=0):
         try:
             os.remove('adb.zip')
         except Exception as errinform:
-            print(errinform)
+            print(str(errinform))
     if p == 'Linux':
         if uselinuxpkgmanagertoinstalladb == 'enable':
             print('正在使用系统软件包管理器安装adb,需要请求sudo,若不想使用此请求,输入n,默认y')
@@ -1334,13 +1386,13 @@ def install(p,check=0):
             try:
                 os.rename('platform-tools','adb')
             except Exception as errinform:
-                print(errinform)
+                print(str(errinform))
                 errexit(0)
             adbfile=r'adb/adb'
             try:
                 os.remove('adb.zip')
             except Exception as errinform:
-                print(errinform)
+                print(str(errinform))
             return
         if platform.machine()=='aarch64' or platform.machine()=='aarch':
             url = 'https://github.com/Magisk-Modules-Repo/adb-ndk/archive/master.zip'
@@ -1381,6 +1433,7 @@ if not adbfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb
         adbfile=r'platform-tools\adb.exe'
         conf.set("adbshell", "adbfile", adbfile)
         conf.write(open("adbshell.ini", "w"))
+
 if __name__ == '__main__':
     main(sys.argv[1:])
     #main(sys.argv[0:])
