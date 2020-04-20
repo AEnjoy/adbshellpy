@@ -3,15 +3,49 @@
 #   adbshellpy_libbrotli.py
 #       By : 神郭
 #  Version : 1.0
+#  release
 import sys,os
 import zipfile as zip
+try:
+    from adbshell import errexit
+    from adbshell import update
+    from adbshell import checkinternet
+    from adbshell import clear
+    from adbshell import adbcommand
+    from adbshell import install
+    from adbshell import changes
+    from adbshell import github
+    from adbshell import version
+    from adbshell import builddate
+    from adbshell import p
+    from adbshell import adbfile
+    from adbshell import conf   
+except:
+    from adbshell_alpha import errexit
+    from adbshell_alpha import update
+    from adbshell_alpha import checkinternet
+    from adbshell_alpha import clear
+    from adbshell_alpha import adbcommand
+    from adbshell_alpha import install
+    from adbshell_alpha import changes
+    from adbshell_alpha import github
+    from adbshell_alpha import version
+    from adbshell_alpha import builddate
+    from adbshell_alpha import p
+    from adbshell_alpha import adbfile
+    from adbshell_alpha import conf
 class adbshellpyinformation:
+    global conf
     p=None
     branch=None
     uselinuxpkgmanagertoinstalladb=None
     adbfile=None
-    aapt=None
-    conf=None
+    try:
+        aapt=conf.get('adbshell', 'aaptfile')
+    except:
+        aapt=r'build-tools\android-10\aapt.exe' #windows
+        #aapt=r'build-tools/android-10/aapt' #Linux
+        #从旧版升级
     Permissionshow=True
 class apk:
     pakname=None
@@ -21,14 +55,16 @@ class apk:
     appname=None
     apkinstall= False #开发计划2
     apkfile=[]#开发计划2
-p=adbshellpyinformation.p
-adbfile=adbshellpyinformation.adbfile
+
 aapt=adbshellpyinformation.aapt
 Permissionshow=adbshellpyinformation.Permissionshow
-conf=adbshellpyinformation.conf
+
 def permissions(file):
     global aapt
-    return os.popen(aapt+' d permissions "'+file+'"') 
+    r=os.popen(aapt+' d permissions "'+file+'"')
+    t=r.read()
+    r.close()
+    return t
     
 def installaapt():
     global p ,conf ,aapt
@@ -39,7 +75,7 @@ def installaapt():
         z=zip.ZipFile('build-tools.zip','r')
         z.extractall(path='build-tools')
         z.close()
-        aapt='build-tools/aapt'
+        aapt=r'build-tools/android-10/aapt'
         conf.set("adbshell", "aaptfile", aapt)
         conf.write(open("adbshell.ini", "w"))
     if p=='Windows':
@@ -48,14 +84,18 @@ def installaapt():
         z=zip.ZipFile('build-tools.zip','r')
         z.extractall(path='build-tools')
         z.close()
-        aapt='build-tools\aapt.exe'
+        aapt=r'build-tools\android-10\aapt.exe'
         conf.set("adbshell", "aaptfile", aapt)
         conf.write(open("adbshell.ini", "w"))
-        
+    os.remove('build-tools.zip')
 def apkinstallmode(install=False,file=[]):#开发计划2
     global p ,conf ,aapt ,Permissionshow ,adbfile
     if install==True:#apk安装模式
-        if os.path.exists(aapt)==False:
+        '''
+        if os.path.exists(str(aapt))==False:
+            installaapt()
+        '''
+        if os.path.exists('build-tools')==False or os.path.exists(aapt)==False:
             installaapt()
         #开始apk安装
         print('您将要安装Android应用程序,个数:'+str(len(file))+' 您确定要安装吗?y/n')
@@ -67,10 +107,10 @@ def apkinstallmode(install=False,file=[]):#开发计划2
             print('正在安装的程序:'+str(i)+'/'+str(len(file))+' 文件:'+nowfile)
             if Permissionshow:
                 print(' 程序权限:'+permissions(nowfile))
-            os.system(adbfile+' install '+'"'+nowfile+'"' + ' -g -d')
+            adbcommand().install(nowfile)
         print('安装完成!')
         sys.exit(0)
-    if install==True:
+    if install==False:
         print('没有安装包需要安装.')
         input('按任意键继续')
         sys.exit(0)
@@ -82,8 +122,7 @@ def ParseArguments(args): #解析参数
         [apkfile(s)]       欲安装的apk文件 支持多个文件
         ''')
         return apkfile,apkinstall
-    if os.path.exists(args[1]):
-        #文件输入 for处理apk文件,加入清单
+    if os.path.exists(args[0]):#-1
         apkinstall=True
         for i in range(len(args)):
             if os.path.exists(args[i]):
@@ -97,6 +136,7 @@ def main(args):
     apk.apkfile=apkfile
     apk.apkinstall=apkinstall
     apkinstallmode(apk.apkinstall,apk.apkfile)
-    
+def mainex(list):
+    apkinstallmode(True,list) 
 if __name__ == '__main__':
     main(sys.argv[1:])

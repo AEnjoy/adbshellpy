@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshell_alpha.py
 #       By : 神郭
-#  Version : 0.6.x Alpha 1
+#  Version : 0.6.x Alpha 2
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 try:
@@ -11,16 +11,6 @@ except:pass
 try:
     import urllib.request 
 except: pass
-
-try:
-    import adbshellpy_home
-    import adbshellpy_libhelper
-except:
-    update().download_lib('adbshellpy_home')
-    update().download_lib('adbshellpy_libhelper')
-    import adbshellpy_home
-    import adbshellpy_libhelper
-
 def errexit(arg): #异常信息
     if arg == 0:#OS I/O Error
         adbcommand().kill_server()
@@ -51,7 +41,7 @@ if sys.hexversion < 0x03060000:
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
 version='0.6alpha'
-builddate='2020-3-30 00:09:41'
+builddate='2020-4-21 01:01:47'
 run=0
 p=platform.system()
 checkflag=True
@@ -61,6 +51,11 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.x Alpha 2 2020-4-21 01:01:47
+1.Library:adbshellpy_libapkfile update
+2.修复第一次运行adb不安装的bug
+3.修复shell wm overscan闪退bug
+
 0.6.x Alpha 1 2020-4-20 01:46:33
 1.代码块拆分
 
@@ -138,8 +133,64 @@ else:
             conf.write(ini)
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
-
 #默认设置END
+class update():
+    global builddate,version,branch,qqgroup,github
+    ver=version
+    bra=branch
+    vdate=builddate
+    def isnewversionavailable(self,b=''):
+        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
+        try:
+            urllib.request.urlretrieve(url,'version.txt')
+        except:
+            print('网络错误!')
+            return True
+        f=open('version.txt')
+        if f.read()==self.ver:
+            f.close()
+            os.remove('version.txt')
+            return False
+        else: 
+            f.close()
+            os.remove('version.txt')
+            return True
+    def updatecheck(self):
+        if self.isnewversionavailable():
+            a=input('您当前使用的adbshellpy存在新版本,是否更新?y/n')
+            return
+        else:
+            print('您当前使用的adbshellpy为最新版本,无需更新.')
+            return
+    def download_lib(self,libname): #No .py 后缀
+        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
+        try:
+            urllib.request.urlretrieve(url,libname+'.py')
+        except:
+            print('Library :'+libname+' 加载失败!')
+            return 1
+        return 0
+    def download_update(self):
+        if self.bra=='master':
+            self.download_lib('adbshell')
+        if self.bra=='dev':
+            self.download_lib('adbshell_alpha')
+        print('Done')
+    def qqgroupopen(self):
+        import webbrowser
+        webbrowser.open(qqgroup)
+    def githubopen(self):
+        import webbrowser
+        webbrowser.open(github)
+try:
+    import adbshellpy_home
+    import adbshellpy_libhelper
+except:
+    update().download_lib('adbshellpy_home')
+    update().download_lib('adbshellpy_libhelper')
+    import adbshellpy_home
+    import adbshellpy_libhelper
+
 #function 
 class adbcommand:
     hel=''
@@ -217,7 +268,7 @@ class adbcommand:
             adbcommand().adb_shell().shell_wm('density '+func)
         def shell_wm_size(self,func=''):#''列出当前显示的分辨率。 'axb'设置分辨率，注意手机的格式为“横向x纵向” 'reset'恢复默认
             adbcommand().adb_shell().shell_wm('size '+func)
-        def shell_wm_overscan(self,a,b,c,d):
+        def shell_wm_overscan(self,a='',b='',c='',d=''):
             adbcommand().adb_shell().shell_wm('overscan '+ a + ',' + b + ',' + ',' + c + ',' + d)#adb shell wm overscan a,b,c,d
         def shell_input(self,func=''):
             adbcommand().shell('input '+func)
@@ -244,54 +295,7 @@ class adbcommand:
         adbcommand()._adbc("push "+'"'+urlc+'" "'+urlp+'"')
     def pull(self,urlp,urlc):
         adbcommand()._adbc("pull "+'"'+urlp+'" "'+urlc+'"')
-class update():
-    global builddate,version,branch,qqgroup,github
-    ver=version
-    bra=branch
-    vdate=builddate
-    def isnewversionavailable(self,b=''):
-        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
-        try:
-            urllib.request.urlretrieve(url,'version.txt')
-        except:
-            print('网络错误!')
-            return True
-        f=open('version.txt')
-        if f.read()==self.ver:
-            f.close()
-            os.remove('version.txt')
-            return False
-        else: 
-            f.close()
-            os.remove('version.txt')
-            return True
-    def updatecheck(self):
-        if self.isnewversionavailable():
-            a=input('您当前使用的adbshellpy存在新版本,是否更新?y/n')
-            return
-        else:
-            print('您当前使用的adbshellpy为最新版本,无需更新.')
-            return
-    def download_lib(self,libname): #No .py 后缀
-        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
-        try:
-            urllib.request.urlretrieve(url,libname+'.py')
-        except:
-            print('Library :'+libname+' 加载失败!')
-            return 1
-        return 0
-    def download_update(self):
-        if self.bra=='master':
-            self.download_lib('adbshell')
-        if self.bra=='dev':
-            self.download_lib('adbshell_alpha')
-        print('Done')
-    def qqgroupopen(self):
-        import webbrowser
-        webbrowser.open(qqgroup)
-    def githubopen(self):
-        import webbrowser
-        webbrowser.open(github)
+
 def checkinternet():
     exit_code = os.system('ping www.baidu.com')
     if exit_code:
@@ -420,7 +424,13 @@ def ParseArguments(args): #解析参数
 
 def apkinstallmode(install=False):#开发计划2
     if install==True:
-        pass
+        try:
+            import adbshellpy_libapkfile
+        except:
+            update().download_lib('adbshellpy_libapkfile')
+            import adbshellpy_libapkfile
+        adbshellpy_libapkfile.mainex(_Options.apkfile)
+        
 
 def main(args):
   global checkflag
@@ -470,13 +480,14 @@ def install(p,check=0):
         os.rmdir('adb')
         os.rmdir('platform-tools')
     '''
+    '''
     if check==1 or checkflag==False:
         #Pass Adb Installed Check
         return
     if check==0 and checkflag==True and os.path.exists(adbfile)==True:
         #文件存在
         return
-
+    '''
     if check==2:
         pass
     #Internet Check

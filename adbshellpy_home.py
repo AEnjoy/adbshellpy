@@ -208,14 +208,14 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             if inputtext=='overscan':
                 inputtext=input('...overscan>>>')
                 if inputtext=='reset':
-                    adbcommand().adb_shell().shell_wm_overscan(func='reset')
+                    adbcommand().adb_shell().shell_wm_overscan('reset')
                     parseinput(1)
                     return
                 if inputtext=='':
                     adbcommand().adb_shell().shell_wm_overscan()
                     parseinput(1)
                     return
-                adbcommand().adb_shell().shell_wm_overscan(func=inputtext)
+                adbcommand().adb_shell().shell_wm_overscan(inputtext)
                 parseinput(1)
                 return
             if inputtext=='size':
