@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#   adbshellpy_libbrotli.py
+#   adbshellpy_libapkfile.py
 #       By : 神郭
 #  Version : 1.0
 #  release
