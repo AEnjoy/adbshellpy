@@ -16,6 +16,7 @@ try:
     from adbshell import github
     from adbshell import version
     from adbshell import builddate
+    from adbshell import nowdevice
 except:
     from adbshell_alpha import errexit
     from adbshell_alpha import update
@@ -28,6 +29,8 @@ except:
     from adbshell_alpha import github
     from adbshell_alpha import version
     from adbshell_alpha import builddate
+    from adbshell_alpha import who
+    from adbshell_alpha import nowdevice
 class adbshellpyinformation:
     p=sys.platform
     branch=None
@@ -36,7 +39,6 @@ class adbshellpyinformation:
     aapt=None
     conf=None
     Permissionshow=True
-
 try:
     import adbshellpy_libhelper
 except:
@@ -44,6 +46,8 @@ except:
     import adbshellpy_libhelper
 
 def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
+    global nowdevice
+    adb=adbcommand(nowdevice)
     inputtext=input('>>>')
     inputtext=inputtext.replace(" ", "")
     global changes,github,version,builddate
@@ -52,6 +56,19 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     conf=adbshellpyinformation.conf
     if a==1:#2级目录(adbmode)
         if inputtext == '':
+            parseinput(1)
+            return
+        if inputtext == 'relatedapk':
+            import adbshellpy_libapkfile
+            adbshellpy_libapkfile.relatedApkfile()
+            parseinput(1)
+            return            
+        if inputtext=='who':
+            b=adb.s
+            c=who()
+            nowdevice=c
+            adb=adbcommand(c)
+            print('您当前的设备:'+b+'切换后的设备:'+c)
             parseinput(1)
             return
         if inputtext == 'help':
@@ -76,11 +93,11 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             parseinput(1)
             return
         if inputtext=='piebridge':
-            adbcommand().shell('sh /data/data/me.piebridge.brevent/brevent.sh')
+            adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
             parseinput(1)
             return
         if inputtext=='shizuku':
-            adbcommand().shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
+            adb.shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
             parseinput(1)
             return
         if inputtext=='push':
@@ -94,7 +111,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 print('本地文件或文件夹为空')
                 errexit(4)
                 return
-            adbcommand().push(urlc=urlc,urlp=urlp)
+            adb.push(urlc=urlc,urlp=urlp)
             parseinput(1)
             return
         if inputtext=='pull':
@@ -109,16 +126,16 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             if urlc=='':
                 print('默认使用当前路径')
                 urlc=os.getcwd()
-            adbcommand().pull(urlp=urlp,urlc=urlc)
+            adb.pull(urlp=urlp,urlc=urlc)
             parseinput(1)
             return
         if inputtext=='screencap':
             print('screencap:对手机执行截屏命令,并可选择是否传输至电脑并立即查看')
             h=input('传输至电脑并打开查看>>>[Y/N 默认N]')
             h=h.replace(" ", "")
-            adbcommand().shell(command='screencap -p /sdcard/sc.png')
+            adb.shell(command='screencap -p /sdcard/sc.png')
             if h=='y' or h=='Y':
-                adbcommand().pull(urlp='/sdcard/sc.png',urlc='sc.png')
+                adb.pull(urlp='/sdcard/sc.png',urlc='sc.png')
                 if p == 'Windows':
                     os.system('explorer sc.png')
                 if p=='Linux':
@@ -134,7 +151,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             if inputtext=='' or inputtext=='back':
                 parseinput(1)
                 return
-            adbcommand().adb_shell().shell_dumpsys()
+            adb.adb_shell().shell_dumpsys()
             parseinput(1)
             return
         if inputtext=='settings':
@@ -158,7 +175,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             if inputtext=='' or inputtext=='back':
                 parseinput(1)
                 return
-            adbcommand().adb_shell().shell_setting(func=inputtext)
+            adb.adb_shell().shell_setting(func=inputtext)
             parseinput(1)
             return
         if inputtext=='input':
@@ -172,18 +189,18 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             inputtext=inputtext.replace(" ", "")
             if inputtext=='input_text':
                 inputtext=input('Text>>>')
-                adbcommand().adb_shell().shell_input_text(func=inputtext)
+                adb.adb_shell().shell_input_text(func=inputtext)
                 parseinput(1)
                 return
             if inputtext=='input_keyevent':
                 inputtext=input('Keyevent>>>')
-                adbcommand().adb_shell().shell_input_keyevent(func=inputtext)
+                adb.adb_shell().shell_input_keyevent(func=inputtext)
                 parseinput(1)
                 return
             if inputtext=='input_tap':
                 x=input('X>>>')
                 y=input('Y>>>')
-                adbcommand().adb_shell().shell_input_tap(x=x,y=y)
+                adb.adb_shell().shell_input_tap(x=x,y=y)
                 parseinput(1)
                 return
             if inputtext=='input_swipe':
@@ -192,7 +209,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 x2=input('X2>>>')
                 y2=input('Y2>>>')
                 d =input('D>>>')
-                adbcommand().adb_shell().shell_input_swipe(x1=x1,x2=x2,y1=y1,y2=y2,d=d)
+                adb.adb_shell().shell_input_swipe(x1=x1,x2=x2,y1=y1,y2=y2,d=d)
                 parseinput(1)
                 return
             if inputtext=='':
@@ -202,48 +219,48 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             inputtext=input('欲查看或设置的信息>>>')
             inputtext=inputtext.replace(" ", "")
             if inputtext=='':
-                adbcommand().adb_shell().shell_wm()
+                adb.adb_shell().shell_wm()
                 parseinput(1)
                 return
             if inputtext=='overscan':
                 inputtext=input('...overscan>>>')
                 if inputtext=='reset':
-                    adbcommand().adb_shell().shell_wm_overscan('reset')
+                    adb.adb_shell().shell_wm_overscan('reset')
                     parseinput(1)
                     return
                 if inputtext=='':
-                    adbcommand().adb_shell().shell_wm_overscan()
+                    adb.adb_shell().shell_wm_overscan()
                     parseinput(1)
                     return
-                adbcommand().adb_shell().shell_wm_overscan(inputtext)
+                adb.adb_shell().shell_wm_overscan(inputtext)
                 parseinput(1)
                 return
             if inputtext=='size':
                 inputtext=input('...size>>>')
                 inputtext=inputtext.replace(" ", "")
                 if inputtext=='reset':
-                    adbcommand().adb_shell().shell_wm_size(func='reset')
+                    adb.adb_shell().shell_wm_size(func='reset')
                     parseinput(1)
                     return
                 if inputtext=='':
-                    adbcommand().adb_shell().shell_wm_size()
+                    adb.adb_shell().shell_wm_size()
                     parseinput(1)
                     return
-                adbcommand().adb_shell().shell_wm_size(func=inputtext)
+                adb.adb_shell().shell_wm_size(func=inputtext)
                 parseinput(1)
                 return
             if inputtext=='density':
                 inputtext=input('...density>>>')
                 inputtext=inputtext.replace(" ", "")
                 if inputtext=='reset':
-                    adbcommand().adb_shell().shell_wm_density(func='reset')
+                    adb.adb_shell().shell_wm_density(func='reset')
                     parseinput(1)
                     return
                 if inputtext=='':
-                    adbcommand().adb_shell().shell_wm_density()
+                    adb.adb_shell().shell_wm_density()
                     parseinput(1)
                     return
-                adbcommand().adb_shell().shell_wm_density(func=inputtext)
+                adb.adb_shell().shell_wm_density(func=inputtext)
                 parseinput(1)
                 return
         if inputtext=='':
@@ -253,10 +270,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             args_=input('附加的参数>>>')
             args_=args_.replace(" ", "")
             if args_=='':
-                adbcommand().adb_shell().shell_pm_list_package()
+                adb.adb_shell().shell_pm_list_package()
                 parseinput(1)
                 return
-            adbcommand().adb_shell().shell_pm_list_package(args_)
+            adb.adb_shell().shell_pm_list_package(args_)
             parseinput(1)
             return
         if inputtext=='clear':
@@ -266,7 +283,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 errexit(4)
                 parseinput(1)
                 return
-            adbcommand().adb_shell().shell_pm_clear(Package)
+            adb.adb_shell().shell_pm_clear(Package)
             parseinput(1)
             return
         if inputtext=='enable':
@@ -276,7 +293,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 errexit(4)
                 parseinput(1)
                 return
-            adbcommand().adb_shell().shell_pm_enable(Package)
+            adb.adb_shell().shell_pm_enable(Package)
             parseinput(1)
             return
         if inputtext=='disable':
@@ -286,7 +303,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 errexit(4)
                 parseinput(1)
                 return
-            adbcommand().adb_shell().shell_pm_disable_user(Package)
+            adb.adb_shell().shell_pm_disable_user(Package)
             parseinput(1)
             return
         if inputtext=='compile':
@@ -303,7 +320,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             print('执行该操作将消耗一定时间,请坐和放宽')
             start=datetime.datetime.now()
             print('当前时间: '+str(start))
-            adbcommand().adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
+            adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
             end=datetime.datetime.now()
             print('结束时间: '+str(end))
             print('执行用时: %s Seconds'%(end-start))
@@ -317,10 +334,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 parseinput(1)
                 return
             elif args_=='':
-                adbcommand().uninstall(apkfile)
+                adb.uninstall(apkfile)
                 parseinput(1)
                 return
-            adbcommand().uninstall(apkfile,args_)
+            adb.uninstall(apkfile,args_)
         if inputtext=='install':
             apkfile=input('欲安装的apk文件>>>')
             args_=input('欲附加的参数>>>')
@@ -329,34 +346,34 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 parseinput(1)
                 return
             elif args_=='':
-                adbcommand().install(apkfile=apkfile)
+                adb.install(apkfile=apkfile)
                 parseinput(1)
                 return
-            adbcommand().install(apkfile,args_)
+            adb.install(apkfile,args_)
             parseinput(1)
             return
         if inputtext=='download':
-            adbcommand().reboot(mode=5)
+            adb.reboot(mode=5)
             parseinput(1)
             return
         if inputtext=='sideload':
-            adbcommand().reboot(mode=4)
+            adb.reboot(mode=4)
             parseinput(1)
             return
         if inputtext=='bl':
-            adbcommand().reboot(mode=2)
+            adb.reboot(mode=2)
             parseinput(1)
             return
         if inputtext=='rec':
-            adbcommand().reboot(mode=3)
+            adb.reboot(mode=3)
             parseinput(1)
             return
         if inputtext=='shutdown':
-            adbcommand().reboot(mode=1)
+            adb.reboot(mode=1)
             parseinput(1)
             return
         if inputtext=='reboot':#0 不带参数 1.-p 2.fastboot(bl) 3.recovery 4.sideload 5.挖煤
-            adbcommand().reboot()
+            adb.reboot()
             parseinput(1)
             return
         if inputtext=='usb':
@@ -368,23 +385,23 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             parseinput(1)
             return
         if inputtext=='devices':
-            adbcommand().devices()
+            adb.devices()
             parseinput(1)
             return
         if inputtext=='kill_server':
-            adbcommand().kill_server()
+            adb.kill_server()
             parseinput(1)
             return
         if inputtext=='start_server':
-            adbcommand().start_server()
+            adb.start_server()
             parseinput(1)
             return
         if inputtext=='root':
-            adbcommand().root()
+            adb.root()
             parseinput(1)
             return
         if inputtext=='shell':
-            adbcommand().shell()
+            adb.shell()
             parseinput(1)
             return
         if inputtext=='back':
@@ -459,7 +476,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
         ''')
         return
     if inputtext =='exit':
-        adbcommand().kill_server()
+        adb.kill_server()
         errexit(2)
         sys.exit(0)
     if inputtext =='environment':

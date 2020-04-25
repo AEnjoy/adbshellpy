@@ -3,9 +3,12 @@
 #   adbshellpy_libapkfile.py
 #       By : 神郭
 #  Version : 1.0
+#  要关联apk文件 输入命令
+#  adbshellpy_libapkfile.py -relatedapk
 #  release
 import sys,os
 import zipfile as zip
+os.chdir(os.getcwd())
 try:
     from adbshell import errexit
     from adbshell import update
@@ -131,6 +134,39 @@ def ParseArguments(args): #解析参数
                 break
         #apk file End
     return apkfile,apkinstall
+def relatedApkfile():
+    global p
+    if p=='Windows':
+        print('W:您可能需要管理员权限运行!')
+        os.system(r'reg delete "HKEY_CLASSES_ROOT\.apk" /f')
+        os.system(r'reg delete "HKEY_CURRENT_USER\SOFTWARE\Classes\.apk" /f')
+        os.system(r'reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\.apk" /f')
+        os.system(r'reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.apk" /f')
+        os.system(r'')
+        os.system(r'reg add "HKCR\.apk" /f /ve /t REG_SZ /d "adbshellpy.apk"')
+        os.system(r'reg add "HKCR\adbshellpy.apk" /f /ve /t REG_SZ /d "Android Application Package"')
+        os.system('reg add "HKCR\\adbshellpy.apk\\DefaultIcon" /f /ve /t REG_SZ /d "'+os.getcwd()+'\\apk.ico\\"')
+        os.system(r'reg add "HKCR\adbshellpy.apk\shell" /f /ve /t REG_SZ /d "open"')
+        os.system(r'reg add "HKCR\adbshellpy.apk\shell\open" /f /ve /t REG_SZ /d "查看或安装"')
+        os.system('reg add "HKCR\\adbshellpy.apk\\shell\\open" /f /v Icon /t REG_SZ /d "'+os.getcwd()+'\\apk.ico\\"')
+        os.system('reg add "HKCR\\adbshellpy.apk\\shell\\open\\command" /f /ve /t REG_SZ /d ""py.exe" "'+os.getcwd()+'\\adbshellpy_libapkfile.py" "%%1\""')
+    else:
+        errexit(7)
+        return
+    import platform
+    if platform.machine()=='AMD64':
+        net_dir=os.environ.get('windir')+'\\Microsoft.NET\\Framework64\\v4.0.30319\\regasm.exe'
+    else:
+        net_dir=os.environ.get('windir')+'\\Microsoft.NET\\Framework\\v4.0.30319\\regasm.exe'
+    if os.path.exists(net_dir):
+        if os.path.exists('apkshellext.dll'):
+            print('显示apk原本图标...')
+            os.system('"'+net_dir+'" /codebase apkshellext.dll')
+        else:
+            print('W:文件 apkshellext.dll 缺失,apk图标将不会关联')
+    else:
+        print('E:Microsoft.NET v4.0.30319 or newer is required, but it isnot installed !')
+        return
 def main(args):
     apkfile,apkinstall=ParseArguments(args)
     apk.apkfile=apkfile
@@ -139,4 +175,10 @@ def main(args):
 def mainex(list):
     apkinstallmode(True,list) 
 if __name__ == '__main__':
+    try:
+        if str(sys.argv[1])=='-relatedapk':
+            relatedApkfile()
+            print('Done!')
+            sys.exit(0)
+    except:pass
     main(sys.argv[1:])

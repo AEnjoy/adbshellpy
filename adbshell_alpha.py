@@ -1,8 +1,10 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #   adbshell_alpha.py
+#          Core
 #       By : 神郭
-#  Version : 0.6.x Alpha 2
+#  Version : 0.6.x Alpha 3
+# Do not try to import this file in Python! 
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 try:
@@ -13,9 +15,9 @@ try:
 except: pass
 def errexit(arg): #异常信息
     if arg == 0:#OS I/O Error
-        adbcommand().kill_server()
+        adb.kill_server()
         print('文件夹创建失败!')
-        a=input('按 ENTER 退出...')
+        input('按 ENTER 退出...')
         sys.exit(1)
     if arg == 1:#系统不受支持
         print('仅支持Linux Windows 暂未添加其它平台功能支持')
@@ -25,7 +27,7 @@ def errexit(arg): #异常信息
         a=input('按 ENTER 继续或退出...')
         #sys.exit(0)
     if arg == 3 :#Python版本低
-        #adbcommand().kill_server()
+        #adb.kill_server()
         print("Built by Python 3.6, requires Python 3.6 or later")
         a=input('Press ENTER to exit...')
         sys.exit(1)
@@ -33,7 +35,12 @@ def errexit(arg): #异常信息
         print('请输入有效数据!')
         a=input('按 ENTER 继续')
     if arg==5:
-        print('W:网络出现问题,请检查网络!')
+        print('E:网络出现问题,请检查网络!')
+    if arg==6:
+        print('E:未找到可用设备!\nadbshellpy可能不会正常工作.')
+    if arg==7:
+        print('E:仅支持Windows 暂未添加其它平台功能支持')
+        a=input('按 ENTER 继续...')
         
 if sys.hexversion < 0x03060000:
     errexit(3)
@@ -41,7 +48,7 @@ if sys.hexversion < 0x03060000:
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
 version='0.6alpha'
-builddate='2020-4-21 01:01:47'
+builddate='2020-4-26 00:04:31'
 run=0
 p=platform.system()
 checkflag=True
@@ -51,6 +58,10 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.x Alpha 3  2020-4-26 00:04:31
+1.支持多设备切换:who指令
+2.支持关联apk文件(实验性)
+
 0.6.x Alpha 2 2020-4-21 01:01:47
 1.Library:adbshellpy_libapkfile update
 2.修复第一次运行adb不安装的bug
@@ -134,11 +145,15 @@ else:
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
 #默认设置END
-class update():
+class update():#bra=branch
     global builddate,version,branch,qqgroup,github
     ver=version
     bra=branch
     vdate=builddate
+    '''
+    def __init__(self,bra=branch):
+        self.bra=branch
+    '''
     def isnewversionavailable(self,b=''):
         url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
         try:
@@ -158,6 +173,8 @@ class update():
     def updatecheck(self):
         if self.isnewversionavailable():
             a=input('您当前使用的adbshellpy存在新版本,是否更新?y/n')
+            if a=='Y' or a=='y':
+                self.download_update()
             return
         else:
             print('您当前使用的adbshellpy为最新版本,无需更新.')
@@ -190,58 +207,144 @@ except:
     update().download_lib('adbshellpy_libhelper')
     import adbshellpy_home
     import adbshellpy_libhelper
-
-#function 
-class adbcommand:
-    hel=''
-    '''def __init__(self, *args, **kwargs):
-        return super().__init__(*args, **kwargs)
+deviceslist=[]
+nowdevice=''
+i=0
+def who():
     '''
-    def _adbc(self,command):
-        os.system(adbfile+' '+command)
+    返回另一个设备标识符
+    (如果只有一个 则返回一个)
+    自动设置:nowdevice
+    '''
+    global deviceslist ,nowdevice
+    adb.devices() #First running,activing service.
+    hand=os.popen(adbfile+' devices')
+    hand.readline() #第一行需要跳过
+    if len(deviceslist)==0: #第一次执行/没有设备/添加设备列表
+        for b in hand:
+            try:
+                if 'device' in b:
+                    b=b.replace('\tdevice\n','')
+                    print('检测到的设备:'+b)
+                    deviceslist.append(b)
+            except:
+                if 'unauthorized' in b:
+                    b=b.replace('\tunauthorized\n','')
+                    print('W:未授权的设备: %s 找到,请在手机上允许USB调试(一律)'%b)
+                    print('跳过该设备: %s '%b)
+            if r'\n' in deviceslist:
+                deviceslist.pop(deviceslist.index('\n'))
+        if len(deviceslist)==0: #没找到设备
+            errexit(6)
+            print('W:adbshellpy who 可能不会工作!')
+            hand.close()
+            return ''
+        hand.close()
+        return deviceslist[0]     
+    else: #清单里有设备,不做任何list处理(还要做 如果有新设备添加)
+        if nowdevice=='':
+            try:
+                nowdevice=deviceslist[0]
+                return nowdevice
+            except:pass #失败?
+        #更新设备列表
+        deviceslist=[]
+        for b in hand:
+            try:
+                if 'device' in b:
+                    b=b.replace('\tdevice\n','')
+                    print('检测到的设备:'+b)
+                    deviceslist.append(b)
+            except:
+                if 'unauthorized' in b:
+                    b=b.replace('\tunauthorized\n','')
+                    print('W:未授权的设备: %s 找到,请在手机上允许USB调试(一律)'%b)
+                    print('跳过该设备: %s '%b)
+        deviceslist.pop() #√
+        if len(deviceslist)==0: #没找到设备
+            errexit(6)
+            print('W:adbshellpy who 可能不会工作!')
+            hand.close()
+            return ''
+        print('Debug: '+str(deviceslist.index(nowdevice))+' '+str(len(deviceslist)-2)+str(deviceslist))
+        if deviceslist.index(nowdevice)==len(deviceslist)-1:#已达到最后一个设备,从新开始 \ n 死活清不掉
+            a=deviceslist[0]
+        else:
+            try:
+                a=deviceslist[deviceslist.index(nowdevice)+1]
+            except:
+                a=deviceslist[deviceslist.index(nowdevice)-1]
+        if a in nowdevice:
+            print('W:设备标识符一致?')
+            return nowdevice
+        else:
+            hand.close()
+            return a
+    hand.close()         
+    return nowdevice
+#function 
+class adbcommand():
+    global nowdevice
+    '''
+    adbshellpy Core Code
+    '''
+    hel=''
+    adb=adbfile
+    s=nowdevice#设备标识符 多设备时使用
+    def _adbc(self,command):#######Core#######
+        if self.s=='':
+            os.system(adbfile+' '+command)
+        else:
+            os.system(adbfile+' -s '+self.s+' '+command)
+    def __init__(self,device=nowdevice):
+        self.s=device
+        if self.s=='':
+            self.s=nowdevice
     def start_server(self):
-        adbcommand()._adbc('start-server')
+        self._adbc('start-server')
     def kill_server(self):
-        adbcommand()._adbc('kill-server')
+        self._adbc('kill-server')
     def devices(self): # 后续将会添加取设备ID功能
-        adbcommand()._adbc('devices')
+        self._adbc('devices')
+    def devices_nodisplay(self):
+        os.popen(adbfile+' devices')
     def printdevices(self,name=''):
-        adbcommand()._adbc('-s '+name)
-
+        self._adbc('-s '+name)
+    def set_devices(self,name):#__init__()
+        self.s=name
     #netmode
     def tcpip(self):
-        adbcommand()._adbc('tcpip 5555')
+        self._adbc('tcpip 5555')
     def connect(self,ip): #ip local ip
-        adbcommand()._adbc('connect '+ip+':5555')
+        self._adbc('connect '+ip+':5555')
     def disconnect(self,ip):
-        adbcommand()._adbc('disconnect '+ip+':5555')
+        self._adbc('disconnect '+ip+':5555')
     def usb(self):#默认usb模式
-        adbcommand()._adbc('usb')
-
+        self._adbc('usb')
     #netmode end
     def root(self):
-        adbcommand()._adbc('root')
+        self._adbc('root')
     def reboot(self,mode=0):#0 不带参数 1.-p 2.fastboot(bl) 3.recovery 4.sideload 5.挖煤
         if mode == 0:
-            adbcommand()._adbc('reboot')
+            self._adbc('reboot')
         if mode == 1:
-            adbcommand()._adbc('reboot -p')
+            self._adbc('reboot -p')
         if mode == 2:
-            adbcommand()._adbc('reboot bootloader')
+            self._adbc('reboot bootloader')
         if mode == 3:
-            adbcommand()._adbc('reboot recovery')
+            self._adbc('reboot recovery')
         if mode == 4:
-            adbcommand()._adbc('reboot sideload')
+            self._adbc('reboot sideload')
         if mode == 5:
-           adbcommand(). _adbc('reboot download')
+           self. _adbc('reboot download')
 
     def install(self,apkfile,command='-g -d'):
-        adbcommand()._adbc("install "+command+" "+'"'+apkfile+'"')
+        self._adbc("install "+command+" "+'"'+apkfile+'"')
     def uninstall(self,packname,command=''):
-        adbcommand()._adbc('unistall ' +packname +' '+command)
+        self._adbc('unistall ' +packname +' '+command)
 
     def shell(self,command=''):#_class adb_shell():
-        adbcommand()._adbc('shell '+command)
+        self._adbc('shell '+command)
 
     class adb_shell():
         def shell_cmd(self,func=''):
@@ -290,11 +393,11 @@ class adbcommand:
             func值
             空:列出电池状态 set level x:修改电池百分比为x reset:恢复真实百分比
             '''
-            hel=hel_
+            self.hel=hel_
     def push(self,urlc,urlp='/sdcard/'):
-        adbcommand()._adbc("push "+'"'+urlc+'" "'+urlp+'"')
+        self._adbc("push "+'"'+urlc+'" "'+urlp+'"')
     def pull(self,urlp,urlc):
-        adbcommand()._adbc("pull "+'"'+urlp+'" "'+urlc+'"')
+        self._adbc("pull "+'"'+urlp+'" "'+urlc+'"')
 
 def checkinternet():
     exit_code = os.system('ping www.baidu.com')
@@ -309,9 +412,10 @@ def clear():
         os.system('clear')
 
 def adbmode():#adbmode parseinput(1)
+    global nowdevice
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>   exit                              ┃
+    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  exit                         ┃
     ┃           re-install      update      environment      changes                ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                             ┃
@@ -321,8 +425,10 @@ def adbmode():#adbmode parseinput(1)
     ┃ 文件传输指令: ┃ pull        push                                             ┃
     ┃    System   : ┃ windowmode>  input>  settings>  dumpsys>  screencap>         ┃
     ┃   Activate  : ┃ piebridge(黑域) shizuku                                      ┃
+    ┃     Other :   ┃ relatedapk                                                   ┃
      -------------------------------ADBSystemTOOLBOX----------------------------------
     ''')
+    print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备')
     adbshellpy_home.parseinput(1)
 
 def setmode():#setmode parseinput(2)
@@ -338,23 +444,17 @@ def Console():
     clear()
     global run
     if run == 0:
-        adbcommand().kill_server()
-        adbcommand().devices()
+        adb.kill_server()
+        who()
         run=1
     print('''
     **********************************Welcome*****************************************
     *                                ADBSystemTOOLBOX                                *
     *                       基于Python3&GoogleADB的安卓系统工具箱                    *
     *                     Develop:  CoolApkUser:白曦  Github:AEnjoy                  *
-    *                           Inspired by CoolApkUser: 晨钟酱                      *
+    *               如果你链接了多个设备,请先使用输入who命令再输入其它命令哦!        *
     **********************************Welcome*****************************************
     '''+'Version:'+version +'   buildDate:'+builddate+'\r\n')
-    '''print:
-    **********************************Console*****************************************
-    *command:         输入命令后按Enter继续 直接按Enter进入adb工具箱                 *
-    *       adbmode back help re-install cls set update environment changes exit     *
-    **********************************Console*****************************************
-    '''
     adbmode()
 
 class _Options(object):
@@ -398,7 +498,6 @@ def ParseArguments(args): #解析参数
     cmd = None
     opt = _Options()
     arg = []
-    check = None
     if len(args)==0:
         return cmd, opt, arg
     if os.path.exists(args[1]):
@@ -433,12 +532,16 @@ def apkinstallmode(install=False):#开发计划2
         
 
 def main(args):
-  global checkflag
+  global checkflag,branch,uselinuxpkgmanagertoinstalladb,adbfile,conf
+  try:
+    import adbshellpy_libapkfile
+    aapt=adbshellpy_libapkfile.aapt
+  except:aapt=''
   cmd, opt, args = ParseArguments(args)
   c=['shutdown','rec','bl','edl','sideload','download','install','uninstall','compile',
       'shell','root','start_server','kill_server','devices','tcpipconnect','usb','reboot',
       'disable','enable','clear','applist','pull','push','windowmode','input','settings',
-      'dumpsys','screencap'
+      'dumpsys','screencap','relatedapk','who'
      ]#内置命令
   if cmd in c:#开发计划3
       pass
@@ -456,6 +559,7 @@ def main(args):
   with open('adbshell.ini', 'w') as ini:
       conf.write(ini)
   apkinstallmode(opt.apkinstall)
+  #adbshellpy_home.adbshellpyinformation().set_(branch,uselinuxpkgmanagertoinstalladb,aapt,conf)
   if p == "Windows":
       main_windows()
   if p == "Linux":
@@ -474,7 +578,7 @@ def install(p,check=0):
     global adbfile
     global conf
     global checkflag
-    adbcommand().kill_server()
+    adb.kill_server()
     '''
     try:
         os.rmdir('adb')
@@ -598,6 +702,6 @@ if not adbfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb
         adbfile=r'platform-tools\adb.exe'
         conf.set("adbshell", "adbfile", adbfile)
         conf.write(open("adbshell.ini", "w"))
-
+adb=adbcommand(nowdevice)
 if __name__ == '__main__':
     main(sys.argv[1:])

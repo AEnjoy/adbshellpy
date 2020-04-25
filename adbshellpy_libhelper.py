@@ -12,6 +12,17 @@ class adbshellpyinformation:
     aapt=None
     conf=None
 class helper():
+    def relatedapk(self):
+        print('''relatedapk:关联Android 应用程序.apk文件
+        关联.apk文件,以方便apk文件的安装
+        Requirement:
+        System         : Windows 7 + x86/AMD64/IA64/arm/arm64 新特性关联文件
+        Microsoft.NET  : 4.0 + (opt) 用于显示APP图标
+        ''')
+    def who(self):
+        print('''who:切换adbshellpy设备
+        当使用两个或两个以上设备时,可以使用who来改变你当前操作的设备
+        ''')
     def usage(self):
         print("""
         用法:adbshell.py [apkfile(s)] [args or Console -MORE] 
@@ -366,6 +377,8 @@ class helper():
         push:从本地中复制一个文件(夹)至手机
         pull:从手机中拉取一个文件(夹)至本地
         activate:激活黑域 shizuku服务
+        who:改变adbshellpy操作的设备
+        relatedapk:关联apk文件
         ****************************ADBSystemTOOLBOXHELP**********************************
         ''')
         '''
@@ -421,6 +434,12 @@ def main():
         return
     if inputtext=='windowmode':
         h.windowmode()
+        return
+    if inputtext=='who':
+        h.who()
+        return
+    if inputtext=='relatedapk':
+        h.relatedapk()
         return
     print('Unkonw command!')
     return
