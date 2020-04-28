@@ -3,15 +3,13 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.x Alpha 3
+#  Version : 0.6.x Alpha 4
 # Do not try to import this file in Python! 
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
-try:
-    import configparser
+try:import configparser
 except:pass
-try:
-    import urllib.request 
+try:import urllib.request 
 except: pass
 def errexit(arg): #异常信息
     if arg == 0:#OS I/O Error
@@ -21,26 +19,26 @@ def errexit(arg): #异常信息
         sys.exit(1)
     if arg == 1:#系统不受支持
         print('仅支持Linux Windows 暂未添加其它平台功能支持')
-        a=input('按 ENTER 退出...')
+        input('按 ENTER 退出...')
         sys.exit(1)
     if arg == 2:#常规信息
-        a=input('按 ENTER 继续或退出...')
+        input('按 ENTER 继续或退出...')
         #sys.exit(0)
     if arg == 3 :#Python版本低
         #adb.kill_server()
         print("Built by Python 3.6, requires Python 3.6 or later")
-        a=input('Press ENTER to exit...')
+        input('Press ENTER to exit...')
         sys.exit(1)
     if arg== 4:
         print('请输入有效数据!')
-        a=input('按 ENTER 继续')
+        input('按 ENTER 继续')
     if arg==5:
         print('E:网络出现问题,请检查网络!')
     if arg==6:
         print('E:未找到可用设备!\nadbshellpy可能不会正常工作.')
     if arg==7:
         print('E:仅支持Windows 暂未添加其它平台功能支持')
-        a=input('按 ENTER 继续...')
+        input('按 ENTER 继续...')
         
 if sys.hexversion < 0x03060000:
     errexit(3)
@@ -48,7 +46,7 @@ if sys.hexversion < 0x03060000:
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
 version='0.6alpha'
-builddate='2020-4-26 00:04:31'
+builddate='2020-4-29 00:25:58'
 run=0
 p=platform.system()
 checkflag=True
@@ -58,6 +56,11 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.x Alpha 4  2020-4-29 00:25:58
+1.UI优化
+2.一些小改进
+3.支持激活冰箱
+
 0.6.x Alpha 3  2020-4-26 00:04:31
 1.支持多设备切换:who指令
 2.支持关联apk文件(实验性)
@@ -148,12 +151,26 @@ else:
 class update():#bra=branch
     global builddate,version,branch,qqgroup,github
     ver=version
-    bra=branch
+    bra='dev'
     vdate=builddate
     '''
     def __init__(self,bra=branch):
         self.bra=branch
     '''
+    def download_update_full(self):
+        url='https://github.com/AEnjoy/adbshellpy/archive/master.zip'
+        try:
+            urllib.request.urlretrieve(url,'master.zip')
+        except:
+            print('网络错误!')
+            return False
+        z=zip.ZipFile('master.zip')
+        z.extractall()
+        z.close()
+        try:shutil.copytree('adbshellpy-master',os.getcwd())
+        except:pass
+        print('完整包升级完成,请重启 adbshellpy实例')
+        return True
     def isnewversionavailable(self,b=''):
         url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
         try:
@@ -411,26 +428,6 @@ def clear():
     if p == "Linux":
         os.system('clear')
 
-def adbmode():#adbmode parseinput(1)
-    global nowdevice
-    print('''
-     _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  exit                         ┃
-    ┃           re-install      update      environment      changes                ┃
-     ---------------------------------------------------------------------------------
-    ┃  ADB指令集  : ┃ shell   root(√)                                             ┃
-    ┃ 设备链接指令: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)  ┃
-    ┃ 设备重启指令: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices) ┃
-    ┃ 应用高级指令: ┃ install> uninstall> compile> disable> enable> clear> applist>┃
-    ┃ 文件传输指令: ┃ pull        push                                             ┃
-    ┃    System   : ┃ windowmode>  input>  settings>  dumpsys>  screencap>         ┃
-    ┃   Activate  : ┃ piebridge(黑域) shizuku                                      ┃
-    ┃     Other :   ┃ relatedapk                                                   ┃
-     -------------------------------ADBSystemTOOLBOX----------------------------------
-    ''')
-    print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备')
-    adbshellpy_home.parseinput(1)
-
 def setmode():#setmode parseinput(2)
     print('''
     **********************************Setmode*****************************************
@@ -447,15 +444,9 @@ def Console():
         adb.kill_server()
         who()
         run=1
-    print('''
-    **********************************Welcome*****************************************
-    *                                ADBSystemTOOLBOX                                *
-    *                       基于Python3&GoogleADB的安卓系统工具箱                    *
-    *                     Develop:  CoolApkUser:白曦  Github:AEnjoy                  *
-    *               如果你链接了多个设备,请先使用输入who命令再输入其它命令哦!        *
-    **********************************Welcome*****************************************
-    '''+'Version:'+version +'   buildDate:'+builddate+'\r\n')
-    adbmode()
+    global nowdevice
+    adbshellpy_home.home()
+    adbshellpy_home.parseinput(1)
 
 class _Options(object):
   help = False
@@ -561,17 +552,11 @@ def main(args):
   apkinstallmode(opt.apkinstall)
   #adbshellpy_home.adbshellpyinformation().set_(branch,uselinuxpkgmanagertoinstalladb,aapt,conf)
   if p == "Windows":
-      main_windows()
+      Console()
   if p == "Linux":
-      main_linux()
+      Console()
   else:
       errexit(1)
-
-def main_linux():
-    Console()#一级菜单
-    #二级菜单
-def main_windows():
-    Console()#一级菜单
 
 def install(p,check=0):
     global uselinuxpkgmanagertoinstalladb

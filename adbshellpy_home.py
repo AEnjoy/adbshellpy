@@ -44,6 +44,37 @@ try:
 except:
     update().download_lib('adbshellpy_libhelper')
     import adbshellpy_libhelper
+def home():
+    print('''
+    **********************************Welcome*****************************************
+    *                                ADBSystemTOOLBOX                                *
+    *                       基于Python3&GoogleADB的安卓系统工具箱                    *
+    *                     Develop:  CoolApkUser:白曦  Github:AEnjoy                  *
+    *               如果你链接了多个设备,请先使用输入who命令再输入其它命令哦!        *
+    **********************************Welcome*****************************************
+    '''+'Version:'+version +'   buildDate:'+builddate)    
+    print('''
+     _____________________________ADBSystemTOOLBOX____________________________________
+    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit                   ┃
+    ┃           re-install      update      environment      changes                ┃
+     ---------------------------------------------------------------------------------
+    ┃  ADB指令集  : ┃ shell   root(√)                                             ┃
+    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)  ┃
+    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices) ┃
+     ---------------------------------------------------------------------------------
+    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>         ┃    
+    ┃  系统  优化 : ┃ 编译优化compile>                                             ┃
+    ┃  文件  传输 : ┃ pull>        push>   screencap>                              ┃
+    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                     ┃
+    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)                        ┃
+    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                       ┃
+     ---------------------------------------------------------------------------------
+    ┃  Magisk框架 : ┃                  <开发中,敬请期待>                           ┃
+    ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                           ┃
+    ┃  ROM   工具 : ┃                  <开发中,敬请期待>                           ┃
+     -------------------------------ADBSystemTOOLBOX----------------------------------
+    ''')
+    print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备')
 
 def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     global nowdevice
@@ -56,6 +87,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     conf=adbshellpyinformation.conf
     if a==1:#2级目录(adbmode)
         if inputtext == '':
+            parseinput(1)
+            return
+        if inputtext == 'icebox':
+            adb.shell('dpm set-device-owner com.catchingnow.icebox/.receiver.DPMReceiver')
             parseinput(1)
             return
         if inputtext == 'relatedapk':
@@ -463,6 +498,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 #print('E:暂未开放setting,请手动编辑adbshell.ini')
             errexit(2)
     #通用指令
+    if inputtext=='home':
+        home()
+        parseinput()
+        return
     if inputtext == 'cls':
         clear()
         parseinput(a)
