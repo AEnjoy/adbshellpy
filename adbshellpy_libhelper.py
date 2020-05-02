@@ -12,6 +12,8 @@ class adbshellpyinformation:
     aapt=None
     conf=None
 class helper():
+    def kf(self):
+        print('kfmark:激活快否APP实例')
     def relatedapk(self):
         print('''relatedapk:关联Android 应用程序.apk文件
         关联.apk文件,以方便apk文件的安装
@@ -379,6 +381,7 @@ class helper():
         activate:激活黑域 shizuku服务
         who:改变adbshellpy操作的设备
         relatedapk:关联apk文件
+        kfmark:激活快否
         ****************************ADBSystemTOOLBOXHELP**********************************
         ''')
         '''
@@ -392,6 +395,9 @@ def main():
     inputtext=input('>>>')
     inputtext=inputtext.replace(" ", "")
     if inputtext=='' or inputtext == 'back' or inputtext=='exit':
+        return
+    if inputtext == 'kfmark':
+        h.kf()
         return
     if inputtext=='push':
         h.push()
@@ -444,5 +450,6 @@ def main():
     print('Unkonw command!')
     return
 if __name__ == '__main__':
-    print('This is adbshellpy_libhelper view. Plese use the help command to get help.')
-    sys.exit(1)
+    #print('This is adbshellpy_libhelper view. Plese use the help command to get help.')
+    #sys.exit(1)
+    main()

@@ -3,6 +3,7 @@
 #   adbshellpy_libmagiskmm
 #       By : 神郭
 #  Version : 1.0
+# Do not try to import this file in Python! 
 import sys,os,zipfile
 try:
     from adbshell import errexit

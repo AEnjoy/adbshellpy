@@ -6,6 +6,7 @@
 #  要关联apk文件 输入命令
 #  adbshellpy_libapkfile.py -relatedapk
 #  release
+# Do not try to import this file in Python! 
 import sys,os
 import zipfile as zip
 os.chdir(os.getcwd())

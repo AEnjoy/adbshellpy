@@ -55,7 +55,7 @@ def home():
     '''+'Version:'+version +'   buildDate:'+builddate)    
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit                   ┃
+    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit                    ┃
     ┃           re-install      update      environment      changes                ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                             ┃
@@ -66,7 +66,7 @@ def home():
     ┃  系统  优化 : ┃ 编译优化compile>                                             ┃
     ┃  文件  传输 : ┃ pull>        push>   screencap>                              ┃
     ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                     ┃
-    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)                        ┃
+    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark               ┃
     ┃  其它  功能 : ┃ APP安装关联:relatedapk                                       ┃
      ---------------------------------------------------------------------------------
     ┃  Magisk框架 : ┃                  <开发中,敬请期待>                           ┃
@@ -89,6 +89,14 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
         if inputtext == '':
             parseinput(1)
             return
+        if inputtext=='kfmark':
+            try:import adbshellpy_libroot
+            except:    
+                update().download_lib('adbshellpy_libroot')
+                import adbshellpy_libroot
+            adbshellpy_libroot.Activate_KFMark()
+            parseinput(1)
+            return            
         if inputtext == 'icebox':
             adb.shell('dpm set-device-owner com.catchingnow.icebox/.receiver.DPMReceiver')
             parseinput(1)

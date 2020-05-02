@@ -3,7 +3,7 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.x Alpha 4
+#  Version : 0.6.x Alpha 5
 # Do not try to import this file in Python! 
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
@@ -46,7 +46,7 @@ if sys.hexversion < 0x03060000:
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
 version='0.6alpha'
-builddate='2020-4-29 00:25:58'
+builddate='2020-5-2 23:00:16'
 run=0
 p=platform.system()
 checkflag=True
@@ -56,6 +56,11 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.x Alpha 5  2020-5-2 23:00:16
+1.UI优化
+2.即将添加root工具箱功能
+3.支持激活快否
+
 0.6.x Alpha 4  2020-4-29 00:25:58
 1.UI优化
 2.一些小改进
@@ -360,9 +365,17 @@ class adbcommand():
     def uninstall(self,packname,command=''):
         self._adbc('unistall ' +packname +' '+command)
 
-    def shell(self,command=''):#_class adb_shell():
-        self._adbc('shell '+command)
-
+    def shell(self,command='',su=0):#_class adb_shell():
+        if su==0:
+            self._adbc('shell '+command)
+        if su==1:
+            self._adbc('shell su & '+command)
+    def busybox(self,command='',su=0):#busybox
+        if su==0:
+            self.shell('busybox '+command)
+        if su==1:
+            self.shell('su & busybox '+command)
+        
     class adb_shell():
         def shell_cmd(self,func=''):
             adbcommand().shell('cmd '+func)
