@@ -36,17 +36,20 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.5.4Beta'
+version='0.5.4.1Beta'
 builddate='2020-4-21 00:17:19'
 run=0
 p=platform.system()
 checkflag=True
-branch='beta'
+branch='master'
 qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp' 
 github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.5.4Beta→0.5.4.1Beta 2020-5-3 13:23:37
+1.Update
+
 0.5.3Beta→0.5.4Beta 2020-4-21 00:17:19
 1.修复第一次运行adb不安装的bug
 2.修复shell wm overscan闪退bug
@@ -234,7 +237,7 @@ class adbcommand:
 class update():
     global builddate,version,branch,qqgroup,github
     ver=version
-    bra=branch
+    bra='master'
     vdate=version
     def isnewversionavailable(self,b=''):
         url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
@@ -255,6 +258,8 @@ class update():
     def updatecheck(self):
         if self.isnewversionavailable():
             a=input('您当前使用的adbshellpy存在新版本,是否更新?y/n')
+            if a=='Y' or a=='y':
+                self.download_update()
             return
         else:
             print('您当前使用的adbshellpy为最新版本,无需更新.')
@@ -319,8 +324,8 @@ def parseinput(a=1):#0 一级目录 1二级目录(adbmode) 2二级目录(othermo
             Console()
             return
         if inputtext =='update':
-            import webbrowser
-            webbrowser.open(github)
+            update().githubopen()
+            update().updatecheck()
             parseinput(0)
             return
         if inputtext =='changes':

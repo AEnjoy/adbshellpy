@@ -2,10 +2,13 @@
 # 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
 ################################################################################
 
-/upload.bat
-/开发计划.txt
-/tempfile.txt
-/.vs/VSWorkspaceState.json
-/.vs/slnx.sqlite
-/.vs/ProjectSettings.json
-/.vs/adbshellpy/v16/.suo
+upload.bat
+开发计划.txt
+tempfile.txt
+.vs
+alpha
+.git
+Han.GJZS
+command.txt
+Han.GJZS
+adb
