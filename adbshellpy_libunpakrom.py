@@ -3,6 +3,7 @@
 #   adbshellpy_libunpakrom
 #       By : 神郭
 #  Version : 1.0
+from __future__ import print_function
 import sys,os,zipfile,urllib.request
 class adbshellpyinformation():
     import platform
@@ -38,8 +39,8 @@ def lz4install():
 class oppoozip():
     # (c) B. Kerler 2017-2020, licensed under MIT license
     # GitHub Paper:https://github.com/tahirtaous/ozip2zip
-    from docopt import docopt
-    args = docopt(__doc__, version='1.2')
+    #from docopt import docopt
+    #args = docopt(__doc__, version='1.2')
     import stat,shutil,binascii
     from Crypto.Cipher import AES
     keys = [
@@ -320,7 +321,6 @@ class unpackrom():
         #          DATE: 2018-10-27 10:33:21 CEST
         #       Chinese: 神郭
         #====================================================
-        from __future__ import print_function
         import errno
         __version__ = '1.2'
         print('sdat2img Version: {}\n'.format(__version__))

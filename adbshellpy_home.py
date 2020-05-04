@@ -4,33 +4,9 @@
 #       By : 神郭
 #  Version : 1.0
 import sys,os,datetime
-try:
-    from adbshell import errexit
-    from adbshell import update
-    from adbshell import checkinternet
-    from adbshell import clear
-    from adbshell import ParseArguments
-    from adbshell import adbcommand
-    from adbshell import install
-    from adbshell import changes
-    from adbshell import github
-    from adbshell import version
-    from adbshell import builddate
-    from adbshell import nowdevice
-except:
-    from adbshell_alpha import errexit
-    from adbshell_alpha import update
-    from adbshell_alpha import checkinternet
-    from adbshell_alpha import clear
-    from adbshell_alpha import ParseArguments
-    from adbshell_alpha import adbcommand
-    from adbshell_alpha import install
-    from adbshell_alpha import changes
-    from adbshell_alpha import github
-    from adbshell_alpha import version
-    from adbshell_alpha import builddate
-    from adbshell_alpha import who
-    from adbshell_alpha import nowdevice
+#Core Function
+try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
+except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
 class adbshellpyinformation:
     p=sys.platform
     branch=None
@@ -39,11 +15,12 @@ class adbshellpyinformation:
     aapt=None
     conf=None
     Permissionshow=True
-try:
-    import adbshellpy_libhelper
+#HelperView
+try:import adbshellpy_libhelper
 except:
     update().download_lib('adbshellpy_libhelper')
     import adbshellpy_libhelper
+
 def home():
     print('''
     **********************************Welcome*****************************************
@@ -58,26 +35,268 @@ def home():
     ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit                    ┃
     ┃           re-install      update      environment      changes                ┃
      ---------------------------------------------------------------------------------
-    ┃  ADB指令集  : ┃ shell   root(√)                                             ┃
-    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)  ┃
-    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices) ┃
+    ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
+    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   ┃
+    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices)  ┃
      ---------------------------------------------------------------------------------
-    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>         ┃    
-    ┃  系统  优化 : ┃ 编译优化compile>                                             ┃
-    ┃  文件  传输 : ┃ pull>        push>   screencap>                              ┃
-    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                     ┃
-    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark               ┃
-    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                       ┃
+    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>          ┃    
+    ┃  系统  优化 : ┃ 编译优化compile>                                              ┃
+    ┃  文件  传输 : ┃ pull>        push>   screencap>                               ┃
+    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      ┃
+    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                ┃
+    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        ┃
      ---------------------------------------------------------------------------------
-    ┃  Magisk框架 : ┃                  <开发中,敬请期待>                           ┃
-    ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                           ┃
-    ┃  ROM   工具 : ┃                  <开发中,敬请期待>                           ┃
+    ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            ┃
+    ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                            ┃
+    ┃  ROM   工具 : ┃                  <开发中,敬请期待>                            ┃
      -------------------------------ADBSystemTOOLBOX----------------------------------
     ''')
     print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备')
+class func_():
+    def __init__(self):
+        global nowdevice
+        self.adb=adbcommand(nowdevice)
+        global changes,github,version,builddate
+        self.p=adbshellpyinformation.p
+        self.adbfile=adbshellpyinformation.adbfile
+        self.conf=adbshellpyinformation.conf
+        self.changes=changes
+    def kfmark(self):
+        try:import adbshellpy_libroot
+        except:    
+            update().download_lib('adbshellpy_libroot')
+            import adbshellpy_libroot
+        adbshellpy_libroot.Activate_KFMark()
+    def icebox(self):
+        self.adb.shell('dpm set-device-owner com.catchingnow.icebox/.receiver.DPMReceiver')
+    def relatedapk(self):
+        import adbshellpy_libapkfile
+        adbshellpy_libapkfile.relatedApkfile()
+    def update(self):
+        update().githubopen()
+        update().updatecheck()
+    def changes_(self):
+        print(self.changes)
+    def piebridge(self):
+        self.adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
+    def shizuku(self):
+        self.adb.shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
+    def push(self):
+        print('push:从本地中复制一个文件(夹)至手机')
+        urlp=input('远端路径>>>')
+        if urlp=='':
+            print('默认使用 /sdcard')
+        urlc=input('本地文件或文件夹>>>')
+        urlc=urlc.replace(" ", "")
+        if urlc=='':
+            print('本地文件或文件夹为空')
+            errexit(4)
+            return
+        self.adb.push(urlc=urlc,urlp=urlp)
+    def pull(self):
+        print('pull:从手机中拉取一个文件(夹)至本地')
+        urlp=input('远端路径>>>')
+        urlp=urlp.replace(" ", "")
+        if urlp=='':
+            print('E:请输入有效远端路径')
+            errexit(4)
+            return
+        urlc=input('本地路径>>>')
+        if urlc=='':
+            print('默认使用当前路径')
+            urlc=os.getcwd()
+        self.adb.pull(urlp=urlp,urlc=urlc)     
+    def screencap(self):
+        print('screencap:对手机执行截屏命令,并可选择是否传输至电脑并立即查看')
+        h=input('传输至电脑并打开查看>>>[Y/N 默认N]')
+        h=h.replace(" ", "")
+        self.adb.shell(command='screencap -p /sdcard/sc.png')
+        if h=='y' or h=='Y':
+            self.adb.pull(urlp='/sdcard/sc.png',urlc='sc.png')
+            if self.p == 'Windows':
+                os.system('explorer sc.png')
+            if self.p=='Linux':
+                h=input('...LINUX查看?需要提前安装imagemagick>>>[Y/N 默认N]')
+                if h=='y' or h=='Y':
+                    os.system('display sc.png')
+    def dumpsys(self):
+        print('dumpsys:获取或设置一些调试信息(转储所有服务)。在adbmode→help→dumpsys查询命令列表')
+        inputtext=input('dumpsys>>>')
+        inputtext=inputtext.replace(" ", "")
+        if inputtext=='' or inputtext=='back':
+            return
+        self.adb.adb_shell().shell_dumpsys()
+        return
+    def settings(self):
+        print('通过ADB读取/更改系统设置 在adbmode→help→settings查询命令列表')
+        print('''
+        get [--user <USER_ID> | current] NAMESPACE KEY 设置键值
+        ...检索KEY的当前值。
+        put [--user <USER_ID> | current] NAMESPACE KEY VALUE [TAG] [default]
+        ...将KEY的内容更改为VALUE
+        ...设置为默认值，仅对全局/安全名称空间不区分大小写
+        delete NAMESPACE KEY
+        ...删除NAMESPACE KEY键值
+        reset [--user <USER_ID> | current] NAMESPACE {PACKAGE_NAME | RESET_MODE}
+        ...重置具有全局/安全模式的程序包的表。
+        ...RESET_MODE:{untrusted_defaults，untrusted_clear，trusted_defaults}，不区分大小写
+        list NAMESPACE
+        ...列出所有设置的值 NAMESPACE:{system, secure, global}
+        ''')
+        inputtext=input('Command>>>')
+        inputtext=inputtext.replace(" ", "")
+        if inputtext=='' or inputtext=='back':
+            return
+        self.adb.adb_shell().shell_setting(func=inputtext)
+    def input(self):
+        print('''command:(Only Enter To Return)
+        input_text:    向手机输入一串字符(不支持中文)
+        input_keyevent:模拟输入内容(在adbshell→help→input中可查询指令)
+        input_tap:     模拟点击屏幕上的一个像素点
+        input_swipe:   模拟滑动屏幕(从一个像素点到另一像素点)
+        ''')
+        inputtext=input('command>>>')
+        inputtext=inputtext.replace(" ", "")
+        if inputtext=='input_text':
+            inputtext=input('Text>>>')
+            self.adb.adb_shell().shell_input_text(func=inputtext)
+            return
+        if inputtext=='input_keyevent':
+            inputtext=input('Keyevent>>>')
+            self.adb.adb_shell().shell_input_keyevent(func=inputtext)
+            return
+        if inputtext=='input_tap':
+            x=input('X>>>')
+            y=input('Y>>>')
+            self.adb.adb_shell().shell_input_tap(x=x,y=y)
+            return
+        if inputtext=='input_swipe':
+            x1=input('X1>>>')
+            y1=input('Y1>>>')
+            x2=input('X2>>>')
+            y2=input('Y2>>>')
+            d =input('D>>>')
+            self.adb.adb_shell().shell_input_swipe(x1=x1,x2=x2,y1=y1,y2=y2,d=d)
+            return
+    def windowmode(self):
+        inputtext=input('欲查看或设置的信息>>>')
+        inputtext=inputtext.replace(" ", "")
+        if inputtext=='':
+            self.adb.adb_shell().shell_wm()
+            return
+        if inputtext=='overscan':
+            inputtext=input('...overscan>>>')
+            if inputtext=='reset':
+                self.adb.adb_shell().shell_wm_overscan('reset')
+                return
+            if inputtext=='':
+                self.adb.adb_shell().shell_wm_overscan()
+                return
+            self.adb.adb_shell().shell_wm_overscan(inputtext)
+            return
+        if inputtext=='size':
+            inputtext=input('...size>>>')
+            inputtext=inputtext.replace(" ", "")
+            if inputtext=='reset':
+                self.adb.adb_shell().shell_wm_size(func='reset')
+                return
+            if inputtext=='':
+                self.adb.adb_shell().shell_wm_size()
+                return
+            self.adb.adb_shell().shell_wm_size(func=inputtext)
+            return
+        if inputtext=='density':
+            inputtext=input('...density>>>')
+            inputtext=inputtext.replace(" ", "")
+            if inputtext=='reset':
+                self.adb.adb_shell().shell_wm_density(func='reset')
+                return
+            if inputtext=='':
+                self.adb.adb_shell().shell_wm_density()
+                return
+            self.adb.adb_shell().shell_wm_density(func=inputtext)
+            return
+    def applist(self):
+        args_=input('附加的参数>>>')
+        args_=args_.replace(" ", "")
+        if args_=='':
+            self.adb.adb_shell().shell_pm_list_package()
+            return
+        self.adb.adb_shell().shell_pm_list_package(args_)
+    def clear(self):
+        Package=input('欲清除数据的程序包名>>>')
+        Package=Package.replace(" ", "")
+        if Package=='':
+            errexit(4)
+            return
+        self.adb.adb_shell().shell_pm_clear(Package)
+    def enable(self):
+        Package=input('欲启用的程序包名>>>')
+        Package=Package.replace(" ", "")
+        if Package=='':
+            errexit(4)
+            return
+        self.adb.adb_shell().shell_pm_enable(Package)
+    def disable(self):
+        Package=input('欲禁用的程序包名(使用applist查看)>>>')
+        Package=Package.replace(" ", "")
+        if Package=='':
+            errexit(4)
+            return
+        self.adb.adb_shell().shell_pm_disable_user(Package)
+    def compile(self):
+        mode=input('编译模式[默认-m speed]>>>')
+        func=input('编译参数[默认 为空]>>>')
+        pkg=input("编译对象[默认-a]>>>")
+        func, pkg = func, pkg . replace(" ", "")
+        if mode=='':
+            mode='-m speed'
+        if pkg=='':
+            pkg='-a'
+        print('执行该操作将消耗一定时间,请坐和放宽')
+        start=datetime.datetime.now()
+        print('当前时间: '+str(start))
+        self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
+        end=datetime.datetime.now()
+        print('结束时间: '+str(end))
+        print('执行用时: %s Seconds'%(end-start))
+    def uninstall(self):
+        apkfile=input('欲移除的程序包名(使用applist查看)>>>')
+        args_=input('欲附加的参数>>>')
+        if apkfile=='':
+            errexit(4)
+            return
+        elif args_=='':
+            self.adb.uninstall(apkfile)
+            return
+        self.adb.uninstall(apkfile,args_)
+    def install(self):
+        apkfile=input('欲安装的apk文件>>>')
+        args_=input('欲附加的参数>>>')
+        if apkfile=='':
+            errexit(4)
+            return
+        elif args_=='':
+            self.adb.install(apkfile=apkfile)
+            return
+        self.adb.install(apkfile,args_)
+    def download(self):self.adb.reboot(5)
+    def sideload(self):self.adb.reboot(4)
+    def rec(self):self.adb.reboot(3)
+    def bl(self):self.adb.reboot(2)
+    def shutdown(self):self.adb.reboot(1)
+    def reboot(self):self.adb.reboot()
+    def usb(self):self.adb.usb()
+    def tcpipconnect(self):self.adb.tcpip()
+    def devices(self):self.adb.devices()
+    def kill_server(self):self.adb.kill_server()
+    def start_server(self):self.adb.start_server()
+    def root(self):self.adb.root()
+    def shell(self):self.adb.shell()
 
+f=func_()
 def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
-    global nowdevice
+    global nowdevice,f
     adb=adbcommand(nowdevice)
     inputtext=input('>>>')
     inputtext=inputtext.replace(" ", "")
@@ -90,20 +309,15 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             parseinput(1)
             return
         if inputtext=='kfmark':
-            try:import adbshellpy_libroot
-            except:    
-                update().download_lib('adbshellpy_libroot')
-                import adbshellpy_libroot
-            adbshellpy_libroot.Activate_KFMark()
+            f.kfmark()
             parseinput(1)
             return            
         if inputtext == 'icebox':
-            adb.shell('dpm set-device-owner com.catchingnow.icebox/.receiver.DPMReceiver')
+            f.icebox()
             parseinput(1)
             return
         if inputtext == 'relatedapk':
-            import adbshellpy_libapkfile
-            adbshellpy_libapkfile.relatedApkfile()
+            f.relatedapk()
             parseinput(1)
             return            
         if inputtext=='who':
@@ -127,272 +341,78 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             parseinput(1)
             return
         if inputtext =='update':
-            import webbrowser
-            webbrowser.open(github)
+            f.update()
             parseinput(0)
             return
         if inputtext =='changes':
-            print(changes)
+            f.changes_()
             parseinput(1)
             return
         if inputtext=='piebridge':
-            adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
+            f.piebridge()
             parseinput(1)
             return
         if inputtext=='shizuku':
-            adb.shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
+            f.shizuku()
             parseinput(1)
             return
         if inputtext=='push':
-            print('push:从本地中复制一个文件(夹)至手机')
-            urlp=input('远端路径>>>')
-            if urlp=='':
-                print('默认使用 /sdcard')
-            urlc=input('本地文件或文件夹>>>')
-            urlc=urlc.replace(" ", "")
-            if urlc=='':
-                print('本地文件或文件夹为空')
-                errexit(4)
-                return
-            adb.push(urlc=urlc,urlp=urlp)
+            f.push()
             parseinput(1)
             return
         if inputtext=='pull':
-            print('pull:从手机中拉取一个文件(夹)至本地')
-            urlp=input('远端路径>>>')
-            urlp=urlp.replace(" ", "")
-            if urlp=='':
-                print('E:请输入有效远端路径')
-                errexit(4)
-                return
-            urlc=input('本地路径>>>')
-            if urlc=='':
-                print('默认使用当前路径')
-                urlc=os.getcwd()
-            adb.pull(urlp=urlp,urlc=urlc)
+            f.pull()
             parseinput(1)
             return
         if inputtext=='screencap':
-            print('screencap:对手机执行截屏命令,并可选择是否传输至电脑并立即查看')
-            h=input('传输至电脑并打开查看>>>[Y/N 默认N]')
-            h=h.replace(" ", "")
-            adb.shell(command='screencap -p /sdcard/sc.png')
-            if h=='y' or h=='Y':
-                adb.pull(urlp='/sdcard/sc.png',urlc='sc.png')
-                if p == 'Windows':
-                    os.system('explorer sc.png')
-                if p=='Linux':
-                    inputtext=input('...LINUX查看?需要提前安装imagemagick>>>[Y/N 默认N]')
-                    if h=='y' or h=='Y':
-                        os.system('display sc.png')
+            f.screencap()
             parseinput(1)
             return
         if inputtext=='dumpsys':
-            print('dumpsys:获取或设置一些调试信息(转储所有服务)。在adbmode→help→dumpsys查询命令列表')
-            inputtext=input('dumpsys>>>')
-            inputtext=inputtext.replace(" ", "")
-            if inputtext=='' or inputtext=='back':
-                parseinput(1)
-                return
-            adb.adb_shell().shell_dumpsys()
+            f.dumpsys()
             parseinput(1)
             return
         if inputtext=='settings':
-            print('通过ADB读取/更改系统设置 在adbmode→help→settings查询命令列表')
-            print('''
-            get [--user <USER_ID> | current] NAMESPACE KEY 设置键值
-            ...检索KEY的当前值。
-            put [--user <USER_ID> | current] NAMESPACE KEY VALUE [TAG] [default]
-            ...将KEY的内容更改为VALUE
-            ...设置为默认值，仅对全局/安全名称空间不区分大小写
-            delete NAMESPACE KEY
-            ...删除NAMESPACE KEY键值
-            reset [--user <USER_ID> | current] NAMESPACE {PACKAGE_NAME | RESET_MODE}
-            ...重置具有全局/安全模式的程序包的表。
-            ...RESET_MODE:{untrusted_defaults，untrusted_clear，trusted_defaults}，不区分大小写
-            list NAMESPACE
-            ...列出所有设置的值 NAMESPACE:{system, secure, global}
-            ''')
-            inputtext=input('Command>>>')
-            inputtext=inputtext.replace(" ", "")
-            if inputtext=='' or inputtext=='back':
-                parseinput(1)
-                return
-            adb.adb_shell().shell_setting(func=inputtext)
+            f.settings()
             parseinput(1)
             return
         if inputtext=='input':
-            print('''command:(Only Enter To Return)
-            input_text:    向手机输入一串字符(不支持中文)
-            input_keyevent:模拟输入内容(在adbshell→help→input中可查询指令)
-            input_tap:     模拟点击屏幕上的一个像素点
-            input_swipe:   模拟滑动屏幕(从一个像素点到另一像素点)
-            ''')
-            inputtext=input('command>>>')
-            inputtext=inputtext.replace(" ", "")
-            if inputtext=='input_text':
-                inputtext=input('Text>>>')
-                adb.adb_shell().shell_input_text(func=inputtext)
-                parseinput(1)
-                return
-            if inputtext=='input_keyevent':
-                inputtext=input('Keyevent>>>')
-                adb.adb_shell().shell_input_keyevent(func=inputtext)
-                parseinput(1)
-                return
-            if inputtext=='input_tap':
-                x=input('X>>>')
-                y=input('Y>>>')
-                adb.adb_shell().shell_input_tap(x=x,y=y)
-                parseinput(1)
-                return
-            if inputtext=='input_swipe':
-                x1=input('X1>>>')
-                y1=input('Y1>>>')
-                x2=input('X2>>>')
-                y2=input('Y2>>>')
-                d =input('D>>>')
-                adb.adb_shell().shell_input_swipe(x1=x1,x2=x2,y1=y1,y2=y2,d=d)
-                parseinput(1)
-                return
-            if inputtext=='':
-                parseinput(1)
-                return
+            f.input()
+            parseinput(1)
+            return
         if inputtext=='windowmode':
-            inputtext=input('欲查看或设置的信息>>>')
-            inputtext=inputtext.replace(" ", "")
-            if inputtext=='':
-                adb.adb_shell().shell_wm()
-                parseinput(1)
-                return
-            if inputtext=='overscan':
-                inputtext=input('...overscan>>>')
-                if inputtext=='reset':
-                    adb.adb_shell().shell_wm_overscan('reset')
-                    parseinput(1)
-                    return
-                if inputtext=='':
-                    adb.adb_shell().shell_wm_overscan()
-                    parseinput(1)
-                    return
-                adb.adb_shell().shell_wm_overscan(inputtext)
-                parseinput(1)
-                return
-            if inputtext=='size':
-                inputtext=input('...size>>>')
-                inputtext=inputtext.replace(" ", "")
-                if inputtext=='reset':
-                    adb.adb_shell().shell_wm_size(func='reset')
-                    parseinput(1)
-                    return
-                if inputtext=='':
-                    adb.adb_shell().shell_wm_size()
-                    parseinput(1)
-                    return
-                adb.adb_shell().shell_wm_size(func=inputtext)
-                parseinput(1)
-                return
-            if inputtext=='density':
-                inputtext=input('...density>>>')
-                inputtext=inputtext.replace(" ", "")
-                if inputtext=='reset':
-                    adb.adb_shell().shell_wm_density(func='reset')
-                    parseinput(1)
-                    return
-                if inputtext=='':
-                    adb.adb_shell().shell_wm_density()
-                    parseinput(1)
-                    return
-                adb.adb_shell().shell_wm_density(func=inputtext)
-                parseinput(1)
-                return
+            f.windowmode()
+            parseinput(1)
+            return
         if inputtext=='':
             parseinput(1)
             return
         if inputtext=='applist':
-            args_=input('附加的参数>>>')
-            args_=args_.replace(" ", "")
-            if args_=='':
-                adb.adb_shell().shell_pm_list_package()
-                parseinput(1)
-                return
-            adb.adb_shell().shell_pm_list_package(args_)
+            f.applist()
             parseinput(1)
             return
         if inputtext=='clear':
-            Package=input('欲清除数据的程序包名(使用applist查看)>>>')
-            Package=Package.replace(" ", "")
-            if Package=='':
-                errexit(4)
-                parseinput(1)
-                return
-            adb.adb_shell().shell_pm_clear(Package)
+            f.clear()
             parseinput(1)
             return
         if inputtext=='enable':
-            Package=input('欲启用的程序包名(使用applist查看)>>>')
-            Package=Package.replace(" ", "")
-            if Package=='':
-                errexit(4)
-                parseinput(1)
-                return
-            adb.adb_shell().shell_pm_enable(Package)
+            f.enable()
             parseinput(1)
             return
         if inputtext=='disable':
-            Package=input('欲禁用的程序包名(使用applist查看)>>>')
-            Package=Package.replace(" ", "")
-            if Package=='':
-                errexit(4)
-                parseinput(1)
-                return
-            adb.adb_shell().shell_pm_disable_user(Package)
+            f.disable()
             parseinput(1)
             return
         if inputtext=='compile':
-            mode=input('编译模式[默认-m speed]>>>')
-            func=input('编译参数[默认 为空]>>>')
-            pkg=input("编译对象[默认-a]>>>")
-            func, pkg = func, pkg . replace(" ", "")
-            if mode=='':
-                mode='-m speed'
-            '''if func =='':
-                func='-f'''
-            if pkg=='':
-                pkg='-a'
-            print('执行该操作将消耗一定时间,请坐和放宽')
-            start=datetime.datetime.now()
-            print('当前时间: '+str(start))
-            adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
-            end=datetime.datetime.now()
-            print('结束时间: '+str(end))
-            print('执行用时: %s Seconds'%(end-start))
+            f.compile()
             parseinput(1)
             return
         if inputtext=='uninstall':
-            apkfile=input('欲移除的程序包名(使用applist查看)>>>')
-            args_=input('欲附加的参数>>>')
-            if apkfile=='':
-                errexit(4)
-                parseinput(1)
-                return
-            elif args_=='':
-                adb.uninstall(apkfile)
-                parseinput(1)
-                return
-            adb.uninstall(apkfile,args_)
+            f.uninstall()
+            parseinput(1)
+            return
         if inputtext=='install':
-            apkfile=input('欲安装的apk文件>>>')
-            args_=input('欲附加的参数>>>')
-            if apkfile=='':
-                errexit(4)
-                parseinput(1)
-                return
-            elif args_=='':
-                adb.install(apkfile=apkfile)
-                parseinput(1)
-                return
-            adb.install(apkfile,args_)
+            f.install()
             parseinput(1)
             return
         if inputtext=='download':

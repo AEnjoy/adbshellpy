@@ -3,8 +3,8 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.x Alpha 5
-# Do not try to import this file in Python! 
+#  Version : 0.6.x Alpha 6
+# Do not try to import this file in Python! (Fix in Alpha 6)
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 try:import configparser
@@ -46,7 +46,7 @@ if sys.hexversion < 0x03060000:
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
 version='0.6alpha'
-builddate='2020-5-2 23:00:16'
+builddate='2020-5-5 00:12:54'
 run=0
 p=platform.system()
 checkflag=True
@@ -56,6 +56,10 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.x Alpha 6  2020-5-5 00:12:54
+1.UI优化
+2.修复崩溃问题
+
 0.6.x Alpha 5  2020-5-2 23:00:16
 1.UI优化
 2.即将添加root工具箱功能
@@ -221,14 +225,7 @@ class update():#bra=branch
     def githubopen(self):
         import webbrowser
         webbrowser.open(github)
-try:
-    import adbshellpy_home
-    import adbshellpy_libhelper
-except:
-    update().download_lib('adbshellpy_home')
-    update().download_lib('adbshellpy_libhelper')
-    import adbshellpy_home
-    import adbshellpy_libhelper
+
 deviceslist=[]
 nowdevice=''
 i=0
@@ -448,6 +445,10 @@ def setmode():#setmode parseinput(2)
     *您也可以通过手动编辑adbshell.ini来修改设置                                      *
     **********************************Setmode*****************************************
     ''')
+    try:import adbshellpy_home
+    except:
+        update().download_lib('adbshellpy_home')
+        import adbshellpy_home  
     adbshellpy_home.parseinput(2)
 
 def Console():
@@ -458,6 +459,10 @@ def Console():
         who()
         run=1
     global nowdevice
+    try:import adbshellpy_home
+    except:
+        update().download_lib('adbshellpy_home')
+        import adbshellpy_home      
     adbshellpy_home.home()
     adbshellpy_home.parseinput(1)
 
@@ -539,7 +544,7 @@ def main(args):
   global checkflag,branch,uselinuxpkgmanagertoinstalladb,adbfile,conf
   try:
     import adbshellpy_libapkfile
-    aapt=adbshellpy_libapkfile.aapt
+    #aapt=adbshellpy_libapkfile.aapt
   except:aapt=''
   cmd, opt, args = ParseArguments(args)
   c=['shutdown','rec','bl','edl','sideload','download','install','uninstall','compile',
@@ -599,6 +604,8 @@ def install(p,check=0):
         return
     #install or re-install
     print('ADB正在安装中:')
+    if p=='':
+        p=platform.system
     if p == 'Windows':
         url = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip'
         urllib.request.urlretrieve(url,'adb.zip') #兼容性强
