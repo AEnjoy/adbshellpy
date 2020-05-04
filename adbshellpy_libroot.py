@@ -76,7 +76,11 @@ def Activate_KFMark():
     '快否激活'
     url='https://github.com/aifou-kfmark/KFMARK/releases/download/1.5/daemon'
     if os.path.exists('daemon')==False:
-        urllib.request.urlretrieve(url,'daemon')
+        print('未检测到快否启动实例:daemon,正在为您下载中...')
+        try:urllib.request.urlretrieve(url,'daemon')
+        except:
+            print('E:下载失败!')
+            return
     adb.push('daemon','/data/local/tmp')
     adb.shell('chmod 777 /data/local/tmp/daemon')
     adb.shell('"./data/local/tmp/daemon &"')

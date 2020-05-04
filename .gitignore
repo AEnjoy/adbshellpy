@@ -3,7 +3,10 @@
 ################################################################################
 .git
 .vs
-/upload.bat
+upload.bat
 adbshell__dev
 __pycache__
 build-tools
+adb
+daemon
+Imgextractor.exe
