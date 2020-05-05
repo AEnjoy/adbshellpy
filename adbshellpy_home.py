@@ -51,7 +51,7 @@ def home():
     ┃  ROM   工具 : ┃                  <开发中,敬请期待>                            ┃
      -------------------------------ADBSystemTOOLBOX----------------------------------
     ''')
-    print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备')
+    print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备.(仅有一个设备时不会显示,但功能依然可用)')
 class func_():
     def __init__(self):
         global nowdevice

@@ -5,33 +5,8 @@
 #  Version : 1.0
 # Do not try to import this file in Python! 
 import sys,os,zipfile,urllib.request
-try:
-    from adbshell import errexit
-    from adbshell import update
-    from adbshell import checkinternet
-    from adbshell import clear
-    from adbshell import ParseArguments
-    from adbshell import adbcommand
-    from adbshell import install
-    from adbshell import changes
-    from adbshell import github
-    from adbshell import version
-    from adbshell import builddate
-    from adbshell import nowdevice
-except:
-    from adbshell_alpha import errexit
-    from adbshell_alpha import update
-    from adbshell_alpha import checkinternet
-    from adbshell_alpha import clear
-    from adbshell_alpha import ParseArguments
-    from adbshell_alpha import adbcommand
-    from adbshell_alpha import install
-    from adbshell_alpha import changes
-    from adbshell_alpha import github
-    from adbshell_alpha import version
-    from adbshell_alpha import builddate
-    from adbshell_alpha import who
-    from adbshell_alpha import nowdevice
+try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
+except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
 class adbshellpyinformation:
     branch=None
     try:from adbshell_alpha import adbfile
