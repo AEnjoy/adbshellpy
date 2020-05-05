@@ -2,6 +2,8 @@
 
 # This is the devoloper-building Version
 
+0.6.x Alpha 6 稳定版:0.6.0已发布
+
 How to use
 
 ```
@@ -20,7 +22,7 @@ adbshellpy_libapkfile.py
 
 adbshellpy_libhelper.py
 
-# 功能介绍:0.6.x
+# 功能介绍:0.6.1
 
 adbshellpy是您的下一代Android玩机助手运行在Python 3.6或更新的版本中
 
@@ -49,6 +51,9 @@ etc.
 # ChangeLog:
 
 ```
+0.6.1 Alpha    2020-5-5 17:19:16
+1.None
+
 0.6.x Alpha 6  2020-5-5 00:12:54
 1.UI优化
 2.修复崩溃问题

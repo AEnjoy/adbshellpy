@@ -3,8 +3,7 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.x Alpha 6
-# Do not try to import this file in Python! (Fix in Alpha 6)
+#  Version : 0.6.1 Alpha 
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 try:import configparser
@@ -45,8 +44,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6alpha'
-builddate='2020-5-5 00:12:54'
+version='0.6.1alpha'
+builddate='2020-5-5 17:19:16'
 run=0
 p=platform.system()
 checkflag=True
@@ -56,6 +55,9 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.1 Alpha    2020-5-5 17:19:16
+1.None
+
 0.6.x Alpha 6  2020-5-5 00:12:54
 1.UI优化
 2.修复崩溃问题
