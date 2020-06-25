@@ -3,7 +3,7 @@
 #       adbshell.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.0 Stable
+#  Version : 0.6.1 Stable
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 try:import configparser,urllib.request 
@@ -42,8 +42,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.0 Stable'
-builddate='2020-5-5 11:52:29'
+version='0.6.1 Stable'
+builddate='2020-6-26 01:24:55'
 run=0
 p=platform.system()
 checkflag=True
@@ -53,6 +53,10 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.0→0.6.1 2020-6-26 01:24:55
+1.修复who不识别第三方REC的问题
+2.compile可选择高级编译
+
 0.5.4Beta→0.6.0Stable  2020-5-5 00:12:54
 1.UI优化
 2.修复崩溃问题
@@ -231,6 +235,10 @@ def who():
                     b=b.replace('\tdevice\n','')
                     print('检测到的设备:'+b)
                     deviceslist.append(b)
+                if 'recovery' in b:
+                    b=b.replace('\trecovery\n','')
+                    print('检测到的设备:'+b)
+                    deviceslist.append(b)
             except:
                 if 'unauthorized' in b:
                     b=b.replace('\tunauthorized\n','')
@@ -257,6 +265,10 @@ def who():
             try:
                 if 'device' in b:
                     b=b.replace('\tdevice\n','')
+                    print('检测到的设备:'+b)
+                    deviceslist.append(b)
+                if 'recovery' in b:
+                    b=b.replace('\trecovery\n','')
                     print('检测到的设备:'+b)
                     deviceslist.append(b)
             except:
