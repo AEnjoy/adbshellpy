@@ -42,8 +42,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.1 Stable'
-builddate='2020-6-26 01:24:55'
+version='0.6.1.1 Stable'
+builddate='2020-7-23 09:50:55'
 run=0
 p=platform.system()
 checkflag=True
@@ -53,6 +53,9 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 changes='''
+0.6.1→0.6.1.1 2020-7-23 09:50:55
+1.修复了一个Root的Bug
+
 0.6.0→0.6.1 2020-6-26 01:24:55
 1.修复who不识别第三方REC的问题
 2.compile可选择高级编译
@@ -363,7 +366,7 @@ class adbcommand():
         if su==0:
             self._adbc('shell '+command)
         if su==1:
-            self._adbc('shell su & '+command)
+            self._adbc('shell su -c '+command)
     def busybox(self,command='',su=0):#busybox
         if su==0:
             self.shell('busybox '+command)
