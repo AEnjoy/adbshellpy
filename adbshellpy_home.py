@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.6.0 Stable
+#  Version : 0.6.1.2 Stable
 import sys,os,datetime
 #Core Function
 try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
@@ -32,7 +32,7 @@ def home():
     '''+'Version:'+version +'   buildDate:'+builddate)    
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit                    ┃
+    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       ┃
     ┃           re-install      update      environment      changes                ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
@@ -331,7 +331,7 @@ class func_():
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==8:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(r'''
                 touch /sdcard/Android/speed编译第三方app启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
                 sed -i 's/package:/cmd package compile -m speed /g' /sdcard/Android/speed编译第三方app启动.sh
@@ -342,7 +342,7 @@ class func_():
                 self.adb.shell('sh /sdcard/temp.sh')    
             if a==7:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(r'''
                 touch /sdcard/Android/speed编译第三方app启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
                 sed -i 's/package:/cmd package compile -m speed -f /g' /sdcard/Android/speed编译第三方app启动.sh
@@ -353,7 +353,7 @@ class func_():
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==6:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(r'''
                 touch /sdcard/Android/everything编译第三方app启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
                 sed -i 's/package:/cmd package compile -m everything /g' /sdcard/Android/everything编译第三方app启动.sh
@@ -364,7 +364,7 @@ class func_():
                 self.adb.shell('sh /sdcard/temp.sh')    
             if a==12:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(r'''
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
@@ -375,7 +375,7 @@ class func_():
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==13:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(r'''
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
@@ -386,7 +386,7 @@ class func_():
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==14:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(r'''
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
@@ -397,7 +397,7 @@ class func_():
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==15:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(r'''
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
@@ -477,9 +477,6 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             adb=adbcommand(c)
             print('您当前的设备:'+b+'切换后的设备:'+c)
             parseinput(1)
-            return
-        if inputtext == 'help':
-            adbshellpy_libhelper.helper().usage()
             return
         if inputtext == 'back':
             print('E:您已处于主菜单!')
@@ -617,11 +614,18 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             adb.shell()
             parseinput(1)
             return
+        if inputtext.lower()=='fixgithub':
+            update().fixgithub()
+            parseinput(1)
+            return            
         if inputtext=='back':
             parseinput(1)
             return
         if inputtext == 'help':
+            adbshellpy_libhelper.helper().usage()
             adbshellpy_libhelper.main()
+            parseinput(1)
+            return            
     if a==2:#2级目录(othermode)
             if inputtext =='back':
                 parseinput(0)

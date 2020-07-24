@@ -55,6 +55,13 @@ etc.
 # ChangeLog:
 
 ```
+0.6.1.1→0.6.1.2 2020-7-25 00:14:50
+1.NEW:Changlog分离
+2.NEW:fixgithub功能
+3.NEW:现在可以选择添加是否在启动时Kill ADB服务
+4.FIX:修复了查看help后直接退出的bug
+5.FIX:修复了compile的一些bug
+6.FIX:修复从旧版本更新上来因为adbshell.ini配置老旧,导致的错误崩溃
 0.6.1→0.6.1.1 2020-7-23 09:50:55
 1.修复了一个Root的Bug
 
@@ -95,37 +102,8 @@ etc.
 3.更新了QQ群加群链接
 4.ReleaseToGitHub
 
-0.4.1Beta→0.4.2Beta 2020-3-17 23:27:06
-1.Bug修复
-2.compile指令支持显示执行用时
+...剩余内容请看ChangeLog
 
-0.4Beta→0.4.1Beta  2020-3-15 23:55:09 
-1.使用exit退出时将自动清理adb服务
-2.优化了help显示
-3.命令行功能将暂不可用
-4.更新链接替换至QQ群
-5.支持显示changes
-6.SET视图可用
-7.UI部分优化(By:莫白)
-8.screencap屏幕截图功能可用
-
-0.3Alpha→0.4Beta   2020-3-13 00:25:33
-1.帮助help更新
-2.功能可用:dumpsys
-3.修复了文件夹重命名失败导致安装失败的bug(玄学,修到一半自己好了TAT浪费感情(估计是权限问题),不过还是添加了相关代码)
-4.修复了一处崩溃
-
-0.2Alpha→0.3Alpha 2020年3月11日23:29:11
-1.修复了一些导致崩溃的bug
-2.帮助help更新
-3.功能可用:settings
-
-0.1Alpha→0.2Alpha 2020-3-11 
-1.修复了一些导致崩溃的bug
-2.修复了一些无关紧要的bug
-3.功能可用:windowmode  input
-
-0.1Alpha----
-程序发布
 ```
 
+[Changelogs Full](Changlog)
