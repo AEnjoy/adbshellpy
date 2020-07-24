@@ -45,6 +45,10 @@ def home():
     ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      ┃
     ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                ┃
     ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        ┃
+     ---------------------------------------------------------------------------------
+    ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            ┃
+    ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                            ┃
+    ┃  ROM   工具 : ┃                  <开发中,敬请期待>                            ┃    
      -------------------------------ADBSystemTOOLBOX----------------------------------
     ''')
     print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备.(仅有一个设备时不会显示,但功能依然可用)')
