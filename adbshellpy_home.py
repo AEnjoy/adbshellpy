@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 1.0
+#  Version : 0.6.1.2 dev
 import sys,os,datetime
 #Core Function
 try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
@@ -32,7 +32,7 @@ def home():
     '''+'Version:'+version +'   buildDate:'+builddate)    
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit                    ┃
+    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       ┃
     ┃           re-install      update      environment      changes                ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
@@ -45,10 +45,6 @@ def home():
     ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      ┃
     ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                ┃
     ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        ┃
-     ---------------------------------------------------------------------------------
-    ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            ┃
-    ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                            ┃
-    ┃  ROM   工具 : ┃                  <开发中,敬请期待>                            ┃
      -------------------------------ADBSystemTOOLBOX----------------------------------
     ''')
     print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备.(仅有一个设备时不会显示,但功能依然可用)')
@@ -245,21 +241,175 @@ class func_():
             return
         self.adb.adb_shell().shell_pm_disable_user(Package)
     def compile(self):
-        mode=input('编译模式[默认-m speed]>>>')
-        func=input('编译参数[默认 为空]>>>')
-        pkg=input("编译对象[默认-a]>>>")
-        func, pkg = func, pkg . replace(" ", "")
-        if mode=='':
-            mode='-m speed'
-        if pkg=='':
-            pkg='-a'
-        print('执行该操作将消耗一定时间,请坐和放宽')
-        start=datetime.datetime.now()
-        print('当前时间: '+str(start))
-        self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
-        end=datetime.datetime.now()
-        print('结束时间: '+str(end))
-        print('执行用时: %s Seconds'%(end-start))
+        a=input('Compile:请选择compile功能模式: 1).传统  2).新版 :')
+        if a=='1':
+            mode=input('编译模式[默认-m speed]>>>')
+            func=input('编译参数[默认 为空]>>>')
+            pkg=input("编译对象[默认-a]>>>")
+            func, pkg = func, pkg . replace(" ", "")
+            if mode=='':
+                mode='-m speed'
+            if pkg=='':
+                pkg='-a'
+            print('执行该操作将消耗一定时间,请坐和放宽')
+            start=datetime.datetime.now()
+            print('当前时间: '+str(start))
+            self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
+            end=datetime.datetime.now()
+            print('结束时间: '+str(end))
+            print('执行用时: %s Seconds'%(end-start))
+        if a=='2':
+            print('''Compile :
+            Compile New
+            通过对AndroidN+的应用进行dexopt编译以提升性能
+            注意:如果你使用的是Android Q 或更高版本,请谨慎对系统应用进行编译,特别是高危组件:
+            com.android.systemui
+            已知问题: 
+            Android Q
+            1.MIUI Android Q编译系统应用会导致严重掉帧
+            2.Samsung OneUI 2.0+会出现开机无法进入桌面,系统全局黑屏的问题.
+            3.LG UX 9 会在锁屏时死机重启
+            4.com.android.systemui不支持通过手动安装还原!!!
+            Android N / O
+            1.编译不显示进度
+            如果你是三星用户:推荐使用Galaxy Labs 的 App Booster,其原理为编译原理,且无安全风险
+            性能:everything＞speed＞[默认]speed-profile＞quicken＞[不编译]
+            编译耗时:everything＞speed
+            空间占用:everything＞speed＞[默认]speed-profile＞quicken＞spacesave＞[不编译]
+            **********************************Compile*****************************************
+            *  (00).Back [Enter]                                                            *
+            *  (01).使用everything模式编译所有应用[系统,用户] (强制)                           *
+            *  (02).使用everything模式编译所有应用[系统,用户]                                  *
+            *  (03).使用speed模式编译所有应用[系统,用户] (强制)                                *
+            *  (04).使用speed模式编译所有应用[系统,用户]                                       *
+            *       第一次编译优化,建议选择带有(强制)选项的方法                                 *
+            *       对于小内存设备,低存储剩余的设备,emmc设备,推荐使用speed方法以减轻IO压力        *
+            *       Android N O P 推荐以上选项(01-04),Android Q推荐以下选项(05-08)             *
+            *  (05).使用everything模式编译所有应用[用户] (强制)                                *
+            *  (06).使用everything模式编译所有应用[用户]                                       *
+            *  (07).使用speed模式编译所有应用[用户] (强制)                                     *
+            *  (08).使用speed模式编译所有应用[用户]                                            *
+            *      急救功能                                                                  *
+            *  (09).还原systemUI编译(quicken默认) ←推荐                                       *
+            *  (10).还原systemUI编译(speed默认)                                               *
+            *  (11).还原systemUI编译(清除编译)                                                *
+            *  (12).清除第三方应用编译                                                        *
+            *  (13).清除系统应用编译                                                          *
+            *  (14).清除第三方应用编译[quicken]                                               *
+            *  (15).清除系统应用编译[quicken]                                                 *            
+            *  (16).清除所有编译[quicken]                                                    *
+            *  (17).清除所有编译                                                             *
+            *  Thanks: CoolApk User:后知                                                     *
+            **********************************Compile*****************************************
+            !:输入01 与 1 效果是一致的.
+            ''')
+            try:a=int(input('您的选择>>>'))
+            except:a=0
+            print('执行该操作将消耗一定时间,请坐和放宽')
+            start=datetime.datetime.now()
+            print('当前时间: '+str(start))
+            self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)      
+            if a==1:self.adb.adb_shell().shell_cmd_compile('-m everything','-f','-a')
+            if a==2:self.adb.adb_shell().shell_cmd_compile('-m everything','','-a')
+            if a==3:self.adb.adb_shell().shell_cmd_compile('-m speed','-f','-a')
+            if a==4:self.adb.adb_shell().shell_cmd_compile('-m speed','','-a')    
+            if a==9:self.adb.adb_shell().shell_cmd_compile('-m quicken','-f','com.android.systemui')
+            if a==10:self.adb.adb_shell().shell_cmd_compile('-m speed','-f','com.android.systemui')
+            if a==11:self.adb.shell('cmd package compile --reset com.android.systemui')
+            if a==16:self.adb.adb_shell().shell_cmd_compile('-m quicken','-f','-a')
+            if a==17:self.adb.shell('cmd package compile --reset -a')
+            if a==5:
+                f = open('temp.sh','w')
+                f.write('''
+                touch /sdcard/Android/everything编译第三方app启动.sh
+                echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
+                sed -i 's/package:/cmd package compile -m everything -f /g' /sdcard/Android/everything编译第三方app启动.sh
+                sh /sdcard/Android/everything编译第三方app启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')
+            if a==8:
+                f = open('temp.sh','w')
+                f.write(r'''
+                touch /sdcard/Android/speed编译第三方app启动.sh
+                echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
+                sed -i 's/package:/cmd package compile -m speed /g' /sdcard/Android/speed编译第三方app启动.sh
+                sh /sdcard/Android/speed编译第三方app启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')    
+            if a==7:
+                f = open('temp.sh','w')
+                f.write(r'''
+                touch /sdcard/Android/speed编译第三方app启动.sh
+                echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
+                sed -i 's/package:/cmd package compile -m speed -f /g' /sdcard/Android/speed编译第三方app启动.sh
+                sh /sdcard/Android/speed编译第三方app启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')
+            if a==6:
+                f = open('temp.sh','w')
+                f.write(r'''
+                touch /sdcard/Android/everything编译第三方app启动.sh
+                echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
+                sed -i 's/package:/cmd package compile -m everything /g' /sdcard/Android/everything编译第三方app启动.sh
+                sh /sdcard/Android/everything编译第三方app启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')    
+            if a==12:
+                f = open('temp.sh','w')
+                f.write(r'''
+                touch /sdcard/Android/清除所有第三方app编译启动.sh
+                echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
+                sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
+                sh /sdcard/Android/清除所有第三方app编译启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')
+            if a==13:
+                f = open('temp.sh','w')
+                f.write(r'''
+                touch /sdcard/Android/清除所有第三方app编译启动.sh
+                echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
+                sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
+                sh /sdcard/Android/清除所有第三方app编译启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')
+            if a==14:
+                f = open('temp.sh','w')
+                f.write(r'''
+                touch /sdcard/Android/清除所有第三方app编译启动.sh
+                echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
+                sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
+                sh /sdcard/Android/清除所有第三方app编译启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')
+            if a==15:
+                f = open('temp.sh','w')
+                f.write(r'''
+                touch /sdcard/Android/清除所有第三方app编译启动.sh
+                echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
+                sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
+                sh /sdcard/Android/清除所有第三方app编译启动.sh
+                ''')
+                f.close()
+                self.adb.push('temp.sh')
+                self.adb.shell('sh /sdcard/temp.sh')
+            if a==0:return
+            end=datetime.datetime.now()
+            print('结束时间: '+str(end))
+            print('执行用时: %s Seconds'%(end-start))
     def uninstall(self):
         apkfile=input('欲移除的程序包名(使用applist查看)>>>')
         args_=input('欲附加的参数>>>')
@@ -327,9 +477,6 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             adb=adbcommand(c)
             print('您当前的设备:'+b+'切换后的设备:'+c)
             parseinput(1)
-            return
-        if inputtext == 'help':
-            adbshellpy_libhelper.helper().usage()
             return
         if inputtext == 'back':
             print('E:您已处于主菜单!')
@@ -467,11 +614,18 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             adb.shell()
             parseinput(1)
             return
+        if inputtext.lower()=='fixgithub':
+            update().fixgithub()
+            parseinput(1)
+            return            
         if inputtext=='back':
             parseinput(1)
             return
         if inputtext == 'help':
+            adbshellpy_libhelper.helper().usage()
             adbshellpy_libhelper.main()
+            parseinput(1)
+            return            
     if a==2:#2级目录(othermode)
             if inputtext =='back':
                 parseinput(0)

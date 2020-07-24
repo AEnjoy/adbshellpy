@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_libhelper.py
 #       By : 神郭
-#  Version : 1.0
+#  Version : 0.6.1.2 dev
 import sys
 class adbshellpyinformation:
     p=sys.platform
@@ -51,6 +51,8 @@ class helper():
         远端路径>>>[/sdcard/]手机端的文件或文件夹可空,默认为/sdcard
         本地文件或文件夹>>>本地文件或文件夹所在路径
         ''')
+    def fixgithub(self):
+        print('FixGitHub:修复由于中国DNS污染导致GitHub访问异常的问题,可以解决GitHubRAW异常,修复软件更新检测,lib下载等(需要修改Hosts文件,需要更高权限及杀软同意)')
     def pull(self):
         print('''pull:从手机中拉取一个文件(夹)至本地
         远端路径>>>手机端的文件
@@ -447,9 +449,9 @@ def main():
     if inputtext=='relatedapk':
         h.relatedapk()
         return
+    if inputtext=='fixgithub':
+        h.fixgithub()
     print('Unkonw command!')
     return
 if __name__ == '__main__':
-    #print('This is adbshellpy_libhelper view. Plese use the help command to get help.')
-    #sys.exit(1)
     main()

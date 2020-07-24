@@ -6,9 +6,7 @@
 #  Version : 0.6.1 Alpha 
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
-try:import configparser
-except:pass
-try:import urllib.request 
+try:import configparser,urllib.request 
 except: pass
 def errexit(arg): #异常信息
     if arg == 0:#OS I/O Error
@@ -44,8 +42,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.1alpha'
-builddate='2020-5-5 17:19:16'
+version='0.6.1.2 dev'
+builddate='2020-7-24 23:54:15'
 run=0
 p=platform.system()
 checkflag=True
@@ -54,88 +52,14 @@ qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp'
 github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
-changes='''
-0.6.1 Alpha    2020-5-5 17:19:16
-1.None
+adbinit=0
+#changes
+try:
+    f_=open("Changlog", "r")
+    changes=f_.read()
+    f_.close()
+except:changes='E:更新日志文件"Changlog"不存在,无法查看更新记录!'
 
-0.6.x Alpha 6  2020-5-5 00:12:54
-1.UI优化
-2.修复崩溃问题
-
-0.6.x Alpha 5  2020-5-2 23:00:16
-1.UI优化
-2.即将添加root工具箱功能
-3.支持激活快否
-
-0.6.x Alpha 4  2020-4-29 00:25:58
-1.UI优化
-2.一些小改进
-3.支持激活冰箱
-
-0.6.x Alpha 3  2020-4-26 00:04:31
-1.支持多设备切换:who指令
-2.支持关联apk文件(实验性)
-
-0.6.x Alpha 2 2020-4-21 01:01:47
-1.Library:adbshellpy_libapkfile update
-2.修复第一次运行adb不安装的bug
-3.修复shell wm overscan闪退bug
-
-0.6.x Alpha 1 2020-4-20 01:46:33
-1.代码块拆分
-
-0.5.2Beta→0.5.3Beta 2020-4-14 20:57:52
-1.应用程序编译默认不载带-f参数
-
-0.5.1Beta→0.5.2Beta 2020-4-10 23:06:45
-1.添加功能:黑域,shizuku 激活
-
-0.5Beta→0.5.1Beta   2020-3-29 15:46:54
-1.修复了强制检测adb是否安装的bug
-2.优化了部分输出内容
-3.adb在下载前将会进行网络连通检测
-4.默认直接进入主界面
-5.添加了程序版本分支标记
-
-0.4.2Beta→0.5Beta   2020-3-18 23:36:49
-1.Bug修复
-2.功能可用:pull/push
-3.更新了QQ群加群链接
-4.ReleaseToGitHub
-
-0.4.1Beta→0.4.2Beta 2020-3-17 23:27:06
-1.Bug修复
-2.compile指令支持显示执行用时
-
-0.4Beta→0.4.1Beta  2020-3-15 23:55:09 
-1.使用exit退出时将自动清理adb服务
-2.优化了help显示
-3.命令行功能将暂不可用
-4.更新链接替换至QQ群
-5.支持显示changes
-6.SET视图可用
-7.UI部分优化(By:莫白)
-8.screencap屏幕截图功能可用
-
-0.3Alpha→0.4Beta   2020-3-13 00:25:33
-1.帮助help更新
-2.功能可用:dumpsys
-3.修复了文件夹重命名失败导致安装失败的bug(玄学,修到一半自己好了TAT浪费感情(估计是权限问题),不过还是添加了相关代码)
-4.修复了一处崩溃
-
-0.2Alpha→0.3Alpha 2020年3月11日23:29:11
-1.修复了一些导致崩溃的bug
-2.帮助help更新
-3.功能可用:settings
-
-0.1Alpha→0.2Alpha 2020-3-11 
-1.修复了一些导致崩溃的bug
-2.修复了一些无关紧要的bug
-3.功能可用:windowmode  input
-
-0.1Alpha----
-程序发布
-'''
 if os.path.exists('adbshell.ini') ==False:
     conf = configparser.ConfigParser()
     conf.add_section('adbshell')
@@ -143,31 +67,41 @@ if os.path.exists('adbshell.ini') ==False:
     conf.set('adbshell', 'adbfile', adbfile)
     conf.set('adbshell', 'checkflag', str(checkflag))
     conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
+    conf.set('adbshell', 'adbinit', str(adbinit))
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
 else:
     conf = configparser.ConfigParser()
     conf.read('adbshell.ini')
-    #getboolean
-    try:
-        checkflag=conf.getboolean('adbshell','checkflag')
-    except:
-        #旧版本升级上来
-        conf.set('adbshell', 'checkflag', str(checkflag))
-        with open('adbshell.ini', 'w') as ini:
-            conf.write(ini)
+    #旧版本升级上来
+    if conf.has_option('adbshell','checkflag')==False:conf.set('adbshell', 'checkflag', str(checkflag))
+    if conf.has_option('adbshell','adbinit')==False:conf.set('adbshell', 'adbinit', str(adbinit))
+    with open('adbshell.ini', 'w') as ini:
+        conf.write(ini)
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
 #默认设置END
 class update():#bra=branch
-    global builddate,version,branch,qqgroup,github
+    global builddate,version,branch,qqgroup,github,p
     ver=version
     bra='dev'
     vdate=builddate
-    '''
-    def __init__(self,bra=branch):
-        self.bra=branch
-    '''
+    def setgitrawhosts(self):
+        hosts='199.232.68.133 raw.githubusercontent.com'
+        if self.p=='Windows':
+            try:f_=open(r'C:\Windows\System32\drivers\etc\hosts','a')
+            except:
+                print('E:权限不足!')
+                return
+            f_.write(hosts)
+            f_.close()
+        if self.p=='Linux':
+            try:f_=open('/etc/hosts','a')
+            except:
+                print('E:权限不足!')
+                return
+            f_.write(hosts)
+            f_.close()            
     def download_update_full(self):
         url='https://github.com/AEnjoy/adbshellpy/archive/master.zip'
         try:
@@ -248,6 +182,10 @@ def who():
                     b=b.replace('\tdevice\n','')
                     print('检测到的设备:'+b)
                     deviceslist.append(b)
+                if 'recovery' in b:
+                    b=b.replace('\trecovery\n','')
+                    print('检测到的设备:'+b)
+                    deviceslist.append(b)
             except:
                 if 'unauthorized' in b:
                     b=b.replace('\tunauthorized\n','')
@@ -274,6 +212,10 @@ def who():
             try:
                 if 'device' in b:
                     b=b.replace('\tdevice\n','')
+                    print('检测到的设备:'+b)
+                    deviceslist.append(b)
+                if 'recovery' in b:
+                    b=b.replace('\trecovery\n','')
                     print('检测到的设备:'+b)
                     deviceslist.append(b)
             except:
@@ -368,7 +310,7 @@ class adbcommand():
         if su==0:
             self._adbc('shell '+command)
         if su==1:
-            self._adbc('shell su & '+command)
+            self._adbc('shell su -c '+command)
     def busybox(self,command='',su=0):#busybox
         if su==0:
             self.shell('busybox '+command)
@@ -417,12 +359,11 @@ class adbcommand():
         def shell_dumpsys(self,func=''):
             adbcommand().shell('dumpsys '+func)
         def shell_dumpsys_battery(self,func=''):
-            adbcommand().adb_shell().shell_dumpsys('battery '+func)
-            hel_='''
+            '''
             func值
             空:列出电池状态 set level x:修改电池百分比为x reset:恢复真实百分比
             '''
-            self.hel=hel_
+            adbcommand().adb_shell().shell_dumpsys('battery '+func)
     def push(self,urlc,urlp='/sdcard/'):
         self._adbc("push "+'"'+urlc+'" "'+urlp+'"')
     def pull(self,urlp,urlc):
@@ -455,9 +396,9 @@ def setmode():#setmode parseinput(2)
 
 def Console():
     clear()
-    global run
+    global run,adbinit
     if run == 0:
-        adb.kill_server()
+        if adbinit==0:adb.kill_server()#跳过运行时kill adb服务
         who()
         run=1
     global nowdevice
