@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.6.1.2 dev
+#  Version : 0.6.2 Alpha
 import sys,os,datetime
 #Core Function
 try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
@@ -16,10 +16,7 @@ class adbshellpyinformation:
     conf=None
     Permissionshow=True
 #HelperView
-try:import adbshellpy_libhelper
-except:
-    update().download_lib('adbshellpy_libhelper')
-    import adbshellpy_libhelper
+import adbshellpy_libhelper
 
 def home():
     print('''
@@ -312,6 +309,8 @@ class func_():
             print('执行该操作将消耗一定时间,请坐和放宽')
             start=datetime.datetime.now()
             print('当前时间: '+str(start))
+            print('W:该功能正在修复bug,敬请期待开放.')
+            '''
             self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)      
             if a==1:self.adb.adb_shell().shell_cmd_compile('-m everything','-f','-a')
             if a==2:self.adb.adb_shell().shell_cmd_compile('-m everything','','-a')
@@ -324,93 +323,94 @@ class func_():
             if a==17:self.adb.shell('cmd package compile --reset -a')
             if a==5:
                 f = open('temp.sh','w')
-                f.write('''
+                f.write(''
                 touch /sdcard/Android/everything编译第三方app启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
                 sed -i 's/package:/cmd package compile -m everything -f /g' /sdcard/Android/everything编译第三方app启动.sh
                 sh /sdcard/Android/everything编译第三方app启动.sh
-                ''')
+                ')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==8:
                 f = open('temp.sh','w')
-                f.write(r'''
+                f.write(r''
                 touch /sdcard/Android/speed编译第三方app启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
                 sed -i 's/package:/cmd package compile -m speed /g' /sdcard/Android/speed编译第三方app启动.sh
                 sh /sdcard/Android/speed编译第三方app启动.sh
-                ''')
+                '')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')    
             if a==7:
                 f = open('temp.sh','w')
-                f.write(r'''
+                f.write(r''
                 touch /sdcard/Android/speed编译第三方app启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
                 sed -i 's/package:/cmd package compile -m speed -f /g' /sdcard/Android/speed编译第三方app启动.sh
                 sh /sdcard/Android/speed编译第三方app启动.sh
-                ''')
+                '')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==6:
                 f = open('temp.sh','w')
-                f.write(r'''
+                f.write(r''
                 touch /sdcard/Android/everything编译第三方app启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
                 sed -i 's/package:/cmd package compile -m everything /g' /sdcard/Android/everything编译第三方app启动.sh
                 sh /sdcard/Android/everything编译第三方app启动.sh
-                ''')
+                '')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')    
             if a==12:
                 f = open('temp.sh','w')
-                f.write(r'''
+                f.write(r''
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
                 sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
+                ')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==13:
                 f = open('temp.sh','w')
-                f.write(r'''
+                f.write(r''
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
                 sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
+                ')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==14:
                 f = open('temp.sh','w')
-                f.write(r'''
+                f.write(r'
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
                 sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
+                ')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==15:
                 f = open('temp.sh','w')
-                f.write(r'''
+                f.write(r''
                 touch /sdcard/Android/清除所有第三方app编译启动.sh
                 echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
                 sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
                 sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
+                '')
                 f.close()
                 self.adb.push('temp.sh')
                 self.adb.shell('sh /sdcard/temp.sh')
             if a==0:return
+            '''
             end=datetime.datetime.now()
             print('结束时间: '+str(end))
             print('执行用时: %s Seconds'%(end-start))
@@ -436,6 +436,7 @@ class func_():
         self.adb.install(apkfile,args_)
     def download(self):self.adb.reboot(5)
     def sideload(self):self.adb.reboot(4)
+    def edl(self):self.adb.reboot(6)
     def rec(self):self.adb.reboot(3)
     def bl(self):self.adb.reboot(2)
     def shutdown(self):self.adb.reboot(1)
