@@ -42,8 +42,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.1.2 Stable'
-builddate='2020-7-25 00:14:50'
+version='0.6.1.3 Stable'
+builddate='2020-7-30 22:22:58'
 run=0
 p=platform.system()
 checkflag=True
@@ -121,7 +121,7 @@ class update():#bra=branch
         print('完整包升级完成,请重启 adbshellpy实例')
         return True
     def isnewversionavailable(self,b=''):
-        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
+        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
         try:
             urllib.request.urlretrieve(url,'version.txt')
         except:
