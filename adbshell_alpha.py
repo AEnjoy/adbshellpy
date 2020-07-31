@@ -3,7 +3,7 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2 Alpha 3
+#  Version : 0.6.2 Alpha 4
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
@@ -50,8 +50,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2 Alpha 3'
-builddate='2020-8-1 00:48:42'
+version='0.6.2 Alpha 4'
+builddate='2020-8-1 01:19:24'
 run=0
 p=platform.system()
 checkflag=True

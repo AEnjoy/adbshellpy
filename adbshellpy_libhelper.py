@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_libhelper.py
 #       By : 神郭
-#  Version : 0.6.1.2 dev
+#  Version : 0.6.2 alpha
 import sys
 class adbshellpyinformation:
     p=sys.platform
@@ -334,6 +334,8 @@ class helper():
         print('''clear:
         欲清除数据的程序包名(使用applist查看)>>><Package>
         ''')
+    def clen_data(self):
+        print('执行干净安装,清除程序数据和设置项.将会清除__pycache__,adb,build-tools,adbshell.ini 并重新初始化程序')
     def windowmode(self):
         print('''windowmode:
         欲查看或设置的信息>>>[density,size,overscan,reset,default=''(Enter)] density像素密度有关信息,size屏幕分辨率有关信息,overscan屏幕四角信息,reset重置选项
@@ -432,13 +434,13 @@ def main():
         h.compile()
         return
     if inputtext=='disable':
-        h.disable
+        h.disable()
         return
     if inputtext=='enable':
         h.enable()
         return
     if inputtext=='clear':
-        h.clear
+        h.clear()
         return
     if inputtext=='windowmode':
         h.windowmode()
@@ -451,6 +453,10 @@ def main():
         return
     if inputtext=='fixgithub':
         h.fixgithub()
+        return
+    if inputtext=='clean-data':
+        h.clen_data()
+        return
     print('Unkonw command!')
     return
 if __name__ == '__main__':

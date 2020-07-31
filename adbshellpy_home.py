@@ -30,7 +30,7 @@ def home():
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
     ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       ┃
-    ┃           re-install      update      environment      changes                ┃
+    ┃     re-install      update      environment      changes    clean-data        ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
     ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   ┃
@@ -400,6 +400,31 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     p=adbshellpyinformation.p
     adbfile=adbshellpyinformation.adbfile
     conf=adbshellpyinformation.conf
+    #通用指令
+    if inputtext=='home':
+        home()
+        parseinput()
+        return
+    if inputtext == 'cls':
+        clear()
+        parseinput(a)
+        return
+    if inputtext == 'set':
+        print('''
+        **********************************Setmode*****************************************
+        *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
+        *您也可以通过手动编辑adbshell.ini来修改设置                                      *
+        **********************************Setmode*****************************************
+        ''')
+        return
+    if inputtext =='exit':
+        adb.kill_server()
+        errexit(2)
+        sys.exit(0)
+    if inputtext =='environment':
+        print('Version:'+version+' BuildDate:'+builddate+' Platform:'+p+' UpdateAddress:'+github+' AdbBin:'+adbfile)
+        parseinput(a)
+        return    
     if a==1:#2级目录(adbmode)
         if inputtext == '':
             parseinput(1)
@@ -572,6 +597,17 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             adbshellpy_libhelper.main()
             parseinput(1)
             return
+        if inputtext=='clean-data':
+            print('清除adbshellpy的数据,以恢复原始安装.输入yes继续.')
+            if input('>>>')=='yes':
+                adb.kill_server()
+                os.rmdir('adb')
+                os.rmdir('__pycache__')
+                os.rmdir('build-tools')
+                os.remove('adbshell.ini')
+                print('操作执行完成,请重新运行实例以初始化')
+                input()
+                sys.exit()
         if shellex=='enable':
             adb.shell(inputtext)
             parseinput(1)
@@ -628,31 +664,6 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 parseinput(0)
                 return
             errexit(2)
-    #通用指令
-    if inputtext=='home':
-        home()
-        parseinput()
-        return
-    if inputtext == 'cls':
-        clear()
-        parseinput(a)
-        return
-    if inputtext == 'set':
-        print('''
-        **********************************Setmode*****************************************
-        *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
-        *您也可以通过手动编辑adbshell.ini来修改设置                                      *
-        **********************************Setmode*****************************************
-        ''')
-        return
-    if inputtext =='exit':
-        adb.kill_server()
-        errexit(2)
-        sys.exit(0)
-    if inputtext =='environment':
-        print('Version:'+version+' BuildDate:'+builddate+' Platform:'+p+' UpdateAddress:'+github+' AdbBin:'+adbfile)
-        parseinput(a)
-        return
     print('W :未知指令')
     parseinput(a)
     return
