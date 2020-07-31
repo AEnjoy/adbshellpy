@@ -5,8 +5,8 @@
 #  Version : 0.6.2 Alpha
 import sys,os,datetime
 #Core Function
-try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
-except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
+try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
+except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
 class adbshellpyinformation:
     p=sys.platform
     branch=None
@@ -309,8 +309,6 @@ class func_():
             print('执行该操作将消耗一定时间,请坐和放宽')
             start=datetime.datetime.now()
             print('当前时间: '+str(start))
-            print('W:该功能正在修复bug,敬请期待开放.')
-            '''
             self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)      
             if a==1:self.adb.adb_shell().shell_cmd_compile('-m everything','-f','-a')
             if a==2:self.adb.adb_shell().shell_cmd_compile('-m everything','','-a')
@@ -322,95 +320,38 @@ class func_():
             if a==16:self.adb.adb_shell().shell_cmd_compile('-m quicken','-f','-a')
             if a==17:self.adb.shell('cmd package compile --reset -a')
             if a==5:
-                f = open('temp.sh','w')
-                f.write(''
-                touch /sdcard/Android/everything编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m everything -f /g' /sdcard/Android/everything编译第三方app启动.sh
-                sh /sdcard/Android/everything编译第三方app启动.sh
-                ')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
-            if a==8:
-                f = open('temp.sh','w')
-                f.write(r''
-                touch /sdcard/Android/speed编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m speed /g' /sdcard/Android/speed编译第三方app启动.sh
-                sh /sdcard/Android/speed编译第三方app启动.sh
-                '')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')    
-            if a==7:
-                f = open('temp.sh','w')
-                f.write(r''
-                touch /sdcard/Android/speed编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m speed -f /g' /sdcard/Android/speed编译第三方app启动.sh
-                sh /sdcard/Android/speed编译第三方app启动.sh
-                '')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-5.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==6:
-                f = open('temp.sh','w')
-                f.write(r''
-                touch /sdcard/Android/everything编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m everything /g' /sdcard/Android/everything编译第三方app启动.sh
-                sh /sdcard/Android/everything编译第三方app启动.sh
-                '')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')    
+                self.adb.push('libshfile/compile-6.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
+            if a==7:
+                self.adb.push('libshfile/compile-7.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
+            if a==8:
+                self.adb.push('libshfile/compile-8.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==12:
-                f = open('temp.sh','w')
-                f.write(r''
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-12.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==13:
-                f = open('temp.sh','w')
-                f.write(r''
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-13.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==14:
-                f = open('temp.sh','w')
-                f.write(r'
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-14.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==15:
-                f = open('temp.sh','w')
-                f.write(r''
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                '')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-15.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==0:return
-            '''
             end=datetime.datetime.now()
             print('结束时间: '+str(end))
             print('执行用时: %s Seconds'%(end-start))
@@ -451,10 +392,10 @@ class func_():
 
 f=func_()
 def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
-    global nowdevice,f
+    global nowdevice,f,shellex
     adb=adbcommand(nowdevice)
     inputtext=input('>>>')
-    inputtext=inputtext.replace(" ", "")
+    #inputtext=inputtext.replace(" ", "")
     global changes,github,version,builddate
     p=adbshellpyinformation.p
     adbfile=adbshellpyinformation.adbfile
@@ -630,6 +571,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             adbshellpy_libhelper.helper().usage()
             adbshellpy_libhelper.main()
             parseinput(1)
+            return
+        if shellex=='enable':
+            adb.shell(inputtext)
+            parseinput(1)
             return            
     if a==2:#2级目录(othermode)
             if inputtext =='back':
@@ -682,7 +627,6 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                     return
                 parseinput(0)
                 return
-                #print('E:暂未开放setting,请手动编辑adbshell.ini')
             errexit(2)
     #通用指令
     if inputtext=='home':

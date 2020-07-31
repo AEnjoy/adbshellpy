@@ -48,7 +48,7 @@ def installaapt():
     global p ,conf ,aapt
     import urllib.request
     if p=='Linux':
-        url='https://dl.google.com/android/repository/build-tools_r29.0.3-linux.zip'
+        url='https://dl.google.com/android/repository/build-tools_r29.0.6-linux.zip'
         urllib.request.urlretrieve(url,'build-tools.zip') 
         z=zip.ZipFile('build-tools.zip','r')
         z.extractall(path='build-tools')
@@ -57,7 +57,7 @@ def installaapt():
         conf.set("adbshell", "aaptfile", aapt)
         conf.write(open("adbshell.ini", "w"))
     if p=='Windows':
-        url='https://dl.google.com/android/repository/build-tools_r29.0.3-windows.zip'
+        url='https://dl.google.com/android/repository/build-tools_r29.0.6-windows.zip'
         urllib.request.urlretrieve(url,'build-tools.zip')
         z=zip.ZipFile('build-tools.zip','r')
         z.extractall(path='build-tools')

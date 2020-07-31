@@ -1,3 +1,8 @@
+0.6.2 Alpha 2→0.6.2 Alpha 3 2020-8-1 00:48:42
+1.NEW:现在可以启用特性:在检测不到内置命令时直接执行shell命令
+2.FIX:修复NewCompile模式的bug
+3.IMPROVE:更新了部分源地址
+
 0.6.1.2 dev→0.6.2 Alpha 2 2020-7-30 23:30:19
 1.IMPROVE:提升检查更新成功率 
 2.IMPROVE:将changelog变更为utf-8编码

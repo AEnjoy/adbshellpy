@@ -3,7 +3,7 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2 Alpha 2
+#  Version : 0.6.2 Alpha 3
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
@@ -50,8 +50,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2 Alpha 2'
-builddate='2020-7-30 23:30:19'
+version='0.6.2 Alpha 3'
+builddate='2020-8-1 00:48:42'
 run=0
 p=platform.system()
 checkflag=True
@@ -61,6 +61,7 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 adbinit=0
+shellex='enable'#在找不到命令时直接执行adb shell
 #changes
 try:
     f_=open("Changlog", "r",encoding='UTF-8')
@@ -76,6 +77,7 @@ if os.path.exists('adbshell.ini') ==False:
     conf.set('adbshell', 'checkflag', str(checkflag))
     conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
     conf.set('adbshell', 'adbinit', str(adbinit))
+    conf.set('adbshell', 'shellex', shellex)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
 else:
@@ -84,6 +86,7 @@ else:
     #旧版本升级上来
     if conf.has_option('adbshell','checkflag')==False:conf.set('adbshell', 'checkflag', str(checkflag))
     if conf.has_option('adbshell','adbinit')==False:conf.set('adbshell', 'adbinit', str(adbinit))
+    if conf.has_option('adbshell','shellex')==False:conf.set('adbshell', 'shellex', shellex)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
@@ -111,7 +114,7 @@ class update():#bra=branch
             f_.write(hosts)
             f_.close()            
     def download_update_full(self):
-        url='https://github.com/AEnjoy/adbshellpy/archive/master.zip'
+        url='https://hub.fastgit.org/AEnjoy/adbshellpy/archive/master.zip'
         try:
             urllib.request.urlretrieve(url,'master.zip')
         except:
@@ -150,7 +153,7 @@ class update():#bra=branch
             print('您当前使用的adbshellpy为最新版本,无需更新.')
             return
     def download_lib(self,libname): #No .py 后缀
-        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
+        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
         try:
             urllib.request.urlretrieve(url,libname+'.py')
         except:
@@ -547,19 +550,6 @@ def install(p,check=0):
     global conf
     global checkflag
     adb.kill_server()
-    '''
-    try:
-        os.rmdir('adb')
-        os.rmdir('platform-tools')
-    '''
-    '''
-    if check==1 or checkflag==False:
-        #Pass Adb Installed Check
-        return
-    if check==0 and checkflag==True and os.path.exists(adbfile)==True:
-        #文件存在
-        return
-    '''
     if check==2:
         pass
     #Internet Check
@@ -634,7 +624,7 @@ def install(p,check=0):
                 print(errinform)
             return
         if platform.machine()=='aarch64' or platform.machine()=='aarch':
-            url = 'https://github.com/Magisk-Modules-Repo/adb-ndk/archive/master.zip'
+            url = 'https://hub.fastgit.org/Magisk-Modules-Repo/adb-ndk/archive/master.zip'
             #linux arm or arm64
             #armeabi USE Android NDK
             urllib.request.urlretrieve(url,'adb.zip')
