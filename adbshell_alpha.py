@@ -3,7 +3,7 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2 Alpha 4
+#  Version : 0.6.2 
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
@@ -50,8 +50,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2 Alpha 4'
-builddate='2020-8-1 01:19:24'
+version='0.6.2'
+builddate='2020-8-1 14:50:09'
 run=0
 p=platform.system()
 checkflag=True
@@ -62,6 +62,8 @@ uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 adbinit=0
 shellex='enable'#在找不到命令时直接执行adb shell
+showserverinfo='enable'
+
 #changes
 try:
     f_=open("Changlog", "r",encoding='UTF-8')
@@ -78,6 +80,7 @@ if os.path.exists('adbshell.ini') ==False:
     conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
     conf.set('adbshell', 'adbinit', str(adbinit))
     conf.set('adbshell', 'shellex', shellex)
+    conf.set('adbshell', 'showserverinfo', showserverinfo)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
 else:
@@ -87,13 +90,14 @@ else:
     if conf.has_option('adbshell','checkflag')==False:conf.set('adbshell', 'checkflag', str(checkflag))
     if conf.has_option('adbshell','adbinit')==False:conf.set('adbshell', 'adbinit', str(adbinit))
     if conf.has_option('adbshell','shellex')==False:conf.set('adbshell', 'shellex', shellex)
+    if conf.has_option('adbshell','showserverinfo')==False:conf.set('adbshell', 'showserverinfo', showserverinfo)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
 #默认设置END
 class update():#bra=branch
-    global builddate,version,branch,qqgroup,github,p
+    global builddate,version,branch,qqgroup,github,p,showserverinfo
     ver=version
     bra='dev'
     vdate=builddate
@@ -172,6 +176,18 @@ class update():#bra=branch
     def githubopen(self):
         import webbrowser
         webbrowser.open(github)
+    def showinfofromserver(self):
+        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/info'
+        if self.showinfofromserver=='enable':
+            try:urllib.request.urlretrieve(url,'info.txt')
+            except:
+                print('网络错误!')
+                return
+            f_=open("info.txt", "r",encoding='UTF-8')
+            info=f_.read()
+            f_.close()
+            os.remove("info.txt")
+            print(info)
 
 deviceslist=[]
 nowdevice=''
@@ -405,6 +421,7 @@ def Console():
         who()
         run=1
     import adbshellpy_home      
+    update().showinfofromserver()
     adbshellpy_home.home()
     adbshellpy_home.parseinput(1)
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.6.2 Alpha
+#  Version : 0.6.2 
 import sys,os,datetime
 #Core Function
 try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
@@ -13,7 +13,10 @@ class adbshellpyinformation:
     uselinuxpkgmanagertoinstalladb=None
     adbfile=None
     aapt=None
-    conf=None
+    def __init__(self):
+        try:from adbshell_alpha import conf
+        except:from adbshell import conf
+        self.conf=conf
     Permissionshow=True
 #HelperView
 import adbshellpy_libhelper
@@ -618,6 +621,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 return
             if inputtext == 'setting' or inputtext == '':
                 print('adbbin uselinuxpkgmanagertoinstalladb=enable [other]')
+                print('[other]:'+str(conf.options('adbshell')))
                 inputtext=input('欲设置的选项:>>>')
                 if inputtext=='adbbin':
                     inputtext=input('ADBFile:>>>')
