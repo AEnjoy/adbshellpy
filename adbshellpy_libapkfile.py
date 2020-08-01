@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_libapkfile.py
 #       By : 神郭
-#  Version : 0.6.0 Stable
+#  Version : 0.6.2 Stable
 #  要关联apk文件 输入命令
 #  adbshellpy_libapkfile.py -relatedapk
 #  release
@@ -48,7 +48,7 @@ def installaapt():
     global p ,conf ,aapt
     import urllib.request
     if p=='Linux':
-        url='https://dl.google.com/android/repository/build-tools_r29.0.3-linux.zip'
+        url='https://dl.google.com/android/repository/build-tools_r29.0.6-linux.zip'
         urllib.request.urlretrieve(url,'build-tools.zip') 
         z=zip.ZipFile('build-tools.zip','r')
         z.extractall(path='build-tools')
@@ -57,7 +57,7 @@ def installaapt():
         conf.set("adbshell", "aaptfile", aapt)
         conf.write(open("adbshell.ini", "w"))
     if p=='Windows':
-        url='https://dl.google.com/android/repository/build-tools_r29.0.3-windows.zip'
+        url='https://dl.google.com/android/repository/build-tools_r29.0.6-windows.zip'
         urllib.request.urlretrieve(url,'build-tools.zip')
         z=zip.ZipFile('build-tools.zip','r')
         z.extractall(path='build-tools')

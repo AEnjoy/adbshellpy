@@ -3,9 +3,17 @@
 #       adbshell.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.1 Stable
+#  Version : 0.6.2.1 Stable
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
+if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
+    print('''
+    Error:Core library files are missing!(Or one of them is missing.)
+    The files are :adbshellpy_home.py, adbshellpy_libhelper.py, adbshellpy_libapkfile.py and adbshell.py or adbshell_alpha.py.
+    Please reinstall or download adbshllpy,then restart the program.
+    Project address:https://github.com/AEnjoy/adbshellpy/
+    ''')
+    sys.exit(1)
 try:import configparser,urllib.request 
 except: pass
 def errexit(arg): #异常信息
@@ -42,8 +50,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.1.3 Stable'
-builddate='2020-7-30 22:22:58'
+version='0.6.2.1'
+builddate='2020-8-1 15:44:04'
 run=0
 p=platform.system()
 checkflag=True
@@ -53,9 +61,12 @@ github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
 adbinit=0
+shellex='enable'#在找不到命令时直接执行adb shell
+showserverinfo='enable'
+
 #changes
 try:
-    f_=open("Changlog", "r")
+    f_=open("Changlog", "r",encoding='UTF-8')
     changes=f_.read()
     f_.close()
 except:changes='E:更新日志文件"Changlog"不存在,无法查看更新记录!'
@@ -68,6 +79,8 @@ if os.path.exists('adbshell.ini') ==False:
     conf.set('adbshell', 'checkflag', str(checkflag))
     conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
     conf.set('adbshell', 'adbinit', str(adbinit))
+    conf.set('adbshell', 'shellex', shellex)
+    conf.set('adbshell', 'showserverinfo', showserverinfo)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
 else:
@@ -76,20 +89,14 @@ else:
     #旧版本升级上来
     if conf.has_option('adbshell','checkflag')==False:conf.set('adbshell', 'checkflag', str(checkflag))
     if conf.has_option('adbshell','adbinit')==False:conf.set('adbshell', 'adbinit', str(adbinit))
+    if conf.has_option('adbshell','shellex')==False:conf.set('adbshell', 'shellex', shellex)
+    if conf.has_option('adbshell','showserverinfo')==False:conf.set('adbshell', 'showserverinfo', showserverinfo)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
 #默认设置END
 class update():#bra=branch
-    global builddate,version,branch,qqgroup,github,p
-    ver=version
-    bra='master'
-    vdate=builddate
-    '''
-    def __init__(self,bra=branch):
-        self.bra=branch
-    '''
     def setgitrawhosts(self):
         hosts='199.232.68.133 raw.githubusercontent.com'
         if self.p=='Windows':
@@ -107,7 +114,7 @@ class update():#bra=branch
             f_.write(hosts)
             f_.close()            
     def download_update_full(self):
-        url='https://github.com/AEnjoy/adbshellpy/archive/master.zip'
+        url='https://hub.fastgit.org/AEnjoy/adbshellpy/archive/master.zip'
         try:
             urllib.request.urlretrieve(url,'master.zip')
         except:
@@ -146,7 +153,7 @@ class update():#bra=branch
             print('您当前使用的adbshellpy为最新版本,无需更新.')
             return
     def download_lib(self,libname): #No .py 后缀
-        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
+        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
         try:
             urllib.request.urlretrieve(url,libname+'.py')
         except:
@@ -165,7 +172,24 @@ class update():#bra=branch
     def githubopen(self):
         import webbrowser
         webbrowser.open(github)
-
+    def showinfofromserver(self):
+        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/info'
+        if self.showserverinfo=='enable':
+            try:urllib.request.urlretrieve(url,'info.txt')
+            except:
+                print('网络错误!')
+                return
+            f_=open("info.txt", "r",encoding='UTF-8')
+            info=f_.read()
+            f_.close()
+            os.remove("info.txt")
+            print(info)
+    def __init__(self):
+        global builddate,version,branch,qqgroup,github,p,showserverinfo
+        self.vdata=builddate
+        self.bra=branch
+        self.showserverinfo=showserverinfo
+        self.ver=version
 deviceslist=[]
 nowdevice=''
 i=0
@@ -179,6 +203,7 @@ def who():
     adb.devices() #First running,activing service.
     hand=os.popen(adbfile+' devices')
     hand.readline() #第一行需要跳过
+    clear()
     if len(deviceslist)==0: #第一次执行/没有设备/添加设备列表
         for b in hand:
             try:
@@ -292,18 +317,13 @@ class adbcommand():
     def root(self):
         self._adbc('root')
     def reboot(self,mode=0):#0 不带参数 1.-p 2.fastboot(bl) 3.recovery 4.sideload 5.挖煤
-        if mode == 0:
-            self._adbc('reboot')
-        if mode == 1:
-            self._adbc('reboot -p')
-        if mode == 2:
-            self._adbc('reboot bootloader')
-        if mode == 3:
-            self._adbc('reboot recovery')
-        if mode == 4:
-            self._adbc('reboot sideload')
-        if mode == 5:
-           self. _adbc('reboot download')
+        if mode == 0:self._adbc('reboot')
+        if mode == 1:self._adbc('reboot -p')
+        if mode == 2:self._adbc('reboot bootloader')
+        if mode == 3:self._adbc('reboot recovery')
+        if mode == 4:self._adbc('reboot sideload')
+        if mode == 5:self. _adbc('reboot download')
+        if mode == 6:self._adbc('reboot edl')
 
     def install(self,apkfile,command='-g -d'):
         self._adbc("install "+command+" "+'"'+apkfile+'"')
@@ -392,24 +412,17 @@ def setmode():#setmode parseinput(2)
     *您也可以通过手动编辑adbshell.ini来修改设置                                      *
     **********************************Setmode*****************************************
     ''')
-    try:import adbshellpy_home
-    except:
-        update().download_lib('adbshellpy_home')
-        import adbshellpy_home  
+    import adbshellpy_home  
     adbshellpy_home.parseinput(2)
 
 def Console():
-    clear()
     global run,adbinit
     if run == 0:
         if adbinit==0:adb.kill_server()#跳过运行时kill adb服务
         who()
         run=1
-    global nowdevice
-    try:import adbshellpy_home
-    except:
-        update().download_lib('adbshellpy_home')
-        import adbshellpy_home      
+    import adbshellpy_home      
+    update().showinfofromserver()
     adbshellpy_home.home()
     adbshellpy_home.parseinput(1)
 
@@ -422,7 +435,7 @@ class _Options(object):
 
 def usage():
     print("""
-    用法:adbshell.py [apkfile(s)] [args or Console -MORE] 
+    用法:adbshell.py [apkfile(s)] [args or Console] [-MORE] 
     [apkfile(s)] [开发中]
     安装apk文件至手机 支持多个文件
     [args]
@@ -438,7 +451,7 @@ def usage():
     update       升级ADBSystemTOOLBOX程序,将访问GitHub获取升级
     environment  显示程序运行环境变量的设置及其它信息
     exit         退出程序
-    -MORE        程序内部的各种功能
+    [-MORE]        程序内部的各种功能
     """)
     errexit(2)
 
@@ -479,14 +492,9 @@ def ParseArguments(args): #解析参数
 
 def apkinstallmode(install=False):#开发计划2
     if install==True:
-        try:
-            import adbshellpy_libapkfile
-        except:
-            update().download_lib('adbshellpy_libapkfile')
-            import adbshellpy_libapkfile
+        import adbshellpy_libapkfile
         adbshellpy_libapkfile.mainex(_Options.apkfile)
         
-
 def main(args):
   global checkflag,branch,uselinuxpkgmanagertoinstalladb,adbfile,conf
   try:
@@ -497,10 +505,41 @@ def main(args):
   c=['shutdown','rec','bl','edl','sideload','download','install','uninstall','compile',
       'shell','root','start_server','kill_server','devices','tcpipconnect','usb','reboot',
       'disable','enable','clear','applist','pull','push','windowmode','input','settings',
-      'dumpsys','screencap','relatedapk','who'
+      'dumpsys','screencap','relatedapk','who','kfmark','icebox','update','changes','piebridge',
+      'shizuku'
      ]#内置命令
   if cmd in c:#开发计划3
-      pass
+      adbshellpy_home
+      fun=adbshellpy_home.func_()
+      if cmd=='shutdown':fun.shutdown()
+      if cmd=='kfmark':fun.kfmark()
+      if cmd=='rec':fun.rec()
+      if cmd=='bl':fun.bl()
+      if cmd=='edl':fun.edl()
+      if cmd=='sideload':fun.sideload()
+      if cmd=='download':fun.download()
+      if cmd=='install':fun.install()
+      if cmd=='uninstall':fun.uninstall()
+      if cmd=='compile':fun.compile()
+      if cmd=='shell':fun.shell()
+      if cmd=='reboot':fun.reboot()
+      if cmd=='disable':fun.disable()
+      if cmd=='enable':fun.enable()
+      if cmd=='clear':fun.clear()
+      if cmd=='applist':fun.applist()
+      if cmd=='pull':fun.pull()
+      if cmd=='push':fun.push()
+      if cmd=='windowmode':fun.windowmode()
+      if cmd=='input':fun.input()
+      if cmd=='dumpsys':fun.dumpsys()
+      if cmd=='screencap':fun.screencap()
+      if cmd=='relatedapk':fun.relatedapk()
+      if cmd=='icebox':fun.icebox()
+      if cmd=='update':fun.update()
+      if cmd=='changes':fun.changes_()
+      if cmd=='piebridge':fun.piebridge()
+      if cmd=='shizuku':fun.shizuku()
+      sys.exit(0)
   checkflag=opt.installcheck
   if sys.hexversion < 0x03060000:
       errexit(3)
@@ -529,19 +568,6 @@ def install(p,check=0):
     global conf
     global checkflag
     adb.kill_server()
-    '''
-    try:
-        os.rmdir('adb')
-        os.rmdir('platform-tools')
-    '''
-    '''
-    if check==1 or checkflag==False:
-        #Pass Adb Installed Check
-        return
-    if check==0 and checkflag==True and os.path.exists(adbfile)==True:
-        #文件存在
-        return
-    '''
     if check==2:
         pass
     #Internet Check
@@ -616,7 +642,7 @@ def install(p,check=0):
                 print(errinform)
             return
         if platform.machine()=='aarch64' or platform.machine()=='aarch':
-            url = 'https://github.com/Magisk-Modules-Repo/adb-ndk/archive/master.zip'
+            url = 'https://hub.fastgit.org/Magisk-Modules-Repo/adb-ndk/archive/master.zip'
             #linux arm or arm64
             #armeabi USE Android NDK
             urllib.request.urlretrieve(url,'adb.zip')

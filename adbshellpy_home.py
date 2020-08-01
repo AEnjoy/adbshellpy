@@ -2,24 +2,24 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.6.1.2 Stable
+#  Version : 0.6.2 Stable
 import sys,os,datetime
 #Core Function
-try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
-except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice
+try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
+except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
 class adbshellpyinformation:
     p=sys.platform
     branch=None
     uselinuxpkgmanagertoinstalladb=None
     adbfile=None
     aapt=None
-    conf=None
+    def __init__(self):
+        try:from adbshell_alpha import conf
+        except:from adbshell import conf
+        self.conf=conf
     Permissionshow=True
 #HelperView
-try:import adbshellpy_libhelper
-except:
-    update().download_lib('adbshellpy_libhelper')
-    import adbshellpy_libhelper
+import adbshellpy_libhelper
 
 def home():
     print('''
@@ -33,7 +33,7 @@ def home():
     print('''
      _____________________________ADBSystemTOOLBOX____________________________________
     ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       ┃
-    ┃           re-install      update      environment      changes                ┃
+    ┃     re-install      update      environment      changes    clean-data        ┃
      ---------------------------------------------------------------------------------
     ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
     ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   ┃
@@ -55,7 +55,6 @@ class func_():
         global changes,github,version,builddate
         self.p=adbshellpyinformation.p
         self.adbfile=adbshellpyinformation.adbfile
-        self.conf=adbshellpyinformation.conf
         self.changes=changes
     def kfmark(self):
         try:import adbshellpy_libroot
@@ -319,93 +318,37 @@ class func_():
             if a==16:self.adb.adb_shell().shell_cmd_compile('-m quicken','-f','-a')
             if a==17:self.adb.shell('cmd package compile --reset -a')
             if a==5:
-                f = open('temp.sh','w')
-                f.write('''
-                touch /sdcard/Android/everything编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m everything -f /g' /sdcard/Android/everything编译第三方app启动.sh
-                sh /sdcard/Android/everything编译第三方app启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
-            if a==8:
-                f = open('temp.sh','w')
-                f.write(r'''
-                touch /sdcard/Android/speed编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m speed /g' /sdcard/Android/speed编译第三方app启动.sh
-                sh /sdcard/Android/speed编译第三方app启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')    
-            if a==7:
-                f = open('temp.sh','w')
-                f.write(r'''
-                touch /sdcard/Android/speed编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/speed编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m speed -f /g' /sdcard/Android/speed编译第三方app启动.sh
-                sh /sdcard/Android/speed编译第三方app启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-5.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==6:
-                f = open('temp.sh','w')
-                f.write(r'''
-                touch /sdcard/Android/everything编译第三方app启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/everything编译第三方app启动.sh
-                sed -i 's/package:/cmd package compile -m everything /g' /sdcard/Android/everything编译第三方app启动.sh
-                sh /sdcard/Android/everything编译第三方app启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')    
+                self.adb.push('libshfile/compile-6.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
+            if a==7:
+                self.adb.push('libshfile/compile-7.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
+            if a==8:
+                self.adb.push('libshfile/compile-8.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==12:
-                f = open('temp.sh','w')
-                f.write(r'''
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-12.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==13:
-                f = open('temp.sh','w')
-                f.write(r'''
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile --reset /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-13.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==14:
-                f = open('temp.sh','w')
-                f.write(r'''
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -3)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-14.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==15:
-                f = open('temp.sh','w')
-                f.write(r'''
-                touch /sdcard/Android/清除所有第三方app编译启动.sh
-                echo "$(pm list package -s)"> /sdcard/Android/清除所有第三方app编译启动.sh
-                sed -i 's/package:/cmd package compile -m quicken /g' /sdcard/Android/清除所有第三方app编译启动.sh
-                sh /sdcard/Android/清除所有第三方app编译启动.sh
-                ''')
-                f.close()
-                self.adb.push('temp.sh')
-                self.adb.shell('sh /sdcard/temp.sh')
+                self.adb.push('libshfile/compile-15.sh','/sdcard/temp.sh')
+                self.adb.shell('su -c sh /sdcard/temp.sh')
+                self.adb.shell('rm /sdcard/temp.sh')
             if a==0:return
             end=datetime.datetime.now()
             print('结束时间: '+str(end))
@@ -432,6 +375,7 @@ class func_():
         self.adb.install(apkfile,args_)
     def download(self):self.adb.reboot(5)
     def sideload(self):self.adb.reboot(4)
+    def edl(self):self.adb.reboot(6)
     def rec(self):self.adb.reboot(3)
     def bl(self):self.adb.reboot(2)
     def shutdown(self):self.adb.reboot(1)
@@ -446,14 +390,41 @@ class func_():
 
 f=func_()
 def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
-    global nowdevice,f
+    global nowdevice,f,shellex
     adb=adbcommand(nowdevice)
     inputtext=input('>>>')
-    inputtext=inputtext.replace(" ", "")
+    #inputtext=inputtext.replace(" ", "")
     global changes,github,version,builddate
     p=adbshellpyinformation.p
     adbfile=adbshellpyinformation.adbfile
-    conf=adbshellpyinformation.conf
+    try:from adbshell_alpha import conf
+    except:from adbshell import conf
+    #通用指令
+    if inputtext=='home':
+        home()
+        parseinput()
+        return
+    if inputtext == 'cls':
+        clear()
+        parseinput(a)
+        return
+    if inputtext == 'set':
+        print('''
+        **********************************Setmode*****************************************
+        *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
+        *您也可以通过手动编辑adbshell.ini来修改设置                                      *
+        **********************************Setmode*****************************************
+        ''')
+        parseinput(2)
+        return
+    if inputtext =='exit':
+        adb.kill_server()
+        errexit(2)
+        sys.exit(0)
+    if inputtext =='environment':
+        print('Version:'+version+' BuildDate:'+builddate+' Platform:'+p+' UpdateAddress:'+github+' AdbBin:'+adbfile)
+        parseinput(a)
+        return    
     if a==1:#2级目录(adbmode)
         if inputtext == '':
             parseinput(1)
@@ -625,14 +596,30 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             adbshellpy_libhelper.helper().usage()
             adbshellpy_libhelper.main()
             parseinput(1)
+            return
+        if inputtext=='clean-data':
+            print('清除adbshellpy的数据,以恢复原始安装.输入yes继续.')
+            if input('>>>')=='yes':
+                adb.kill_server()
+                os.rmdir('adb')
+                os.rmdir('__pycache__')
+                os.rmdir('build-tools')
+                os.remove('adbshell.ini')
+                print('操作执行完成,请重新运行实例以初始化')
+                input()
+                sys.exit()
+        if shellex=='enable':
+            adb.shell(inputtext)
+            parseinput(1)
             return            
     if a==2:#2级目录(othermode)
             if inputtext =='back':
-                parseinput(0)
+                parseinput(1)
                 return
             if inputtext == 'setting' or inputtext == '':
                 print('adbbin uselinuxpkgmanagertoinstalladb=enable [other]')
-                inputtext=input('欲设置的选项:>>>')
+                print('[other]:'+str(conf.options('adbshell')))
+                inputtext=input('欲设置的选项:[回车退出设置]>>>')
                 if inputtext=='adbbin':
                     inputtext=input('ADBFile:>>>')
                     if os.path.exists(inputtext)== False:
@@ -675,35 +662,9 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                     conf.write(open("adbshell.ini", "w"))
                     parseinput(2)
                     return
-                parseinput(0)
+                parseinput(1)
                 return
-                #print('E:暂未开放setting,请手动编辑adbshell.ini')
             errexit(2)
-    #通用指令
-    if inputtext=='home':
-        home()
-        parseinput()
-        return
-    if inputtext == 'cls':
-        clear()
-        parseinput(a)
-        return
-    if inputtext == 'set':
-        print('''
-        **********************************Setmode*****************************************
-        *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
-        *您也可以通过手动编辑adbshell.ini来修改设置                                      *
-        **********************************Setmode*****************************************
-        ''')
-        return
-    if inputtext =='exit':
-        adb.kill_server()
-        errexit(2)
-        sys.exit(0)
-    if inputtext =='environment':
-        print('Version:'+version+' BuildDate:'+builddate+' Platform:'+p+' UpdateAddress:'+github+' AdbBin:'+adbfile)
-        parseinput(a)
-        return
     print('W :未知指令')
     parseinput(a)
     return

@@ -1,83 +1,98 @@
-0.6.1.2��0.6.1.3 2020-7-30 22:22:58
-1.IMPROVE:���������³ɹ���
+0.6.1.3→0.6.2.1 2020-8-1 15:44:04
+1.IMPROVE:更新了部分源地址 
+2.IMPROVE:将changelog变更为utf-8编码
+3.IMPROVE:help文件更新
+4.NEW:现在将在启动时检查文件完整性
+5.NEW:现在支持-more(但不支持静默模式)
+6.NEW:现在支持重启至edl模式(9008)(仅部分设备支持)
+7.NEW:现在可以启用特性:在检测不到内置命令时直接执行shell命令
+8.NEW:clen-data功能,清除程序数据,执行干净安装
+9.NEW:支持显示服务器的信息(项目地址),可设置关闭.
+10.NEW:支持显示可自定义的设置项.
+11.FIX:修复NewCompile模式的bug
+12.FIX:修复setting崩溃的问题
+13.FIX:修复set死循环问题
 
-0.6.1.1��0.6.1.2 2020-7-25 00:14:50
-1.NEW:Changlog����
-2.NEW:fixgithub����
-3.NEW:���ڿ���ѡ�������Ƿ�������ʱKill ADB����
-4.FIX:�޸��˲鿴help��ֱ���˳���bug
-5.FIX:�޸���compile��һЩbug
-6.FIX:�޸��Ӿɰ汾����������Ϊadbshell.ini�����Ͼ�,���µĴ������
+0.6.1.2→0.6.1.3 2020-7-30 22:22:58
+1.IMPROVE:提升检查更新成功率
 
-0.6.1��0.6.1.1 2020-7-23 09:50:55
-1.FIX:�޸���һ��Root��Bug
+0.6.1.1→0.6.1.2 2020-7-25 00:14:50
+1.NEW:Changlog分离
+2.NEW:fixgithub功能
+3.NEW:现在可以选择添加是否在启动时Kill ADB服务
+4.FIX:修复了查看help后直接退出的bug
+5.FIX:修复了compile的一些bug
+6.FIX:修复从旧版本更新上来因为adbshell.ini配置老旧,导致的错误崩溃
 
-0.6.0��0.6.1 2020-6-26 01:24:55
-1.FIX:�޸�who��ʶ�������REC������
-2.NEW:compile��ѡ��߼�����
+0.6.1→0.6.1.1 2020-7-23 09:50:55
+1.FIX:修复了一个Root的Bug
 
-0.5.4Beta��0.6.0Stable  2020-5-5 00:12:54
-1.IMPROVE:UI�Ż�
-2.FIX:�޸���������
-3.NEW:֧�ּ�����
-4.IMPROVE:һЩС�Ľ�
-5.NEW:֧�ּ������
-6.NEW:֧�ֶ��豸�л�:whoָ��
-7.NEW:֧�ֹ���apk�ļ�(ʵ����)
-8.NEW:�������
+0.6.0→0.6.1 2020-6-26 01:24:55
+1.FIX:修复who不识别第三方REC的问题
+2.NEW:compile可选择高级编译
 
-0.5.3Beta��0.5.4Beta 2020-4-21 00:17:19
-1.FIX:�޸���һ������adb����װ��bug
-2.FIX:�޸�shell wm overscan����bug
+0.5.4Beta→0.6.0Stable  2020-5-5 00:12:54
+1.IMPROVE:UI优化
+2.FIX:修复崩溃问题
+3.NEW:支持激活快否
+4.IMPROVE:一些小改进
+5.NEW:支持激活冰箱
+6.NEW:支持多设备切换:who指令
+7.NEW:支持关联apk文件(实验性)
+8.NEW:代码块拆分
 
-0.5.2Beta��0.5.3Beta 2020-4-14 20:57:52
-1.IMPROVE:Ӧ�ó������Ĭ�ϲ��ش�-f����
+0.5.3Beta→0.5.4Beta 2020-4-21 00:17:19
+1.FIX:修复第一次运行adb不安装的bug
+2.FIX:修复shell wm overscan闪退bug
 
-0.5.1Beta��0.5.2Beta 2020-4-10 23:06:45
-1.NEW:���ӹ���:����,shizuku ����
+0.5.2Beta→0.5.3Beta 2020-4-14 20:57:52
+1.IMPROVE:应用程序编译默认不载带-f参数
 
-0.5Beta��0.5.1Beta   2020-3-29 15:46:54
-1.FIX:�޸���ǿ�Ƽ��adb�Ƿ�װ��bug
-2.IMPROVE:�Ż��˲����������
-3.IMPROVE:adb������ǰ�������������ͨ���
-4.IMPROVE:Ĭ��ֱ�ӽ���������
-5.NEW:�����˳���汾��֧���
+0.5.1Beta→0.5.2Beta 2020-4-10 23:06:45
+1.NEW:添加功能:黑域,shizuku 激活
 
-0.4.2Beta��0.5Beta   2020-3-18 23:36:49
-1.FIX:Bug�޸�
-2.NEW:���ܿ���:pull/push
-3.NEW:������QQȺ��Ⱥ����
+0.5Beta→0.5.1Beta   2020-3-29 15:46:54
+1.FIX:修复了强制检测adb是否安装的bug
+2.IMPROVE:优化了部分输出内容
+3.IMPROVE:adb在下载前将会进行网络连通检测
+4.IMPROVE:默认直接进入主界面
+5.NEW:添加了程序版本分支标记
+
+0.4.2Beta→0.5Beta   2020-3-18 23:36:49
+1.FIX:Bug修复
+2.NEW:功能可用:pull/push
+3.NEW:更新了QQ群加群链接
 4.NEW:ReleaseToGitHub
 
-0.4.1Beta��0.4.2Beta 2020-3-17 23:27:06
-1.Bug�޸�
-2.compileָ��֧����ʾִ����ʱ
+0.4.1Beta→0.4.2Beta 2020-3-17 23:27:06
+1.Bug修复
+2.compile指令支持显示执行用时
 
-0.4Beta��0.4.1Beta  2020-3-15 23:55:09 
-1.ʹ��exit�˳�ʱ���Զ�����adb����
-2.�Ż���help��ʾ
-3.�����й��ܽ��ݲ�����
-4.���������滻��QQȺ
-5.֧����ʾchanges
-6.SET��ͼ����
-7.UI�����Ż�(By:Ī��)
-8.screencap��Ļ��ͼ���ܿ���
+0.4Beta→0.4.1Beta  2020-3-15 23:55:09 
+1.使用exit退出时将自动清理adb服务
+2.优化了help显示
+3.命令行功能将暂不可用
+4.更新链接替换至QQ群
+5.支持显示changes
+6.SET视图可用
+7.UI部分优化(By:莫白)
+8.screencap屏幕截图功能可用
 
-0.3Alpha��0.4Beta   2020-3-13 00:25:33
-1.����help����
-2.���ܿ���:dumpsys
-3.�޸����ļ���������ʧ�ܵ��°�װʧ�ܵ�bug(��ѧ,�޵�һ���Լ�����TAT�˷Ѹ���(������Ȩ������),����������������ش���)
-4.�޸���һ������
+0.3Alpha→0.4Beta   2020-3-13 00:25:33
+1.帮助help更新
+2.功能可用:dumpsys
+3.修复了文件夹重命名失败导致安装失败的bug(玄学,修到一半自己好了TAT浪费感情(估计是权限问题),不过还是添加了相关代码)
+4.修复了一处崩溃
 
-0.2Alpha��0.3Alpha 2020��3��11��23:29:11
-1.�޸���һЩ���±�����bug
-2.����help����
-3.���ܿ���:settings
+0.2Alpha→0.3Alpha 2020年3月11日23:29:11
+1.修复了一些导致崩溃的bug
+2.帮助help更新
+3.功能可用:settings
 
-0.1Alpha��0.2Alpha 2020-3-11 
-1.�޸���һЩ���±�����bug
-2.�޸���һЩ�޹ؽ�Ҫ��bug
-3.���ܿ���:windowmode  input
+0.1Alpha→0.2Alpha 2020-3-11 
+1.修复了一些导致崩溃的bug
+2.修复了一些无关紧要的bug
+3.功能可用:windowmode  input
 
 0.1Alpha----
-���򷢲�
+程序发布

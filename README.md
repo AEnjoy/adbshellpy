@@ -18,7 +18,7 @@ adbshellpy_home.py
 
 adbshellpy_libhelper.py
 
-# 功能介绍:0.6.0
+# 功能介绍:0.6.2
 
 adbshellpy是您的下一代Android玩机助手,需要Python3.6+
 
@@ -55,6 +55,24 @@ etc.
 # ChangeLog:
 
 ```
+0.6.1.3→0.6.2.1  2020-8-1 15:44:04
+1.IMPROVE:更新了部分源地址 
+2.IMPROVE:将changelog变更为utf-8编码
+3.IMPROVE:help文件更新
+4.NEW:现在将在启动时检查文件完整性
+5.NEW:现在支持-more(但不支持静默模式)
+6.NEW:现在支持重启至edl模式(9008)(仅部分设备支持)
+7.NEW:现在可以启用特性:在检测不到内置命令时直接执行shell命令
+8.NEW:clen-data功能,清除程序数据,执行干净安装
+9.NEW:支持显示服务器的信息(项目地址),可设置关闭.
+10.NEW:支持显示可自定义的设置项.
+11.FIX:修复NewCompile模式的bug
+12.FIX:修复setting崩溃的问题
+13.FIX:修复set死循环问题
+
+0.6.1.2→0.6.1.3 2020-7-30 22:22:58
+1.IMPROVE:提升检查更新成功率
+
 0.6.1.1→0.6.1.2 2020-7-25 00:14:50
 1.NEW:Changlog分离
 2.NEW:fixgithub功能
@@ -78,29 +96,6 @@ etc.
 6.支持多设备切换:who指令
 7.支持关联apk文件(实验性)
 8.代码块拆分
-
-0.5.3Beta→0.5.4Beta 2020-4-21 00:17:19
-1.修复第一次运行adb不安装的bug
-2.修复shell wm overscan闪退bug
-
-0.5.2Beta→0.5.3Beta 2020-4-14 20:57:52
-1.应用程序编译默认不载带-f参数
-
-0.5.1Beta→0.5.2Beta 2020-4-10 23:06:45
-1.添加功能:黑域,shizuku 激活
-
-0.5Beta→0.5.1Beta   2020-3-29 15:46:54
-1.修复了强制检测adb是否安装的bug
-2.优化了部分输出内容
-3.adb在下载前将会进行网络连通检测
-4.默认直接进入主界面
-5.添加了程序版本分支标记
-
-0.4.2Beta→0.5Beta   2020-3-18 23:36:49
-1.Bug修复
-2.功能可用:pull/push
-3.更新了QQ群加群链接
-4.ReleaseToGitHub
 
 ...剩余内容请看ChangeLog
 

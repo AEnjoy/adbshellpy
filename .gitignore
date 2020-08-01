@@ -13,3 +13,5 @@ command.txt
 Han.GJZS
 adb
 编译包，解压可得到sh脚本，用mt管理器root运行
+temp
+__pycache__
