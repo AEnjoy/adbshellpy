@@ -59,7 +59,6 @@ class func_():
         global changes,github,version,builddate
         self.p=adbshellpyinformation.p
         self.adbfile=adbshellpyinformation.adbfile
-        self.conf=adbshellpyinformation.conf
         self.changes=changes
     def kfmark(self):
         try:import adbshellpy_libroot
@@ -402,7 +401,8 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     global changes,github,version,builddate
     p=adbshellpyinformation.p
     adbfile=adbshellpyinformation.adbfile
-    conf=adbshellpyinformation.conf
+    try:from adbshell_alpha import conf
+    except:from adbshell import conf
     #通用指令
     if inputtext=='home':
         home()
@@ -419,6 +419,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
         *您也可以通过手动编辑adbshell.ini来修改设置                                      *
         **********************************Setmode*****************************************
         ''')
+        parseinput(2)
         return
     if inputtext =='exit':
         adb.kill_server()
@@ -617,12 +618,12 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             return            
     if a==2:#2级目录(othermode)
             if inputtext =='back':
-                parseinput(0)
+                parseinput(1)
                 return
             if inputtext == 'setting' or inputtext == '':
                 print('adbbin uselinuxpkgmanagertoinstalladb=enable [other]')
                 print('[other]:'+str(conf.options('adbshell')))
-                inputtext=input('欲设置的选项:>>>')
+                inputtext=input('欲设置的选项:[回车退出设置]>>>')
                 if inputtext=='adbbin':
                     inputtext=input('ADBFile:>>>')
                     if os.path.exists(inputtext)== False:
@@ -665,7 +666,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                     conf.write(open("adbshell.ini", "w"))
                     parseinput(2)
                     return
-                parseinput(0)
+                parseinput(1)
                 return
             errexit(2)
     print('W :未知指令')

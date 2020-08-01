@@ -3,7 +3,7 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2 
+#  Version : 0.6.2.1 
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
@@ -50,8 +50,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2'
-builddate='2020-8-1 14:50:09'
+version='0.6.2.1'
+builddate='2020-8-1 15:26:28'
 run=0
 p=platform.system()
 checkflag=True
@@ -97,10 +97,6 @@ else:
     adbfile=conf.get('adbshell', 'adbfile')
 #默认设置END
 class update():#bra=branch
-    global builddate,version,branch,qqgroup,github,p,showserverinfo
-    ver=version
-    bra='dev'
-    vdate=builddate
     def setgitrawhosts(self):
         hosts='199.232.68.133 raw.githubusercontent.com'
         if self.p=='Windows':
@@ -178,7 +174,7 @@ class update():#bra=branch
         webbrowser.open(github)
     def showinfofromserver(self):
         url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/info'
-        if self.showinfofromserver=='enable':
+        if self.showserverinfo=='enable':
             try:urllib.request.urlretrieve(url,'info.txt')
             except:
                 print('网络错误!')
@@ -188,7 +184,12 @@ class update():#bra=branch
             f_.close()
             os.remove("info.txt")
             print(info)
-
+    def __init__(self):
+        global builddate,version,branch,qqgroup,github,p,showserverinfo
+        self.vdata=builddate
+        self.bra=branch
+        self.showserverinfo=showserverinfo
+        self.ver=version
 deviceslist=[]
 nowdevice=''
 i=0
