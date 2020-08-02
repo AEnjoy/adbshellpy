@@ -3,7 +3,7 @@
 #       adbshell.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2.1 Stable
+#  Version : 0.6.2.2 Stable
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
@@ -50,8 +50,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2.1'
-builddate='2020-8-1 15:44:04'
+version='0.6.2.2'
+builddate='2020-8-2 16:36:40'
 run=0
 p=platform.system()
 checkflag=True
@@ -93,8 +93,14 @@ else:
     if conf.has_option('adbshell','showserverinfo')==False:conf.set('adbshell', 'showserverinfo', showserverinfo)
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
+    #READ INFO
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
+    checkflag=conf.get('adbshell','checkflag')
+    adbinit=conf.getint('adbshell','adbinit')
+    shellex=conf.get('adbshell','shellex')
+    showserverinfo=conf.get('adbshell','showserverinfo')
+
 #默认设置END
 class update():#bra=branch
     def setgitrawhosts(self):

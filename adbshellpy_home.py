@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.6.2 Stable
+#  Version : 0.6.2.2
 import sys,os,datetime
 #Core Function
 try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
@@ -307,7 +307,6 @@ class func_():
             print('执行该操作将消耗一定时间,请坐和放宽')
             start=datetime.datetime.now()
             print('当前时间: '+str(start))
-            self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)      
             if a==1:self.adb.adb_shell().shell_cmd_compile('-m everything','-f','-a')
             if a==2:self.adb.adb_shell().shell_cmd_compile('-m everything','','-a')
             if a==3:self.adb.adb_shell().shell_cmd_compile('-m speed','-f','-a')
