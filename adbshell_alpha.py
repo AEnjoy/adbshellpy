@@ -3,55 +3,12 @@
 #   adbshell_alpha.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2.2
-import sys , os , platform , getopt , shutil , datetime
+#  Version : 0.7 Alpha 1
+import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
-if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
-    print('''
-    Error:Core library files are missing!(Or one of them is missing.)
-    The files are :adbshellpy_home.py, adbshellpy_libhelper.py, adbshellpy_libapkfile.py and adbshell.py or adbshell_alpha.py.
-    Please reinstall or download adbshllpy,then restart the program.
-    Project address:https://github.com/AEnjoy/adbshellpy/
-    ''')
-    sys.exit(1)
-try:import configparser,urllib.request 
-except: pass
-def errexit(arg): #异常信息
-    if arg == 0:#OS I/O Error
-        adb.kill_server()
-        print('文件夹创建失败!')
-        input('按 ENTER 退出...')
-        sys.exit(1)
-    if arg == 1:#系统不受支持
-        print('仅支持Linux Windows 暂未添加其它平台功能支持')
-        input('按 ENTER 退出...')
-        sys.exit(1)
-    if arg == 2:#常规信息
-        input('按 ENTER 继续或退出...')
-        #sys.exit(0)
-    if arg == 3 :#Python版本低
-        #adb.kill_server()
-        print("Built by Python 3.6, requires Python 3.6 or later")
-        input('Press ENTER to exit...')
-        sys.exit(1)
-    if arg== 4:
-        print('请输入有效数据!')
-        input('按 ENTER 继续')
-    if arg==5:
-        print('E:网络出现问题,请检查网络!')
-    if arg==6:
-        print('E:未找到可用设备!\nadbshellpy可能不会正常工作.')
-    if arg==7:
-        print('E:仅支持Windows 暂未添加其它平台功能支持')
-        input('按 ENTER 继续...')
-        
-if sys.hexversion < 0x03060000:
-    errexit(3)
-#else
-
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2.2'
-builddate='2020-8-1 15:26:28'
+version='0.7 Alpha 1'
+builddate='2020-8-5 01:53:36'
 run=0
 p=platform.system()
 checkflag=True
@@ -64,14 +21,83 @@ adbinit=0
 shellex='enable'#在找不到命令时直接执行adb shell
 showserverinfo='enable'
 
+if os.path.exists('logs')==False:
+    os.mkdir('logs')
+logging.basicConfig(filename="logs/"+time.time()+'.log', filemode="w", format="%(asctime)s %(name)s:%(levelname)s:%(message)s", datefmt="%d-%M-%Y %H:%M:%S", level=logging.DEBUG)
+logging.info('Start Time:'+str(datetime.datetime.now()) + ' Python Ver:'+sys.version+' Prefix:'+sys.prefix+' Environment:'+sys.platform+'Version:'+version)
+try:import configparser,urllib.request 
+except Exception as e:logging.exception("Exception occurred")
+if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
+    print('''
+    Error:Core library files are missing!(Or one of them is missing.)
+    The files are :adbshellpy_home.py, adbshellpy_libhelper.py, adbshellpy_libapkfile.py and adbshell.py or adbshell_alpha.py.
+    Please reinstall or download adbshllpy,then restart the program.
+    Project address:https://github.com/AEnjoy/adbshellpy/
+    ''')
+    logging.error('Core library files are missing!(Or one of them is missing.) Abort.')
+    sys.exit(1)
+def errexit(arg): #异常信息
+    '''
+    0:#OS I/O Error
+    1:#系统不受支持
+    2:#常规信息
+    3:#Python版本低
+    4:#数值错误
+    5:#网络异常
+    6:#没有设备
+    7:#仅Windows支持
+    '''
+    if arg == 0:#OS I/O Error
+        adb.kill_server()
+        logging.error('MKDIR Error.')
+        print('文件夹创建失败!')
+        input('按 ENTER 退出...')
+        sys.exit(1)
+    if arg == 1:#系统不受支持
+        logging.error('System is not supported.')
+        print('仅支持Linux Windows 暂未添加其它平台功能支持')
+        input('按 ENTER 退出...')
+        sys.exit(1)
+    if arg == 2:#常规信息
+        logging.info('Continue.')
+        input('按 ENTER 继续或退出...')
+        #sys.exit(0)
+    if arg == 3:#Python版本低
+        #adb.kill_server()
+        logging.error('Python version is too old.')
+        print("Built by Python 3.6, requires Python 3.6 or later")
+        input('Press ENTER to exit...')
+        sys.exit(1)
+    if arg== 4:
+        logging.warning('Invalid value.')
+        print('请输入有效数据!')
+        input('按 ENTER 继续')
+    if arg==5:
+        logging.error('Network anomaly.')
+        print('E:网络出现问题,请检查网络!')
+    if arg==6:
+        logging.warning('No available device found.')
+        print('E:未找到可用设备!\nadbshellpy可能不会正常工作.')
+    if arg==7:
+        logging.error('System is not supported.')
+        print('E:仅支持Windows 暂未添加其它平台功能支持')
+        input('按 ENTER 继续...')
+        
+if sys.hexversion < 0x03060000:
+    errexit(3)
+#else
+
 #changes
 try:
     f_=open("Changlog", "r",encoding='UTF-8')
     changes=f_.read()
     f_.close()
-except:changes='E:更新日志文件"Changlog"不存在,无法查看更新记录!'
-
+except Exception as e:
+    logging.exception("Exception occurred")
+    changes='E:更新日志文件"Changlog"不存在,无法查看更新记录!'
+logging.info('Config:')
 if os.path.exists('adbshell.ini') ==False:
+    logging.info('The first running.')
     conf = configparser.ConfigParser()
     conf.add_section('adbshell')
     conf.set('adbshell', 'platform', p)
@@ -84,6 +110,7 @@ if os.path.exists('adbshell.ini') ==False:
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
 else:
+    logging.info('READING CONF')
     conf = configparser.ConfigParser()
     conf.read('adbshell.ini')
     #旧版本升级上来
@@ -104,42 +131,49 @@ else:
 #默认设置END
 class update():#bra=branch
     def setgitrawhosts(self):
+        logging.info('HOSTS SETTING.')
         hosts='199.232.68.133 raw.githubusercontent.com'
         if self.p=='Windows':
             try:f_=open(r'C:\Windows\System32\drivers\etc\hosts','a')
-            except:
+            except Exception as e:
+                logging.error("Not enough permissions.", exc_info=True)
                 print('E:权限不足!')
                 return
             f_.write(hosts)
             f_.close()
         if self.p=='Linux':
             try:f_=open('/etc/hosts','a')
-            except:
+            except Exception as e:
+                logging.error("Not enough permissions.", exc_info=True)
                 print('E:权限不足!')
                 return
             f_.write(hosts)
             f_.close()            
+        logging.info('HOSTS SETTING END.')
     def download_update_full(self):
+        logging.info('Download update.')
         url='https://hub.fastgit.org/AEnjoy/adbshellpy/archive/master.zip'
-        try:
-            urllib.request.urlretrieve(url,'master.zip')
+        try:urllib.request.urlretrieve(url,'master.zip')
         except:
-            print('网络错误!')
+            errexit(5)
             return False
+        logging.info('Start upgrade.')
         z=zip.ZipFile('master.zip')
         z.extractall()
         z.close()
         try:shutil.copytree('adbshellpy-master',os.getcwd())
         except:pass
+        logging.info('Finish upgrade.')
         print('完整包升级完成,请重启 adbshellpy实例')
         return True
     def isnewversionavailable(self,b=''):
+        logging.info('Update Checke.')
         url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
-        try:
-            urllib.request.urlretrieve(url,'version.txt')
+        try:urllib.request.urlretrieve(url,'version.txt')
         except:
-            print('网络错误!')
+            errexit(5)
             return True
+        logging.info('READ VER FROM SERVER')
         f=open('version.txt')
         if f.read()==self.ver:
             f.close()
@@ -156,15 +190,19 @@ class update():#bra=branch
                 self.download_update()
             return
         else:
+            logging.info('No Upgrade.')
             print('您当前使用的adbshellpy为最新版本,无需更新.')
             return
     def download_lib(self,libname): #No .py 后缀
+        logging.info('Lib download:'+libname+'.py')
         url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
         try:
             urllib.request.urlretrieve(url,libname+'.py')
         except:
+            errexit(5)
             print('Library :'+libname+' 加载失败!')
             return 1
+        logging.info('Lib download:'+libname+'.py END.')
         return 0
     def download_update(self):
         if self.bra=='master':
@@ -173,23 +211,27 @@ class update():#bra=branch
             self.download_lib('adbshell_alpha')
         print('Done')
     def qqgroupopen(self):
+        logging.info('OPEN QQ GROUP LINK')
         import webbrowser
         webbrowser.open(qqgroup)
     def githubopen(self):
+        logging.info('OPEN GITHUB LINK')
         import webbrowser
         webbrowser.open(github)
     def showinfofromserver(self):
+        logging.info('Show info from the server:')
         url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/info'
         if self.showserverinfo=='enable':
             try:urllib.request.urlretrieve(url,'info.txt')
             except:
-                print('网络错误!')
+                errexit(5)
                 return
             f_=open("info.txt", "r",encoding='UTF-8')
             info=f_.read()
             f_.close()
             os.remove("info.txt")
             print(info)
+        logging.info('Show info from the server End.')
     def __init__(self):
         global builddate,version,branch,qqgroup,github,p,showserverinfo
         self.vdata=builddate
@@ -205,25 +247,30 @@ def who():
     (如果只有一个 则返回一个)
     自动设置:nowdevice
     '''
+    logging.info('GET DEVICE:')
     global deviceslist ,nowdevice
     adb.devices() #First running,activing service.
     hand=os.popen(adbfile+' devices')
     hand.readline() #第一行需要跳过
     clear()
     if len(deviceslist)==0: #第一次执行/没有设备/添加设备列表
+        logging.info('First time execution/no device/add device list')
         for b in hand:
             try:
                 if 'device' in b:
                     b=b.replace('\tdevice\n','')
+                    logging.info('Devices Found:'+b)                    
                     print('检测到的设备:'+b)
                     deviceslist.append(b)
                 if 'recovery' in b:
                     b=b.replace('\trecovery\n','')
+                    logging.info('Devices Found:'+b)                    
                     print('检测到的设备:'+b)
                     deviceslist.append(b)
             except:
                 if 'unauthorized' in b:
                     b=b.replace('\tunauthorized\n','')
+                    logging.info('Devices Found, but Unauthorized :'+b)                    
                     print('W:未授权的设备: %s 找到,请在手机上允许USB调试(一律)'%b)
                     print('跳过该设备: %s '%b)
             if r'\n' in deviceslist:
@@ -236,6 +283,7 @@ def who():
         hand.close()
         return deviceslist[0]     
     else: #清单里有设备,不做任何list处理(还要做 如果有新设备添加)
+        logging.info('Check New Devices')
         if nowdevice=='':
             try:
                 nowdevice=deviceslist[0]
@@ -247,15 +295,18 @@ def who():
             try:
                 if 'device' in b:
                     b=b.replace('\tdevice\n','')
-                    print('检测到的设备:'+b)
+                    logging.info('Devices Found:'+b)
+                    print('检测到的设备:'+b)                    
                     deviceslist.append(b)
                 if 'recovery' in b:
                     b=b.replace('\trecovery\n','')
+                    logging.info('Devices Found:'+b)                   
                     print('检测到的设备:'+b)
                     deviceslist.append(b)
             except:
                 if 'unauthorized' in b:
                     b=b.replace('\tunauthorized\n','')
+                    logging.info('Devices Found, but Unauthorized :'+b)                      
                     print('W:未授权的设备: %s 找到,请在手机上允许USB调试(一律)'%b)
                     print('跳过该设备: %s '%b)
         deviceslist.pop() #√
@@ -264,7 +315,7 @@ def who():
             print('W:adbshellpy who 可能不会工作!')
             hand.close()
             return ''
-        print('Debug: '+str(deviceslist.index(nowdevice))+' '+str(len(deviceslist)-2)+str(deviceslist))
+        logging.debug(str(deviceslist.index(nowdevice))+' '+str(len(deviceslist)-2)+str(deviceslist))
         if deviceslist.index(nowdevice)==len(deviceslist)-1:#已达到最后一个设备,从新开始 \ n 死活清不掉
             a=deviceslist[0]
         else:
@@ -273,6 +324,7 @@ def who():
             except:
                 a=deviceslist[deviceslist.index(nowdevice)-1]
         if a in nowdevice:
+            logging.warning('The device identifier is found to be consistent')
             print('W:设备标识符一致?')
             return nowdevice
         else:
@@ -291,20 +343,27 @@ class adbcommand():
     s=nowdevice#设备标识符 多设备时使用
     def _adbc(self,command):#######Core#######
         if self.s=='':
+            logging.info('Command:'+adbfile+' '+command)
             os.system(adbfile+' '+command)
         else:
+            logging.info('Command(With Device):'+adbfile+' -s '+self.s+' '+command)
             os.system(adbfile+' -s '+self.s+' '+command)
     def __init__(self,device=nowdevice):
+        logging.info('Core:Adb file:'+self.adb +' Device:'+device)
         self.s=device
         if self.s=='':
             self.s=nowdevice
     def start_server(self):
+        logging.info('Core:Start-Server')
         self._adbc('start-server')
     def kill_server(self):
+        logging.info('Core:Kill-Server')
         self._adbc('kill-server')
     def devices(self): # 后续将会添加取设备ID功能
+        logging.info('Core:Devices')
         self._adbc('devices')
     def devices_nodisplay(self):
+        logging.info('Core:Devices')
         os.popen(adbfile+' devices')
     def printdevices(self,name=''):
         self._adbc('-s '+name)
@@ -312,17 +371,22 @@ class adbcommand():
         self.s=name
     #netmode
     def tcpip(self):
+        logging.info('Core:tcpip')
         self._adbc('tcpip 5555')
     def connect(self,ip): #ip local ip
+        logging.info('Core:connect')
         self._adbc('connect '+ip+':5555')
     def disconnect(self,ip):
+        logging.info('Core:disconnect')
         self._adbc('disconnect '+ip+':5555')
     def usb(self):#默认usb模式
         self._adbc('usb')
     #netmode end
     def root(self):
+        logging.info('Core:Use root')
         self._adbc('root')
     def reboot(self,mode=0):#0 不带参数 1.-p 2.fastboot(bl) 3.recovery 4.sideload 5.挖煤
+        logging.info('Core:Reboot Device')
         if mode == 0:self._adbc('reboot')
         if mode == 1:self._adbc('reboot -p')
         if mode == 2:self._adbc('reboot bootloader')
@@ -332,27 +396,33 @@ class adbcommand():
         if mode == 6:self._adbc('reboot edl')
 
     def install(self,apkfile,command='-g -d'):
+        logging.info('Core:Install APK File.')
         self._adbc("install "+command+" "+'"'+apkfile+'"')
     def uninstall(self,packname,command=''):
+        logging.info('Core:Uninstall apk.')
         self._adbc('unistall ' +packname +' '+command)
 
     def shell(self,command='',su=0):#_class adb_shell():
         if su==0:
+            logging.info('Core:adb shell:')
             self._adbc('shell '+command)
         if su==1:
+            logging.info('Core:adb shell(with SU):')
             self._adbc('shell su -c '+command)
     def busybox(self,command='',su=0):#busybox
         if su==0:
             self.shell('busybox '+command)
         if su==1:
-            self.shell('su & busybox '+command)
+            self.shell('su -c busybox '+command)
         
     class adb_shell():
         def shell_cmd(self,func=''):
+            logging.info('Core:adb shell cmd')
             adbcommand().shell('cmd '+func)
         def shell_cmd_compile(self,method='-m speed',func=' ',pkg='-a'):
             adbcommand().adb_shell().shell_cmd('package compile '+method+' '+func+' '+pkg)
         def shell_pm(self,func=''):
+            logging.info('Core:adb shell pm')
             adbcommand().shell('pm '+func)
         def shell_pm_disable_user(self,pkg):
             adbcommand().adb_shell().shell_pm('disable-user '+pkg)
@@ -367,6 +437,7 @@ class adbcommand():
         def shell_pm_list_package(self,func='-i'):#-f -d -e -s -3 -i -u
             adbcommand().adb_shell().shell_pm('list package '+func)
         def shell_wm(self,func=''):#私有
+            logging.info('Core:adb shell wm')
             adbcommand().shell('wm '+func)
         def shell_wm_density(self,func=''):#'' 列出当前显示的DPI。 'xxx'设置dpi为xxx 'reset'恢复默认dpi
             adbcommand().adb_shell().shell_wm('density '+func)
@@ -375,6 +446,7 @@ class adbcommand():
         def shell_wm_overscan(self,a='',b='',c='',d=''):
             adbcommand().adb_shell().shell_wm('overscan '+ a + ',' + b + ',' + ',' + c + ',' + d)#adb shell wm overscan a,b,c,d
         def shell_input(self,func=''):
+            logging.info('Core:adb shell input')
             adbcommand().shell('input '+func)
         def shell_input_text(self,func):
             adbcommand().adb_shell().shell_input("text "+func)#向设备输入xxx字符(不支持中文
@@ -395,23 +467,28 @@ class adbcommand():
             '''
             adbcommand().adb_shell().shell_dumpsys('battery '+func)
     def push(self,urlc,urlp='/sdcard/'):
+        logging.info('Core:adb push')
         self._adbc("push "+'"'+urlc+'" "'+urlp+'"')
     def pull(self,urlp,urlc):
+        logging.info('Core:adb pull')
         self._adbc("pull "+'"'+urlp+'" "'+urlc+'"')
 
 def checkinternet():
+    logging.info('Check Internet')
     exit_code = os.system('ping www.baidu.com')
     if exit_code:
         return False
     else:
         return True
 def clear():
+    logging.info('Clean the display')
     if p == "Windows":
         os.system('cls')
     if p == "Linux":
         os.system('clear')
 
 def setmode():#setmode parseinput(2)
+    logging.info('Setmodel:')
     print('''
     **********************************Setmode*****************************************
     *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
@@ -462,6 +539,7 @@ def usage():
     errexit(2)
 
 def IsPassInstall():#检测adb安装
+    logging.info('Pass and install !?')
     options , args = getopt.getopt(sys.argv[1:], 'nc')
     for name, value in options:
         if name in ('-nc','--ncheck'):
@@ -497,6 +575,7 @@ def ParseArguments(args): #解析参数
     return cmd, opt, arg
 
 def apkinstallmode(install=False):#开发计划2
+    logging.info('APK Install:')
     if install==True:
         import adbshellpy_libapkfile
         adbshellpy_libapkfile.mainex(_Options.apkfile)
@@ -514,8 +593,10 @@ def main(args):
       'dumpsys','screencap','relatedapk','who','kfmark','icebox','update','changes','piebridge',
       'shizuku'
      ]#内置命令
+  logging.info('Check command')
   if cmd in c:#开发计划3
-      adbshellpy_home
+      logging.info('Command found')
+      import adbshellpy_home
       fun=adbshellpy_home.func_()
       if cmd=='shutdown':fun.shutdown()
       if cmd=='kfmark':fun.kfmark()
@@ -560,10 +641,7 @@ def main(args):
   with open('adbshell.ini', 'w') as ini:
       conf.write(ini)
   apkinstallmode(opt.apkinstall)
-  #adbshellpy_home.adbshellpyinformation().set_(branch,uselinuxpkgmanagertoinstalladb,aapt,conf)
-  if p == "Windows":
-      Console()
-  if p == "Linux":
+  if p == "Windows" or p == "Linux":
       Console()
   else:
       errexit(1)
@@ -573,6 +651,7 @@ def install(p,check=0):
     global adbfile
     global conf
     global checkflag
+    logging.info('Installing adb file.')
     adb.kill_server()
     if check==2:
         pass
@@ -601,6 +680,7 @@ def install(p,check=0):
                 conf.write(ini)
             return
             #errexit(0)
+        logging.info('Set adbfile : adb/adb.exe')
         adbfile=r'adb\adb.exe'
         try:
             os.remove('adb.zip')
