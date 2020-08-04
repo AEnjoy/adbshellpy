@@ -3,7 +3,7 @@
 #       adbshell.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2.2 Stable
+#  Version : 0.6.2.3 Stable
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
@@ -50,8 +50,8 @@ if sys.hexversion < 0x03060000:
 #else
 
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2.2'
-builddate='2020-8-2 16:36:40'
+version='0.6.2.3'
+builddate='2020-8-5 01:17:03'
 run=0
 p=platform.system()
 checkflag=True
@@ -515,7 +515,7 @@ def main(args):
       'shizuku'
      ]#内置命令
   if cmd in c:#开发计划3
-      adbshellpy_home
+      import adbshellpy_home
       fun=adbshellpy_home.func_()
       if cmd=='shutdown':fun.shutdown()
       if cmd=='kfmark':fun.kfmark()
