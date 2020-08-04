@@ -23,7 +23,7 @@ showserverinfo='enable'
 
 if os.path.exists('logs')==False:
     os.mkdir('logs')
-logging.basicConfig(filename="logs/"+time.time()+'.log', filemode="w", format="%(asctime)s %(name)s:%(levelname)s:%(message)s", datefmt="%d-%M-%Y %H:%M:%S", level=logging.DEBUG)
+logging.basicConfig(filename="logs/"+str(time.time())+'.log', filemode="w", format="%(asctime)s %(name)s:%(levelname)s:%(message)s", datefmt="%d-%M-%Y %H:%M:%S", level=logging.DEBUG)
 logging.info('Start Time:'+str(datetime.datetime.now()) + ' Python Ver:'+sys.version+' Prefix:'+sys.prefix+' Environment:'+sys.platform+'Version:'+version)
 try:import configparser,urllib.request 
 except Exception as e:logging.exception("Exception occurred")
