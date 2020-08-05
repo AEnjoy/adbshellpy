@@ -1,3 +1,9 @@
+0.7 Alpha 1 → 0.7 Alpha 2 2020-8-6 01:08:58
+1.IMPROVE:Log记录更加的详细
+2.IMPROVE:第一次运行不再需要运行两次以初始化(Test)
+3.NEW:多语言支持(Test)
+4.FIX:修复adb安装时一处可能的代码bug导致的崩溃
+
 0.6.2.2→0.7 Alpha 1       2020-8-5 01:53:36
 1.NEW:logging日志系统引入TEST
 2.FIX:修复了一处崩溃
