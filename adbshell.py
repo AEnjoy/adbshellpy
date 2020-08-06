@@ -3,7 +3,7 @@
 #       adbshell.py
 #          Core
 #       By : 神郭
-#  Version : 0.6.2.3 Stable
+#  Version : 0.6.2.4 Stable
 import sys , os , platform , getopt , shutil , datetime
 import zipfile as zip
 if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper.py') and os.path.exists('adbshellpy_libapkfile.py') ==False:
@@ -13,45 +13,13 @@ if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper
     Please reinstall or download adbshllpy,then restart the program.
     Project address:https://github.com/AEnjoy/adbshellpy/
     ''')
+    input('Press ENTER to exit...')
     sys.exit(1)
 try:import configparser,urllib.request 
 except: pass
-def errexit(arg): #异常信息
-    if arg == 0:#OS I/O Error
-        adb.kill_server()
-        print('文件夹创建失败!')
-        input('按 ENTER 退出...')
-        sys.exit(1)
-    if arg == 1:#系统不受支持
-        print('仅支持Linux Windows 暂未添加其它平台功能支持')
-        input('按 ENTER 退出...')
-        sys.exit(1)
-    if arg == 2:#常规信息
-        input('按 ENTER 继续或退出...')
-        #sys.exit(0)
-    if arg == 3 :#Python版本低
-        #adb.kill_server()
-        print("Built by Python 3.6, requires Python 3.6 or later")
-        input('Press ENTER to exit...')
-        sys.exit(1)
-    if arg== 4:
-        print('请输入有效数据!')
-        input('按 ENTER 继续')
-    if arg==5:
-        print('E:网络出现问题,请检查网络!')
-    if arg==6:
-        print('E:未找到可用设备!\nadbshellpy可能不会正常工作.')
-    if arg==7:
-        print('E:仅支持Windows 暂未添加其它平台功能支持')
-        input('按 ENTER 继续...')
-        
-if sys.hexversion < 0x03060000:
-    errexit(3)
-#else
-
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.6.2.3'
-builddate='2020-8-5 01:17:03'
+version='0.6.2.4'
+builddate='2020-8-6 19:08:35'
 run=0
 p=platform.system()
 checkflag=True
@@ -63,13 +31,6 @@ adbfile=str(os.environ.get('adbfile'))
 adbinit=0
 shellex='enable'#在找不到命令时直接执行adb shell
 showserverinfo='enable'
-
-#changes
-try:
-    f_=open("Changlog", "r",encoding='UTF-8')
-    changes=f_.read()
-    f_.close()
-except:changes='E:更新日志文件"Changlog"不存在,无法查看更新记录!'
 
 if os.path.exists('adbshell.ini') ==False:
     conf = configparser.ConfigParser()
@@ -100,6 +61,42 @@ else:
     adbinit=conf.getint('adbshell','adbinit')
     shellex=conf.get('adbshell','shellex')
     showserverinfo=conf.get('adbshell','showserverinfo')
+def errexit(arg): #异常信息
+    if arg == 0:#OS I/O Error
+        adb.kill_server()
+        print('文件夹创建失败!')
+        input('按 ENTER 退出...')
+        sys.exit(1)
+    if arg == 1:#系统不受支持
+        print('仅支持Linux Windows 暂未添加其它平台功能支持')
+        input('按 ENTER 退出...')
+        sys.exit(1)
+    if arg == 2:#常规信息
+        input('按 ENTER 继续或退出...')
+        #sys.exit(0)
+    if arg == 3 :#Python版本低
+        #adb.kill_server()
+        print("Built by Python 3.6, requires Python 3.6 or later")
+        input('Press ENTER to exit...')
+        sys.exit(1)
+    if arg== 4:
+        print('请输入有效数据!')
+        input('按 ENTER 继续')
+    if arg==5:
+        print('E:网络出现问题,请检查网络!')
+    if arg==6:
+        print('E:未找到可用设备!\nadbshellpy可能不会正常工作.')
+    if arg==7:
+        print('E:仅支持Windows 暂未添加其它平台功能支持')
+        input('按 ENTER 继续...')
+if sys.hexversion < 0x03060000:
+    errexit(3)
+#changes
+try:
+    f_=open("Changlog", "r",encoding='UTF-8')
+    changes=f_.read()
+    f_.close()
+except:changes='E:更新日志文件"Changlog"不存在,无法查看更新记录!'
 
 #默认设置END
 class update():#bra=branch
@@ -298,6 +295,9 @@ class adbcommand():
         self.s=device
         if self.s=='':
             self.s=nowdevice
+        if self.adb=='None':
+            if os.path.exists(r'adb\adb.exe'):self.adb=r'adb\adb.exe'
+            else:print('You may need to restart daemon!')            
     def start_server(self):
         self._adbc('start-server')
     def kill_server(self):
@@ -345,7 +345,7 @@ class adbcommand():
         if su==0:
             self.shell('busybox '+command)
         if su==1:
-            self.shell('su & busybox '+command)
+            self.shell('su -c busybox '+command)
         
     class adb_shell():
         def shell_cmd(self,func=''):
@@ -594,7 +594,7 @@ def install(p,check=0):
         try:
             os.rename('platform-tools','adb')
         except Exception as errinform:
-            print(errinform+'改为默认platform-tools')
+            print(str(errinform)+'改为默认platform-tools')
             adbfile_=r'platform-tools\adb.exe'
             conf.set('adbshell', 'adbfile', adbfile_)
             with open('adbshell.ini', 'w') as ini:
