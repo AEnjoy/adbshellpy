@@ -35,8 +35,9 @@ if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper
     The files are :adbshellpy_home.py, adbshellpy_libhelper.py, adbshellpy_libapkfile.py and adbshell.py or adbshell_alpha.py.
     Please reinstall or download adbshllpy,then restart the program.
     Project address:https://github.com/AEnjoy/adbshellpy/
-    ''')
+    ''')    
     logging.error('Core library files are missing!(Or one of them is missing.) Abort.')
+    input('Press ENTER to exit...')    
     sys.exit(1)
 
 logging.info('Config:')

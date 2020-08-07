@@ -312,7 +312,7 @@ class KDZFileTools(kdz.KDZFile):
 		self.outdir = outdir
 		if listOnly:self.cmdListPartitions()
 		elif extractID != None:
-    			if extractID >= 0 and extractID < len(self.partList):
+			if extractID >= 0 and extractID < len(self.partList):
 				self.cmdExtractSingle(extractID)
 			else:
 				print("[!] 片段 {:d} 超出范围!".format(extractID), file=sys.stderr)
