@@ -3,7 +3,7 @@
 #   adbshellpy_libunpakrom
 #       By : 神郭
 #  Version : Sub
-import os,zipfile,urllib.request
+import os,zipfile,urllib.request,argparse
 
 def download():
     print('正在下载libunpakrom')
@@ -16,19 +16,19 @@ def download():
     os.rename('unpackandroidrom-master','libromparse')
     print('初始化完成!')
 
-def main():
+def main(args=None):
     if os.path.exists('libromparse/main.py'):
-        os.chdir('libromparse')
+        sys.path.append(os.path.join(sys.path[0], "libromparse"))
         try:
             import main
-            main.main()
+            main.main(args)
             return
         except ImportError:
             print('初始化失败?请重新安装libunpakrom.')
     print('''
     **********************************libunpakrom*****************************************
     *                           Android ROM 智能处理工具箱 Sub版本                         *
-    *       支持市面上绝大部分Android手机的ROM解包,未来更新后还将支持ROM打包等操作            *
+    *       支持市面上绝大部分Android手机的ROM解包,未来更新后还将支持ROM打包等操作         *
     *       功能:                                                                         *
     *                     ①OPPO OZIP解密                                                  *
     *                     ②Android O+ A/B分区(System As Root) payload.bin 解包            *
@@ -53,5 +53,11 @@ def main():
     a=input('是否进入libunpakrom?y/n[默认y]>>>')
     if a=='y' or a=='':main()
     else:input('按Enter键退出...')
+def parseArgs():
+    parser = argparse.ArgumentParser(description='ROM智能处理工具箱')
+    parser.add_argument('-f', '--file', help='欲解包的ROM文件', action='store', required=False, dest='file')
+    parser.add_argument("-t", "--type", type=str, choices=['kdz', 'dz', 'samsumgodin','abota','flashable','ozip'], help="强制指定输入的文件ROM的类型", required=False)
+    return parser.parse_args()    
 if __name__ == "__main__":
-    main()
+    args=parseArgs()
+    main(args)
