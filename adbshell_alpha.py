@@ -8,8 +8,8 @@
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7 Alpha 2'
-builddate='2020-8-6 01:08:58'
+version='0.7 Alpha 3'
+builddate='2020-8-10 00:09:50'
 run=0
 p=platform.system()
 checkflag=True
@@ -43,7 +43,11 @@ if os.path.exists('adbshellpy_home.py') and os.path.exists('adbshellpy_libhelper
 logging.info('Config:')
 if os.path.exists('adbshell.ini') ==False:
     logging.info('The first running.')
+    logging.info('Write ini.')
     c=1
+    if adbfile=='None':
+        if p=='Windows':adbfile=r'adb\adb.exe'
+        elif p=='Linux':adbfile='adb/adb'
     conf = configparser.ConfigParser()
     conf.add_section('adbshell')
     conf.set('adbshell', 'platform', p)
@@ -63,20 +67,21 @@ else:
     conf.read('adbshell.ini')
     #旧版本升级上来
     if conf.has_option('adbshell','checkflag')==False:conf.set('adbshell', 'checkflag', str(checkflag))
-    if conf.has_option('adbshell','adbinit')==False:conf.set('adbshell', 'adbinit', str(adbinit))
     if conf.has_option('adbshell','shellex')==False:conf.set('adbshell', 'shellex', shellex)
     if conf.has_option('adbshell','showserverinfo')==False:conf.set('adbshell', 'showserverinfo', showserverinfo)
     if conf.has_option('adbshell','language')==False:conf.set('adbshell', 'language', language)
+    if conf.has_option('adbshell','adbinit')==False:conf.set('adbshell', 'adbinit', str(adbinit))    
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
     #READ INFO
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
     checkflag=conf.get('adbshell','checkflag')
-    adbinit=conf.getint('adbshell','adbinit')
     shellex=conf.get('adbshell','shellex')
     language=conf.get('adbshell','language')
     showserverinfo=conf.get('adbshell','showserverinfo')
+    adbinit=conf.getint('adbshell','adbinit')
+    logging.info('uselinuxpkgmanagertoinstalladb:%s checkflag:%s shellex:%s language:%s showserverinfo:%s adbinit:%s'%(uselinuxpkgmanagertoinstalladb,checkflag,shellex,language,showserverinfo,adbinit))
     logging.info('READING CONF END')
 #默认设置END
 
@@ -324,6 +329,7 @@ def who():
         if len(deviceslist)==0: #没找到设备
             errexit(6)
             print(Luan.w2)
+            logging.warning(Luan.e5)
             hand.close()
             return ''
         hand.close()
@@ -714,6 +720,7 @@ def install(p,check=0):
         except Exception as errinform:
             print(str(errinform)+Luan.i5)
             adbfile_=r'platform-tools\adb.exe'
+            adbfile=adbfile_
             conf.set('adbshell', 'adbfile', adbfile_)
             with open('adbshell.ini', 'w') as ini:
                 conf.write(ini)

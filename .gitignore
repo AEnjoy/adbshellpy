@@ -11,5 +11,4 @@ adb
 daemon
 Imgextractor.exe
 logs
-libromparse/main.py
-libromparse/.git
+libromparse
