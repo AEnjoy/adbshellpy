@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.6.2.2
+#  Version : 0.7
 import sys,os,datetime
 #Core Function
-try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
-except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex
+try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan
+except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan
 class adbshellpyinformation:
     p=sys.platform
     branch=None
@@ -22,33 +22,13 @@ class adbshellpyinformation:
 import adbshellpy_libhelper
 
 def home():
-    print('''
-    **********************************Welcome*****************************************
-    *                                ADBSystemTOOLBOX                                *
-    *                       基于Python3&GoogleADB的安卓系统工具箱                    *
-    *                     Develop:  CoolApkUser:白曦  Github:AEnjoy                  *
-    *               如果你链接了多个设备,请先使用输入who命令再输入其它命令哦!        *
-    **********************************Welcome*****************************************
-    '''+'Version:'+version +'   buildDate:'+builddate)    
-    print('''
-     _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       ┃
-    ┃     re-install      update      environment      changes    clean-data        ┃
-     ---------------------------------------------------------------------------------
-    ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
-    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   ┃
-    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices)  ┃
-     ---------------------------------------------------------------------------------
-    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>          ┃    
-    ┃  系统  优化 : ┃ 编译优化compile>                                              ┃
-    ┃  文件  传输 : ┃ pull>        push>   screencap>                               ┃
-    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      ┃
-    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                ┃
-    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        ┃
-     -------------------------------ADBSystemTOOLBOX----------------------------------
-    ''')
-    print('当前adbshellpy控制的设备:'+nowdevice+' \n 你可以使用who切换目标设备.(仅有一个设备时不会显示,但功能依然可用)')
+    global Luan
+    logging.info('Welcome to adbsystemtoolbox!')
+    print(Luan.ltext3+'Version:'+version +'   buildDate:'+builddate)    
+    print(Luan.ltext4)
+    print(Luan.i7+nowdevice+Luan.i8)
 class func_():
+    global Luan
     def __init__(self):
         global nowdevice
         self.adb=adbcommand(nowdevice)
@@ -57,53 +37,64 @@ class func_():
         self.adbfile=adbshellpyinformation.adbfile
         self.changes=changes
     def kfmark(self):
+        logging.info('Func:kfmark')
         try:import adbshellpy_libroot
         except:    
             update().download_lib('adbshellpy_libroot')
             import adbshellpy_libroot
         adbshellpy_libroot.Activate_KFMark()
     def icebox(self):
+        logging.info('Func:icebox')
         self.adb.shell('dpm set-device-owner com.catchingnow.icebox/.receiver.DPMReceiver')
     def relatedapk(self):
+        logging.info('Func:relateapk')
         import adbshellpy_libapkfile
         adbshellpy_libapkfile.relatedApkfile()
     def update(self):
+        logging.info('Func:update')
         update().githubopen()
         update().updatecheck()
     def changes_(self):
         print(self.changes)
     def piebridge(self):
+        logging.info('Func:piebridge')
         self.adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
     def shizuku(self):
+        logging.info('Func:shizuku')
         self.adb.shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
     def push(self):
-        print('push:从本地中复制一个文件(夹)至手机')
-        urlp=input('远端路径>>>')
+        logging.info('Func:push')
+        print(Luan.i9)
+        urlp=input(Luan.i10)
         if urlp=='':
-            print('默认使用 /sdcard')
-        urlc=input('本地文件或文件夹>>>')
+            print(Luan.i11)
+        urlc=input(Luan.i12)
         urlc=urlc.replace(" ", "")
         if urlc=='':
-            print('本地文件或文件夹为空')
+            print(Luan.e10)
             errexit(4)
             return
         self.adb.push(urlc=urlc,urlp=urlp)
     def pull(self):
-        print('pull:从手机中拉取一个文件(夹)至本地')
-        urlp=input('远端路径>>>')
-        urlp=urlp.replace(" ", "")
+        logging.info('Func:pull')
+        print(Luan.i13)
+        urlp=input(Luan.i10)
+        #urlp=urlp.replace(" ", "")
+        logging.info('Func:pull p is:'+urlp)
         if urlp=='':
-            print('E:请输入有效远端路径')
+            print(Luan.e11)
             errexit(4)
             return
-        urlc=input('本地路径>>>')
+        urlc=input(Luan.i38)
+        logging.info('Func:pull c is:'+urlc)
         if urlc=='':
-            print('默认使用当前路径')
+            print(Luan.i14)
             urlc=os.getcwd()
         self.adb.pull(urlp=urlp,urlc=urlc)     
     def screencap(self):
-        print('screencap:对手机执行截屏命令,并可选择是否传输至电脑并立即查看')
-        h=input('传输至电脑并打开查看>>>[Y/N 默认N]')
+        logging.info('Func:screencap')
+        print(Luan.i15)
+        h=input(Luan.a3)
         h=h.replace(" ", "")
         self.adb.shell(command='screencap -p /sdcard/sc.png')
         if h=='y' or h=='Y':
@@ -111,47 +102,35 @@ class func_():
             if self.p == 'Windows':
                 os.system('explorer sc.png')
             if self.p=='Linux':
-                h=input('...LINUX查看?需要提前安装imagemagick>>>[Y/N 默认N]')
+                h=input(Luan.a4)
                 if h=='y' or h=='Y':
                     os.system('display sc.png')
     def dumpsys(self):
-        print('dumpsys:获取或设置一些调试信息(转储所有服务)。在adbmode→help→dumpsys查询命令列表')
+        logging.info('Func:dumpsys')
+        print(Luan.i16)
         inputtext=input('dumpsys>>>')
+        logging.info('Func:dumpsysy input:'+inputtext)
         inputtext=inputtext.replace(" ", "")
         if inputtext=='' or inputtext=='back':
             return
         self.adb.adb_shell().shell_dumpsys()
         return
     def settings(self):
-        print('通过ADB读取/更改系统设置 在adbmode→help→settings查询命令列表')
-        print('''
-        get [--user <USER_ID> | current] NAMESPACE KEY 设置键值
-        ...检索KEY的当前值。
-        put [--user <USER_ID> | current] NAMESPACE KEY VALUE [TAG] [default]
-        ...将KEY的内容更改为VALUE
-        ...设置为默认值，仅对全局/安全名称空间不区分大小写
-        delete NAMESPACE KEY
-        ...删除NAMESPACE KEY键值
-        reset [--user <USER_ID> | current] NAMESPACE {PACKAGE_NAME | RESET_MODE}
-        ...重置具有全局/安全模式的程序包的表。
-        ...RESET_MODE:{untrusted_defaults，untrusted_clear，trusted_defaults}，不区分大小写
-        list NAMESPACE
-        ...列出所有设置的值 NAMESPACE:{system, secure, global}
-        ''')
+        logging.info('Func:settings')
+        print(Luan.i17)
+        print(Luan.ltext5)
         inputtext=input('Command>>>')
+        logging.info('Func:settings input:'+inputtext)
         inputtext=inputtext.replace(" ", "")
         if inputtext=='' or inputtext=='back':
             return
         self.adb.adb_shell().shell_setting(func=inputtext)
     def input(self):
-        print('''command:(Only Enter To Return)
-        input_text:    向手机输入一串字符(不支持中文)
-        input_keyevent:模拟输入内容(在adbshell→help→input中可查询指令)
-        input_tap:     模拟点击屏幕上的一个像素点
-        input_swipe:   模拟滑动屏幕(从一个像素点到另一像素点)
-        ''')
+        logging.info('Func:input')
+        print(Luan.ltext6)
         inputtext=input('command>>>')
         inputtext=inputtext.replace(" ", "")
+        logging.info('Func:input input:'+inputtext)
         if inputtext=='input_text':
             inputtext=input('Text>>>')
             self.adb.adb_shell().shell_input_text(func=inputtext)
@@ -174,8 +153,10 @@ class func_():
             self.adb.adb_shell().shell_input_swipe(x1=x1,x2=x2,y1=y1,y2=y2,d=d)
             return
     def windowmode(self):
-        inputtext=input('欲查看或设置的信息>>>')
+        logging.info('Func:windowmode')
+        inputtext=input(Luan.i18)
         inputtext=inputtext.replace(" ", "")
+        logging.info('Func:wm input:'+inputtext)
         if inputtext=='':
             self.adb.adb_shell().shell_wm()
             return
@@ -212,101 +193,73 @@ class func_():
             self.adb.adb_shell().shell_wm_density(func=inputtext)
             return
     def applist(self):
-        args_=input('附加的参数>>>')
+        logging.info('Func:applist')
+        args_=input(Luan.i19)
+        logging.info('Func:applist input:'+args_)
         args_=args_.replace(" ", "")
         if args_=='':
             self.adb.adb_shell().shell_pm_list_package()
             return
         self.adb.adb_shell().shell_pm_list_package(args_)
     def clear(self):
-        Package=input('欲清除数据的程序包名>>>')
+        logging.info('Func:clear')
+        Package=input(Luan.i20)
+        logging.info('Func:clear input:'+Package)
         Package=Package.replace(" ", "")
         if Package=='':
             errexit(4)
             return
         self.adb.adb_shell().shell_pm_clear(Package)
     def enable(self):
-        Package=input('欲启用的程序包名>>>')
+        logging.info('Func:enable')
+        Package=input(Luan.i21)
+        logging.info('Func:enable input:'+Package)
         Package=Package.replace(" ", "")
         if Package=='':
             errexit(4)
             return
         self.adb.adb_shell().shell_pm_enable(Package)
     def disable(self):
-        Package=input('欲禁用的程序包名(使用applist查看)>>>')
+        logging.info('Func:disable')
+        Package=input(Luan.i22)
         Package=Package.replace(" ", "")
+        logging.info('Func:disable input:'+Package)
         if Package=='':
             errexit(4)
             return
         self.adb.adb_shell().shell_pm_disable_user(Package)
     def compile(self):
-        a=input('Compile:请选择compile功能模式: 1).传统  2).新版 :')
+        logging.info('Func:compile')
+        a=input(Luan.a5)
+        logging.info('Func:mode input:'+a)
         if a=='1':
-            mode=input('编译模式[默认-m speed]>>>')
-            func=input('编译参数[默认 为空]>>>')
-            pkg=input("编译对象[默认-a]>>>")
+            logging.info('Func:compile mode is 1')
+            mode=input(Luan.i23)
+            func=input(Luan.i24)
+            pkg=input(Luan.i25)
+            logging.info("Func:compile input mode func pkg:'" +mode+"' '"+func+"' '"+pkg+"'")
             func, pkg = func, pkg . replace(" ", "")
             if mode=='':
                 mode='-m speed'
             if pkg=='':
                 pkg='-a'
-            print('执行该操作将消耗一定时间,请坐和放宽')
+            print(Luan.i26)
             start=datetime.datetime.now()
-            print('当前时间: '+str(start))
+            print(Luan.i27+str(start))
             self.adb.adb_shell().shell_cmd_compile(method=mode,func=func,pkg=pkg)
             end=datetime.datetime.now()
-            print('结束时间: '+str(end))
-            print('执行用时: %s Seconds'%(end-start))
+            print(Luan.i28+str(end))
+            print(Luan.i29%(end-start))
         if a=='2':
-            print('''Compile :
-            Compile New
-            通过对AndroidN+的应用进行dexopt编译以提升性能
-            注意:如果你使用的是Android Q 或更高版本,请谨慎对系统应用进行编译,特别是高危组件:
-            com.android.systemui
-            已知问题: 
-            Android Q
-            1.MIUI Android Q编译系统应用会导致严重掉帧
-            2.Samsung OneUI 2.0+会出现开机无法进入桌面,系统全局黑屏的问题.
-            3.LG UX 9 会在锁屏时死机重启
-            4.com.android.systemui不支持通过手动安装还原!!!
-            Android N / O
-            1.编译不显示进度
-            如果你是三星用户:推荐使用Galaxy Labs 的 App Booster,其原理为编译原理,且无安全风险
-            性能:everything＞speed＞[默认]speed-profile＞quicken＞[不编译]
-            编译耗时:everything＞speed
-            空间占用:everything＞speed＞[默认]speed-profile＞quicken＞spacesave＞[不编译]
-            **********************************Compile*****************************************
-            *  (00).Back [Enter]                                                            *
-            *  (01).使用everything模式编译所有应用[系统,用户] (强制)                           *
-            *  (02).使用everything模式编译所有应用[系统,用户]                                  *
-            *  (03).使用speed模式编译所有应用[系统,用户] (强制)                                *
-            *  (04).使用speed模式编译所有应用[系统,用户]                                       *
-            *       第一次编译优化,建议选择带有(强制)选项的方法                                 *
-            *       对于小内存设备,低存储剩余的设备,emmc设备,推荐使用speed方法以减轻IO压力        *
-            *       Android N O P 推荐以上选项(01-04),Android Q推荐以下选项(05-08)             *
-            *  (05).使用everything模式编译所有应用[用户] (强制)                                *
-            *  (06).使用everything模式编译所有应用[用户]                                       *
-            *  (07).使用speed模式编译所有应用[用户] (强制)                                     *
-            *  (08).使用speed模式编译所有应用[用户]                                            *
-            *      急救功能                                                                  *
-            *  (09).还原systemUI编译(quicken默认) ←推荐                                       *
-            *  (10).还原systemUI编译(speed默认)                                               *
-            *  (11).还原systemUI编译(清除编译)                                                *
-            *  (12).清除第三方应用编译                                                        *
-            *  (13).清除系统应用编译                                                          *
-            *  (14).清除第三方应用编译[quicken]                                               *
-            *  (15).清除系统应用编译[quicken]                                                 *            
-            *  (16).清除所有编译[quicken]                                                    *
-            *  (17).清除所有编译                                                             *
-            *  Thanks: CoolApk User:后知                                                     *
-            **********************************Compile*****************************************
-            !:输入01 与 1 效果是一致的.
-            ''')
-            try:a=int(input('您的选择>>>'))
+            logging.info('Func:compile mode is 2')
+            print(Luan.ltext7)
+            try:a=int(input(Luan.i30))
             except:a=0
-            print('执行该操作将消耗一定时间,请坐和放宽')
+            print(Luan.i26)
+            logging.info('Func:compile mode:User Choose:'+str(a))
             start=datetime.datetime.now()
-            print('当前时间: '+str(start))
+            print(Luan.i27+str(start))
+            logging.info('Func:compile start time is:'+str(start))
             if a==1:self.adb.adb_shell().shell_cmd_compile('-m everything','-f','-a')
             if a==2:self.adb.adb_shell().shell_cmd_compile('-m everything','','-a')
             if a==3:self.adb.adb_shell().shell_cmd_compile('-m speed','-f','-a')
@@ -350,11 +303,15 @@ class func_():
                 self.adb.shell('rm /sdcard/temp.sh')
             if a==0:return
             end=datetime.datetime.now()
-            print('结束时间: '+str(end))
-            print('执行用时: %s Seconds'%(end-start))
+            print(Luan.i28+str(end))
+            logging.info('Func:compile end time is:'+str(end))
+            logging.info('Func:compile time is: %s '%(end-start))
+            print(Luan.i29%(end-start))
     def uninstall(self):
-        apkfile=input('欲移除的程序包名(使用applist查看)>>>')
-        args_=input('欲附加的参数>>>')
+        logging.info('Func:uninstall')
+        apkfile=input(Luan.i31)
+        args_=input(Luan.i19)
+        logging.info('Func:uninstall pak args_'+apkfile+' '+args_)
         if apkfile=='':
             errexit(4)
             return
@@ -363,8 +320,10 @@ class func_():
             return
         self.adb.uninstall(apkfile,args_)
     def install(self):
-        apkfile=input('欲安装的apk文件>>>')
-        args_=input('欲附加的参数>>>')
+        logging.info('Func:install')
+        apkfile=input(Luan.i32)
+        args_=input(Luan.i19)
+        logging.info('Func:install apk_file args_'+apkfile+' '+args_)
         if apkfile=='':
             errexit(4)
             return
@@ -388,8 +347,9 @@ class func_():
     def shell(self):self.adb.shell()
 
 f=func_()
+
 def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
-    global nowdevice,f,shellex
+    global nowdevice,f,shellex,Luan
     adb=adbcommand(nowdevice)
     inputtext=input('>>>')
     #inputtext=inputtext.replace(" ", "")
@@ -398,6 +358,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     adbfile=adbshellpyinformation.adbfile
     try:from adbshell_alpha import conf
     except:from adbshell import conf
+    logging.info("Input is:'"+inputtext +"'  Device is:"+nowdevice)
     #通用指令
     if inputtext=='home':
         home()
@@ -408,12 +369,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
         parseinput(a)
         return
     if inputtext == 'set':
-        print('''
-        **********************************Setmode*****************************************
-        *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
-        *您也可以通过手动编辑adbshell.ini来修改设置                                      *
-        **********************************Setmode*****************************************
-        ''')
+        print(Luan.ltext1)
         parseinput(2)
         return
     if inputtext =='exit':
@@ -445,11 +401,11 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             c=who()
             nowdevice=c
             adb=adbcommand(c)
-            print('您当前的设备:'+b+'切换后的设备:'+c)
+            print(Luan.i33+b+Luan.i34+c)
             parseinput(1)
             return
         if inputtext == 'back':
-            print('E:您已处于主菜单!')
+            print(Luan.e12)
             parseinput(1)
             return
         if inputtext == 're-install':
@@ -592,19 +548,24 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             parseinput(1)
             return
         if inputtext == 'help':
+            logging.info('Into Helper View.')
             adbshellpy_libhelper.helper().usage()
             adbshellpy_libhelper.main()
+            logging.info('Helper View Exit.')
             parseinput(1)
             return
         if inputtext=='clean-data':
-            print('清除adbshellpy的数据,以恢复原始安装.输入yes继续.')
+            logging.info('Func:clean-data')
+            print(Luan.a6)
             if input('>>>')=='yes':
+                logging.info('Func:clean-data:input is yes,clean.')
                 adb.kill_server()
                 os.rmdir('adb')
                 os.rmdir('__pycache__')
                 os.rmdir('build-tools')
                 os.remove('adbshell.ini')
-                print('操作执行完成,请重新运行实例以初始化')
+                print(Luan.i35)
+                logging.info('Func:Done. Exit.')
                 input()
                 sys.exit()
         if shellex=='enable':
@@ -612,50 +573,52 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             parseinput(1)
             return            
     if a==2:#2级目录(othermode)
+            logging.info('Now,you are in mode 2')
             if inputtext =='back':
                 parseinput(1)
                 return
             if inputtext == 'setting' or inputtext == '':
+                logging.info('Func:mode2:setting')
                 print('adbbin uselinuxpkgmanagertoinstalladb=enable [other]')
                 print('[other]:'+str(conf.options('adbshell')))
-                inputtext=input('欲设置的选项:[回车退出设置]>>>')
+                inputtext=input(Luan.i36)
                 if inputtext=='adbbin':
                     inputtext=input('ADBFile:>>>')
                     if os.path.exists(inputtext)== False:
-                        print('E:指定的ADB File不存在,请检查Path!')
+                        print(Luan.i37)
                         errexit(4)
                         parseinput(2)
                         return
-                    h=input('您确定设置此项吗?Y/N>>><默认为Y>')
+                    h=input(Luan.a7)
                     if h=='Y' or h=='y' or h=='':
                         conf.set("adbshell", "adbfile", inputtext)
                         conf.write(open("adbshell.ini", "w"))
                         parseinput(2)
                         return
-                    print('W:放弃设置')
+                    print(Luan.w5)
                     return
                 if inputtext=='uselinuxpkgmanagertoinstalladb':
                     if p == "Windows":
-                        print('E:该项仅对Linux生效')
+                        print(Luan.e13)
                         errexit(4)
                         parseinput(2)
                         return
                     if p == "Linux":
                         inputtext=input('Set:>>>[默认enable]')
-                    h=input('您确定设置此项吗?Y/N>>><默认为Y>')
+                    h=input(Luan.a7)
                     if h=='Y' or h=='y' or h=='':
                         conf.set("adbshell", "uselinuxpkgmanagertoinstalladb", inputtext)
                         conf.write(open("adbshell.ini", "w"))
                         parseinput(2)
                         return
-                    print('W:放弃设置')
+                    print(Luan.w5)
                     return
                 if inputtext=='':
                     parseinput(2)
                     return
                 #otherSet
                 inputtext_=input('SET:>>>')
-                h=input('您确定设置此项吗?Y/N>>><默认为Y>')
+                h=input(Luan.a7)
                 if h=='Y' or h=='y' or h=='':
                     conf.set("adbshell", inputtext, inputtext_)
                     conf.write(open("adbshell.ini", "w"))
@@ -664,7 +627,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
                 parseinput(1)
                 return
             errexit(2)
-    print('W :未知指令')
+    print(Luan.w6)
     parseinput(a)
     return
     

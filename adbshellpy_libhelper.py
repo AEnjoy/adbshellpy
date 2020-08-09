@@ -2,15 +2,8 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_libhelper.py
 #       By : 神郭
-#  Version : 0.6.2 Stable
+#  Version : 0.7
 import sys
-class adbshellpyinformation:
-    p=sys.platform
-    branch=None
-    uselinuxpkgmanagertoinstalladb=None
-    adbfile=None
-    aapt=None
-    conf=None
 class helper():
     def kf(self):
         print('kfmark:激活快否APP实例')

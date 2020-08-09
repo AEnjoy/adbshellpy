@@ -18,9 +18,9 @@ adbshellpy_home.py
 
 adbshellpy_libhelper.py
 
-# 功能介绍:0.6.2
+# 功能介绍:0.7
 
-adbshellpy是您的下一代Android玩机助手,需要Python3.6+
+安卓玩机精灵是您的下一代Android玩机助手,基于Google的adb,需要Python3.6+的辅助
 
 功能:
 
@@ -35,6 +35,8 @@ adbshellpy是您的下一代Android玩机助手,需要Python3.6+
 终端与PC之间传输文件push/pull
 
 系统调节
+
+支持了多语言!!!!
 
 模拟操作(input)
 
@@ -55,10 +57,14 @@ etc.
 # ChangeLog:
 
 ```
+0.6.2.4→0.7        2020-8-10 00:23:20
+1.FIX:初始化运行时只需要一次即可完成安装adb至进主页.
+2.NEW:logging日志系统引入
+3.NEW:多语言支持
+
 0.6.2.3→0.6.2.4    2020-8-6 19:08:35
 1.FIX:修复adb安装时一处可能的代码bug导致的崩溃
-2.IMPROVE:第一次运行不再需要运行两次以初始化(Test)
-3.IMPROVE:优化了代码结构
+2.IMPROVE:优化了代码结构
 
 0.6.2.1→0.6.2.2    2020-8-2 16:36:40
 1.FIX:修复默认设置不生效的问题
@@ -89,8 +95,6 @@ etc.
 4.FIX:修复了查看help后直接退出的bug
 5.FIX:修复了compile的一些bug
 6.FIX:修复从旧版本更新上来因为adbshell.ini配置老旧,导致的错误崩溃
-0.6.1→0.6.1.1 2020-7-23 09:50:55
-1.修复了一个Root的Bug
 
 
 ...剩余内容请看ChangeLog
