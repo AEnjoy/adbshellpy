@@ -1,3 +1,7 @@
+0.7→0.7.1          2020-11-13 17:49
+1.FIX:If your system is Linux, adb installation will no longer fail.
+2.IMPROVE:Multi-version compilation is available.
+
 0.6.2.4→0.7        2020-8-10 00:23:20
 1.FIX:初始化运行时只需要一次即可完成安装adb至进主页.
 2.NEW:logging日志系统引入

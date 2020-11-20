@@ -50,6 +50,10 @@ etc.
 
 工具箱大小较小,支持自动下载所需功能(0.6.0始支持)
 
+如果你的系统是Linux,且使用的是二进制文件,请解压后授予可执行权限和su权限后再运行!(su)
+
+Windows系统可选是否使用管理员权限=.=
+
 ![功能界面](des.png)
 
 开发分支:https://github.com/AEnjoy/adbshellpy/tree/dev 包含所有最新的功能及改进
@@ -57,6 +61,10 @@ etc.
 # ChangeLog:
 
 ```
+0.7→0.7.1          2020-11-13 17:49
+1.FIX:If your system is Linux, adb installation will no longer fail.
+2.IMPROVE:Multi-version compilation is enadble.
+
 0.6.2.4→0.7        2020-8-10 00:23:20
 1.FIX:初始化运行时只需要一次即可完成安装adb至进主页.
 2.NEW:logging日志系统引入
