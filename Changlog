@@ -1,3 +1,10 @@
+0.7.1→0.7.2       2021-2-17 15:12:10
+1.IMPROVE:提升快否下载速度
+2.NEW:增加了手动编译终端:make.py,供用户自行编译为可执行文件(至其它平台)
+3.FIX:修复update检查更新失败
+4.FIX:修复environment崩溃
+5.IMPROVE:若检查不到libshfile,则脚本会自动下载扩展
+
 0.7→0.7.1          2020-11-13 17:49
 1.FIX:If your system is Linux, adb installation will no longer fail.
 2.IMPROVE:Multi-version compilation is available.

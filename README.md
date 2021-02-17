@@ -18,7 +18,7 @@ adbshellpy_home.py
 
 adbshellpy_libhelper.py
 
-# 功能介绍:0.7
+# 功能介绍:0.7.x
 
 安卓玩机精灵是您的下一代Android玩机助手,基于Google的adb,需要Python3.6+的辅助
 
@@ -61,6 +61,13 @@ Windows系统可选是否使用管理员权限=.=
 # ChangeLog:
 
 ```
+0.7.1→0.7.2       2021-2-17 15:12:10
+1.IMPROVE:提升快否下载速度
+2.NEW:增加了手动编译终端:make.py,供用户自行编译为可执行文件(至其它平台)
+3.FIX:修复update检查更新失败
+4.FIX:修复environment崩溃
+5.IMPROVE:若检查不到libshfile,则脚本会自动下载扩展
+
 0.7→0.7.1          2020-11-13 17:49
 1.FIX:If your system is Linux, adb installation will no longer fail.
 2.IMPROVE:Multi-version compilation is enadble.
@@ -95,14 +102,6 @@ Windows系统可选是否使用管理员权限=.=
 
 0.6.1.2→0.6.1.3 2020-7-30 22:22:58
 1.IMPROVE:提升检查更新成功率
-
-0.6.1.1→0.6.1.2 2020-7-25 00:14:50
-1.NEW:Changlog分离
-2.NEW:fixgithub功能
-3.NEW:现在可以选择添加是否在启动时Kill ADB服务
-4.FIX:修复了查看help后直接退出的bug
-5.FIX:修复了compile的一些bug
-6.FIX:修复从旧版本更新上来因为adbshell.ini配置老旧,导致的错误崩溃
 
 
 ...剩余内容请看ChangeLog

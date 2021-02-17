@@ -4,12 +4,12 @@
 #        安卓玩机精灵
 #          Core
 #       By : 神郭
-#  Version : 0.7.1
+#  Version : 0.7.2
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7.1'
-builddate='2020-11-13 17:47:35'
+version='0.7.2'
+builddate='2021-2-17 15:12:10'
 run=0
 p=platform.system()
 checkflag=True
@@ -217,7 +217,7 @@ class update():#bra=branch
         return True
     def isnewversionavailable(self,b=''):
         logging.info('Update Checke.')
-        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
+        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/version'
         try:urllib.request.urlretrieve(url,'version.txt')
         except:
             errexit(5)
@@ -246,7 +246,7 @@ class update():#bra=branch
             return
     def download_lib(self,libname): #No .py 后缀
         logging.info('Lib download:'+libname+'.py')
-        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
+        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/'+libname+'.py'
         try:
             urllib.request.urlretrieve(url,libname+'.py')
         except:
@@ -261,6 +261,25 @@ class update():#bra=branch
         if self.bra=='dev':
             self.download_lib('adbshell_alpha')
         print('Done')
+    def download_lib_shfile(self,names=''):
+        logging.info('Lib download:'+names)
+        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/libshfile/'+names
+        if os.path.exists('libshfile'):
+            os.chdir('libshfile')
+        else:
+            os.mkdir('libshfile')
+            os.chdir('libshfile')
+        try:
+            if os.path.exists(names):
+                print('LibFile:%s existsed. Pass.'%names)
+            else:
+                urllib.request.urlretrieve(url,names)
+            os.chdir('..')
+        except:
+            errexit(5)
+            print('Library :'+names+Luan.e9)
+            return 1        
+        print('LibFile:%s downloaded.'%names)        
     def qqgroupopen(self):
         logging.info('OPEN QQ GROUP LINK')
         import webbrowser
