@@ -2,21 +2,26 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.7 Alpha 2
+#  Version : 0.7.3
 import sys,os,datetime
 #Core Function
-try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan
-except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan
+try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
+except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
 class adbshellpyinformation:
-    p=sys.platform
-    branch=None
-    uselinuxpkgmanagertoinstalladb=None
-    adbfile=None
-    aapt=None
     def __init__(self):
         try:from adbshell_alpha import conf
         except:from adbshell import conf
+        '''
+        try:from adbshell_alpha import adbfile
+        except:from adbshell import adbfile    
+        self.adbfile=adbfile
+        '''
         self.conf=conf
+    p=sys.platform
+    branch=None
+    uselinuxpkgmanagertoinstalladb=None
+    aapt=None
+    adbfile=''        
     Permissionshow=True
 #HelperView
 import adbshellpy_libhelper
@@ -253,6 +258,15 @@ class func_():
         if a=='2':
             logging.info('Func:compile mode is 2')
             print(Luan.ltext7)
+            if os.path.exists('libshfile')==False:
+                update().download_lib_shfile('compile-5.sh')
+                update().download_lib_shfile('compile-6.sh')
+                update().download_lib_shfile('compile-7.sh')
+                update().download_lib_shfile('compile-8.sh')
+                update().download_lib_shfile('compile-12.sh')
+                update().download_lib_shfile('compile-13.sh')
+                update().download_lib_shfile('compile-14.sh')
+                update().download_lib_shfile('compile-15.sh')
             try:a=int(input(Luan.i30))
             except:a=0
             print(Luan.i26)
@@ -353,9 +367,9 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     adb=adbcommand(nowdevice)
     inputtext=input('>>>')
     #inputtext=inputtext.replace(" ", "")
-    global changes,github,version,builddate
+    global changes,github,version,builddate,adbfile
     p=adbshellpyinformation.p
-    adbfile=adbshellpyinformation.adbfile
+    #adbfile=adbshellpyinformation.adbfile
     try:from adbshell_alpha import conf
     except:from adbshell import conf
     logging.info("Input is:'"+inputtext +"'  Device is:"+nowdevice)
@@ -379,11 +393,36 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     if inputtext =='environment':
         print('Version:'+version+' BuildDate:'+builddate+' Platform:'+p+' UpdateAddress:'+github+' AdbBin:'+adbfile)
         parseinput(a)
-        return    
+        return
+    if inputtext=='who':
+        b=adb.s
+        c=who()
+        nowdevice=c
+        adb=adbcommand(c)
+        print(Luan.i33+b+Luan.i34+c)
+        parseinput(1)
+        return
+    if inputtext == 're-install':
+        #重新安装
+        install(p,2)
+        parseinput(1)
+        return
+    if inputtext =='update':
+        f.update()
+        parseinput(1)
+        return
+    if inputtext =='changes':
+        f.changes_()
+        parseinput(1)
+        return        
     if a==1:#2级目录(adbmode)
         if inputtext == '':
             parseinput(1)
             return
+        if inputtext == 'back':
+            print(Luan.e12)
+            parseinput(1)
+            return            
         if inputtext=='kfmark':
             f.kfmark()
             parseinput(1)
@@ -396,31 +435,6 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             f.relatedapk()
             parseinput(1)
             return            
-        if inputtext=='who':
-            b=adb.s
-            c=who()
-            nowdevice=c
-            adb=adbcommand(c)
-            print(Luan.i33+b+Luan.i34+c)
-            parseinput(1)
-            return
-        if inputtext == 'back':
-            print(Luan.e12)
-            parseinput(1)
-            return
-        if inputtext == 're-install':
-            #重新安装
-            install(p,2)
-            parseinput(1)
-            return
-        if inputtext =='update':
-            f.update()
-            parseinput(0)
-            return
-        if inputtext =='changes':
-            f.changes_()
-            parseinput(1)
-            return
         if inputtext=='piebridge':
             f.piebridge()
             parseinput(1)

@@ -3,7 +3,7 @@
 #   adbshell_language.py
 #      language mode
 #       By : 神郭
-#  Version : 0.7 Alpha 2
+#  Version : 0.7.3
 '''
 This is the language setting of Adbshellpy
 Each language is contained in a class

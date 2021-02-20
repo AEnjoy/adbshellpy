@@ -4,16 +4,16 @@
 #        安卓玩机精灵
 #          Core
 #       By : 神郭
-#  Version : 0.7 Alpha 2
+#  Version : 0.7.2
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7 Alpha 3'
-builddate='2020-8-10 00:09:50'
+version='0.7.2'
+builddate='2021-2-17 15:12:10'
 run=0
 p=platform.system()
 checkflag=True
-branch='dev'
+branch='master'
 qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp' 
 github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
@@ -217,7 +217,7 @@ class update():#bra=branch
         return True
     def isnewversionavailable(self,b=''):
         logging.info('Update Checke.')
-        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/version'
+        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/version'
         try:urllib.request.urlretrieve(url,'version.txt')
         except:
             errexit(5)
@@ -246,7 +246,7 @@ class update():#bra=branch
             return
     def download_lib(self,libname): #No .py 后缀
         logging.info('Lib download:'+libname+'.py')
-        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/'+libname+'.py'
+        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/'+libname+'.py'
         try:
             urllib.request.urlretrieve(url,libname+'.py')
         except:
@@ -261,6 +261,25 @@ class update():#bra=branch
         if self.bra=='dev':
             self.download_lib('adbshell_alpha')
         print('Done')
+    def download_lib_shfile(self,names=''):
+        logging.info('Lib download:'+names)
+        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/libshfile/'+names
+        if os.path.exists('libshfile'):
+            os.chdir('libshfile')
+        else:
+            os.mkdir('libshfile')
+            os.chdir('libshfile')
+        try:
+            if os.path.exists(names):
+                print('LibFile:%s existsed. Pass.'%names)
+            else:
+                urllib.request.urlretrieve(url,names)
+            os.chdir('..')
+        except:
+            errexit(5)
+            print('Library :'+names+Luan.e9)
+            return 1        
+        print('LibFile:%s downloaded.'%names)        
     def qqgroupopen(self):
         logging.info('OPEN QQ GROUP LINK')
         import webbrowser
@@ -533,7 +552,8 @@ class adbcommand():
 
 def checkinternet():
     logging.info('Check Internet')
-    exit_code = os.system('ping www.baidu.com')
+    if p=='Windows':exit_code = os.system('ping www.baidu.com')
+    elif p=='Linux':exit_code = os.system('ping -c 3 www.baidu.com')
     logging.info('Check Internet End.The result is:'+str(exit_code))
     if exit_code:
         return False
@@ -733,6 +753,7 @@ def install(p,check=0):
         except Exception as errinform:
             print(errinform)
     if p == 'Linux':
+        
         if uselinuxpkgmanagertoinstalladb == 'enable':
             print(Luan.a2)
             print(Luan.i6)
@@ -755,9 +776,10 @@ def install(p,check=0):
                 conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
                 with open('adbshell.ini', 'w') as ini:
                     conf.write(ini)
-                install(p)
-                return
-        if platform.machine()=='AMD64':#AMD64 linux x86 or x86_64
+                #install(p)
+                #return
+        
+        if platform.machine()=='x86_64':#AMD64 linux x86 or x86_64
             url = 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip'
             urllib.request.urlretrieve(url,'adb.zip')
             z=zip.ZipFile('adb.zip','r')
@@ -769,12 +791,13 @@ def install(p,check=0):
                 print(errinform)
                 errexit(0)
             adbfile=r'adb/adb'
+            os.system('chmod 777 adb/adb')
             try:
                 os.remove('adb.zip')
             except Exception as errinform:
                 print(errinform)
             return
-        if platform.machine()=='aarch64' or platform.machine()=='aarch':
+        if platform.machine()=='aarch64':# or platform.machine()=='aarch' But,No 32bit EXEC!
             url = 'https://hub.fastgit.org/Magisk-Modules-Repo/adb-ndk/archive/master.zip'
             #linux arm or arm64
             #armeabi USE Android NDK
@@ -792,6 +815,7 @@ def install(p,check=0):
                 print(errinform)
                 errexit(0)
             adbfile=r'adb/adb'
+            os.system('chmod 777 adb/adb')
             return
         return
     return
