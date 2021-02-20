@@ -40,7 +40,7 @@ def main():
         for i in l1:
             try:os.remove(i)
             except:pass
-        for i in l1:
+        for i in l12:
             try:os.rmdir(i)
             except:pass
         main()
