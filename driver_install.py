@@ -4,7 +4,7 @@ import struct
 import urllib.request
 import zipfile as zip
 
-import sys，os
+import os ,sys
 
 if platform.system()=='Windows':
     from ctypes import *
@@ -28,7 +28,7 @@ def install():
         setupapi.InstallHinfSectionA(None,None,'Google.NTx86 132 '+os.getcwd()+'\\usb_driver\\android_winusb.inf',0)
         #32bit
     pass
-if if __name__ == "__main__":
+if __name__ == "__main__":
     print('''
     Android WinUsb Driver Install:
     You may need to restart the computer after the driver installation is complete.

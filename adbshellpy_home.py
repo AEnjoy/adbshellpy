@@ -2,36 +2,35 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.7.3
+#  Version : 0.7 Alpha 4
 import sys,os,datetime
 #Core Function
-try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
-except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
+from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
 class adbshellpyinformation:
     def __init__(self):
-        try:from adbshell_alpha import conf
-        except:from adbshell import conf
-        '''
-        try:from adbshell_alpha import adbfile
-        except:from adbshell import adbfile    
-        self.adbfile=adbfile
-        '''
+        from adbshell_alpha import conf,branch,aapt,adbfile,p
         self.conf=conf
-    p=sys.platform
-    branch=None
+        self.branch=branch
+        self.aapt=aapt
+        self.adbfile=adbfile
+        self.p=p
+    conf=None
+    p=''
+    branch=''
+    adbfile=''
     uselinuxpkgmanagertoinstalladb=None
-    aapt=None
-    adbfile=''        
+    aapt=''    
     Permissionshow=True
 #HelperView
 import adbshellpy_libhelper
 
 def home():
-    global Luan
+    global Luan,nowdevice
     logging.info('Welcome to adbsystemtoolbox!')
     print(Luan.ltext3+'Version:'+version +'   buildDate:'+builddate)    
     print(Luan.ltext4)
     print(Luan.i7+nowdevice+Luan.i8)
+    
 class func_():
     global Luan
     def __init__(self):
@@ -233,6 +232,10 @@ class func_():
             errexit(4)
             return
         self.adb.adb_shell().shell_pm_disable_user(Package)
+    def driver_install(self):
+        logging.info('Func:driver-install')
+        import driver_install
+        driver_install.install()
     def compile(self):
         logging.info('Func:compile')
         a=input(Luan.a5)
@@ -255,7 +258,7 @@ class func_():
             end=datetime.datetime.now()
             print(Luan.i28+str(end))
             print(Luan.i29%(end-start))
-        if a=='2':
+        if a=='2' or a=='':
             logging.info('Func:compile mode is 2')
             print(Luan.ltext7)
             if os.path.exists('libshfile')==False:
@@ -370,8 +373,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     global changes,github,version,builddate,adbfile
     p=adbshellpyinformation.p
     #adbfile=adbshellpyinformation.adbfile
-    try:from adbshell_alpha import conf
-    except:from adbshell import conf
+    from adbshell_alpha import conf
     logging.info("Input is:'"+inputtext +"'  Device is:"+nowdevice)
     #通用指令
     if inputtext=='home':
@@ -414,7 +416,11 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     if inputtext =='changes':
         f.changes_()
         parseinput(1)
-        return        
+        return
+    if inputtext =='driver-install':
+        f.driver_install()
+        parseinput(1)
+        return
     if a==1:#2级目录(adbmode)
         if inputtext == '':
             parseinput(1)

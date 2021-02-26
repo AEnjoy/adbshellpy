@@ -3,7 +3,7 @@
 #   adbshell_language.py
 #      language mode
 #       By : 神郭
-#  Version : 0.7.3
+#  Version : 0.7 Alpha 4
 '''
 This is the language setting of Adbshellpy
 Each language is contained in a class
@@ -40,7 +40,7 @@ class chn():
     a2='正在使用系统软件包管理器安装adb,需要请求sudo,若不想使用此请求,输入n,默认y'
     a3='传输至电脑并打开查看>>>[Y/N 默认N]'
     a4='...LINUX查看?需要提前安装imagemagick>>>[Y/N 默认N]'
-    a5='Compile:请选择compile功能模式: 1).传统  2).新版 :'
+    a5='Compile:请选择compile功能模式: 1).传统  2).新版[默认] :'
     a6='清除adbshellpy的数据,以恢复原始安装.输入yes继续.'
     a7='您确定设置此项吗?Y/N>>><默认为Y>'
         
@@ -89,7 +89,15 @@ class chn():
     i36='欲设置的选项:[回车退出设置]>>>'
     i37='E:指定的ADB File不存在,请检查Path!'
     i38='本地路径>>>'
-    
+    i39='设备信息:\n'
+    i40='Android版本:'
+    i41='Android指纹:'
+    i42='Android安全补丁日期:'
+    i43='制造商:'
+    i44='型号:'
+    i45='设备安全状态:'
+
+
     ltext1='''
     **********************************Setmode*****************************************
     *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
@@ -125,23 +133,23 @@ class chn():
     '''
     ltext4='''
      _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       ┃
-    ┃     re-install      update      environment      changes    clean-data        ┃
+    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       
+    ┃  re-install  update   environment   changes  clean-data  driver-install
      ---------------------------------------------------------------------------------
-    ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
-    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   ┃
-    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices)  ┃
+    ┃  ADB指令集  : ┃ shell   root(√)                                              
+    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   
+    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices)  
      ---------------------------------------------------------------------------------
-    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>          ┃    
-    ┃  系统  优化 : ┃ 编译优化compile>                                              ┃
-    ┃  文件  传输 : ┃ pull>        push>   screencap>                               ┃
-    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      ┃
-    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                ┃
-    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        ┃
+    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>             
+    ┃  系统  优化 : ┃ 编译优化compile>                                              
+    ┃  文件  传输 : ┃ pull>        push>   screencap>                              
+    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      
+    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                
+    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        
      ---------------------------------------------------------------------------------
-    ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            ┃
-    ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                            ┃
-    ┃  ROM   工具 : ┃                  <开发中,敬请期待>                            ┃    
+    ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            
+    ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                            
+    ┃  ROM   工具 : ┃                  <开发中,敬请期待>                               
      -------------------------------ADBSystemTOOLBOX----------------------------------
     '''
     ltext5='''
@@ -231,7 +239,7 @@ class eng():
     a2="You are using the system package manager to install adb, you need to request sudo, if you don't want to use this request, enter n, default y"
     a3='Transfer to computer and open to view >>>[Y/N default N]'
     a4='...View in Linux? Imagemagick needs to be installed in advance>>>[Y/N default N]'
-    a5='Compile: Please select the compile function mode: 1). Traditional 2). New version:'
+    a5='Compile: Please select the compile function mode: 1). Traditional 2). New version[Default]:'
     a6='Clear the data of adbshellpy to restore the original installation. Enter yes to continue.'
     a7='Are you sure to set this? Y/N>>><default is Y>'
         
@@ -280,6 +288,13 @@ class eng():
     i36='The option to be set: [Enter to exit the setting]>>>'
     i37='E: The specified ADB File does not exist, please check Path!'
     i38='Local path>>>'
+    i39='Devices Info:\n'
+    i40='Android Version:'
+    i41='Android Fingerprint:'
+    i42='Android Security_patch:'
+    i43='Manufacturer:'
+    i44='Model:'
+    i45='Security status of devices:'    
     
     ltext1='''
     **********************************Setmode*****************************************
@@ -318,7 +333,7 @@ class eng():
     ltext4='''
      _____________________________ADBSystemTOOLBOX____________________________________
     ┃  Toolbox command:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub   
-    ┃     re-install      update      environment      changes    clean-data        
+    ┃  re-install  update   environment   changes  clean-data  driver-install
      ---------------------------------------------------------------------------------
     ┃        ADB command:     ┃ shell   root(√)                                              
     ┃ Device link options:    ┃start_server(√) kill_server devices tcpipconnect usb(√) 

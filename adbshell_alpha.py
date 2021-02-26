@@ -4,16 +4,16 @@
 #        安卓玩机精灵
 #          Core
 #       By : 神郭
-#  Version : 0.7.2
+#  Version : 0.7.3(0.7 Alpha 4)
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7.2'
-builddate='2021-2-17 15:12:10'
+version='0.7 Alpha 4'
+builddate='2021-2-26 21:19:31'
 run=0
 p=platform.system()
 checkflag=True
-branch='master'
+branch='dev'
 qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp' 
 github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
@@ -331,7 +331,20 @@ def who():
                     b=b.replace('\tdevice\n','')
                     logging.info('Devices Found:'+b)                    
                     print(Luan.i3+b)
+                    print(Luan.i39+Luan.i40)
+                    adbcommand(b).shell('getprop ro.product.build.version.release')
+                    print(Luan.i41)
+                    adbcommand(b).shell('getprop ro.product.build.fingerprint')
+                    print(Luan.i42)
+                    adbcommand(b).shell('getprop ro.vendor.build.security_patch')
+                    print(Luan.i43)
+                    adbcommand(b).shell('getprop ro.product.manufacturer')
+                    print(Luan.i44)
+                    adbcommand(b).shell('getprop ro.product.model')
+                    print(Luan.i45)
+                    adbcommand(b).shell('getprop ro.crypto.state')
                     deviceslist.append(b)
+                    adbcommand(b).shell('getprop >>logs\\'+b+str(time.time())+'.log')
                 if 'recovery' in b:
                     b=b.replace('\trecovery\n','')
                     logging.info('Devices Found:'+b)                    
@@ -368,8 +381,21 @@ def who():
                 if 'device' in b:
                     b=b.replace('\tdevice\n','')
                     logging.info('Devices Found:'+b)
-                    print(Luan.i3+b)                    
+                    print(Luan.i3+b)
+                    print(Luan.i39+Luan.i40)
+                    adbcommand(b).shell('getprop ro.product.build.version.release')
+                    print(Luan.i41)
+                    adbcommand(b).shell('getprop ro.product.build.fingerprint')
+                    print(Luan.i42)
+                    adbcommand(b).shell('getprop ro.vendor.build.security_patch')
+                    print(Luan.i43)
+                    adbcommand(b).shell('getprop ro.product.manufacturer')
+                    print(Luan.i44)
+                    adbcommand(b).shell('getprop ro.product.model')
+                    print(Luan.i45)
+                    adbcommand(b).shell('getprop ro.crypto.state')                    
                     deviceslist.append(b)
+                    adbcommand(b).shell('getprop >>logs\\'+b+str(time.time())+'.log')
                 if 'recovery' in b:
                     b=b.replace('\trecovery\n','')
                     logging.info('Devices Found:'+b)                   
@@ -426,6 +452,7 @@ class adbcommand():
         self.s=device
         if self.s=='':
             self.s=nowdevice
+
         if self.adb=='None':
             if os.path.exists(r'adb\adb.exe'):self.adb=r'adb\adb.exe'
             else:logging.debug('Needed restart daemon!')
@@ -652,7 +679,7 @@ def main(args):
       'shell','root','start_server','kill_server','devices','tcpipconnect','usb','reboot',
       'disable','enable','clear','applist','pull','push','windowmode','input','settings',
       'dumpsys','screencap','relatedapk','who','kfmark','icebox','update','changes','piebridge',
-      'shizuku'
+      'shizuku','driver-install'
      ]#内置命令
   logging.info('Check command')
   if cmd in c:#开发计划3
@@ -687,6 +714,7 @@ def main(args):
       if cmd=='changes':fun.changes_()
       if cmd=='piebridge':fun.piebridge()
       if cmd=='shizuku':fun.shizuku()
+      if cmd=='driver-install':fun.driver_install()
       sys.exit(0)
   logging.info('No Command found.Pass')
   checkflag=opt.installcheck
