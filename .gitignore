@@ -12,3 +12,6 @@ daemon
 Imgextractor.exe
 logs
 libromparse
+build
+dist
+adbshell_alpha.zip
