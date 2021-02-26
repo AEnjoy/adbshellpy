@@ -27,10 +27,13 @@ def main():
         os.system('pyinstaller -F adbshell.py')
         copy('Changlog', 'dist'+os.sep+'Changlog')
         copy('README.md', 'dist'+os.sep+'README.md')
+        copy('adbshell.ini', 'dist'+os.sep+'adbshell.ini')
         copytree('libshfile', 'dist'+os.sep+'libshfile')
         z = zipfile.ZipFile('adbshellpy.zip', 'w') 
         for d in os.listdir('dist'):
             z.write('dist'+os.sep+d)
+        for c in os.listdir('dist'+os.sep+'libshfile'):
+            z.write('dist'+os.sep+'libshfile'+os.sep+c)            
         z.close()
         main()
         return
@@ -40,7 +43,7 @@ def main():
         for i in l1:
             try:os.remove(i)
             except:pass
-        for i in l12:
+        for i in l2:
             try:os.rmdir(i)
             except:pass
         main()
