@@ -69,7 +69,7 @@ class func_():
         self.adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
     def shizuku(self):
         logging.info('Func:shizuku')
-        self.adb.shell('sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
+        self.adb.shell('sh /sdcard/Android/data/moe.shizuku.privileged.api/start.sh')
     def push(self):
         logging.info('Func:push')
         print(Luan.i9)
