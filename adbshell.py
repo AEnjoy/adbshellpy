@@ -745,7 +745,7 @@ def install(p,check=0):
     global conf
     global checkflag
     logging.info('Installing adb file.')
-    adb.kill_server()
+    adbcommand().kill_server()
     if check==2:
         pass
     #Internet Check
@@ -854,7 +854,7 @@ def install(p,check=0):
             return
         return
     return
-if not adbfile or fastbootfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb 可以在环境变量中设置
+if not adbfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb 可以在环境变量中设置
     #global conf
     #No Bin Files Found
     if p == "Windows":

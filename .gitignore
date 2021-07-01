@@ -22,3 +22,5 @@ logs
 adbshell.exe
 adbshell.spec
 adbshellpy.zip
+platform-tools
+adbshell_alpha.exe
