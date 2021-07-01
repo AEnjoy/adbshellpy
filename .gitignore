@@ -15,3 +15,5 @@ libromparse
 build
 dist
 adbshell_alpha.zip
+platform-tools
+adbshell_alpha.spec
