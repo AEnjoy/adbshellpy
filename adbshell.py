@@ -4,12 +4,12 @@
 #        安卓玩机精灵
 #          Core
 #       By : 神郭
-#  Version : 0.7.2
+#  Version : 0.7.3
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7.2'
-builddate='2021-2-17 15:12:10'
+version='0.7.3'
+builddate='2021-7-1 16:29:45'
 run=0
 p=platform.system()
 checkflag=True
@@ -18,6 +18,7 @@ qqgroup='https://jq.qq.com/?_wv=1027&k=5C85bvp'
 github='https://github.com/AEnjoy/adbshellpy/'#updateURL
 uselinuxpkgmanagertoinstalladb='enable'
 adbfile=str(os.environ.get('adbfile'))
+fastbootfile=str(os.environ.get('fastbootfile'))
 adbinit=0
 shellex='enable'#在找不到命令时直接执行adb shell
 showserverinfo='enable'
@@ -48,10 +49,14 @@ if os.path.exists('adbshell.ini') ==False:
     if adbfile=='None':
         if p=='Windows':adbfile=r'adb\adb.exe'
         elif p=='Linux':adbfile='adb/adb'
+    if fastbootfile=='None':
+        if p=='Windows':fastbootfile=r'adb\fastboot.exe'
+        elif p=='Linux':fastbootfile='adb/fastboot'    
     conf = configparser.ConfigParser()
     conf.add_section('adbshell')
     conf.set('adbshell', 'platform', p)
     conf.set('adbshell', 'adbfile', adbfile)
+    conf.set('adbshell', 'fastbootfile', fastbootfile)
     conf.set('adbshell', 'checkflag', str(checkflag))
     conf.set('adbshell', 'uselinuxpkgmanagertoinstalladb', uselinuxpkgmanagertoinstalladb)
     conf.set('adbshell', 'adbinit', str(adbinit))
@@ -70,18 +75,21 @@ else:
     if conf.has_option('adbshell','shellex')==False:conf.set('adbshell', 'shellex', shellex)
     if conf.has_option('adbshell','showserverinfo')==False:conf.set('adbshell', 'showserverinfo', showserverinfo)
     if conf.has_option('adbshell','language')==False:conf.set('adbshell', 'language', language)
+    if conf.has_option('adbshell','fastbootfile')==False:conf.set('adbshell', 'fastbootfile', fastbootfile)
     if conf.has_option('adbshell','adbinit')==False:conf.set('adbshell', 'adbinit', str(adbinit))    
     with open('adbshell.ini', 'w') as ini:
         conf.write(ini)
     #READ INFO
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
+    fastbootfile=conf.get('adbshell', 'fastbootfile')
     checkflag=conf.get('adbshell','checkflag')
     shellex=conf.get('adbshell','shellex')
     language=conf.get('adbshell','language')
     showserverinfo=conf.get('adbshell','showserverinfo')
     adbinit=conf.getint('adbshell','adbinit')
-    logging.info('uselinuxpkgmanagertoinstalladb:%s checkflag:%s shellex:%s language:%s showserverinfo:%s adbinit:%s'%(uselinuxpkgmanagertoinstalladb,checkflag,shellex,language,showserverinfo,adbinit))
+
+    logging.info('uselinuxpkgmanagertoinstalladb:%s checkflag:%s shellex:%s language:%s showserverinfo:%s adbinit:%s fastbootfile:%s'%(uselinuxpkgmanagertoinstalladb,checkflag,shellex,language,showserverinfo,adbinit,fastbootfile))
     logging.info('READING CONF END')
 #默认设置END
 
@@ -311,17 +319,22 @@ class update():#bra=branch
 deviceslist=[]
 nowdevice=''
 i=0
-def who():
+def who(mode=0):
     '''
     返回另一个设备标识符
     (如果只有一个 则返回一个)
     自动设置:nowdevice
+    mode:[0]:adb [1]:fastboot
     '''
     logging.info('GET DEVICE:')
     global deviceslist ,nowdevice
-    adb.devices() #First running,activing service.
-    hand=os.popen(adbfile+' devices')
-    hand.readline() #第一行需要跳过
+    if mode==0:
+        adb.devices() #First running,activing service.
+        hand=os.popen(adbfile+' devices')
+        hand.readline() #第一行需要跳过
+    elif mode==1:
+        adb.devices() #First running,activing service.
+        hand=os.popen(adbfile+' devices')        
     clear()
     if len(deviceslist)==0: #第一次执行/没有设备/添加设备列表
         logging.info('First time execution/no device/add device list')
@@ -412,6 +425,8 @@ class adbcommand():
     '''
     hel=''
     adb=adbfile
+    fastboot=fastbootfile
+    
     s=nowdevice#设备标识符 多设备时使用
     def _adbc(self,command):#######Core#######
         if self.s=='':
@@ -421,15 +436,28 @@ class adbcommand():
             logging.debug('Command(With Device):'+adbfile+' -s '+self.s+' '+command)
             os.system(adbfile+' -s '+self.s+' '+command)
         logging.info('Command End.')
-    def __init__(self,device=nowdevice):
+    def _fastbootc(self,command):
+        if self.s=='':
+            logging.debug('Command:'+self.fastboot+' '+command)
+            os.system(self.fastboot+' '+command)
+        else:
+            logging.debug('Command(With Device):'+self.fastboot+' -s '+self.s+' '+command)
+            os.system(self.fastboot+' -s '+self.s+' '+command)
+        logging.info('Command End.')        
+    def __init__(self,device=nowdevice,fastbootflag=0):
         logging.info('Core:Adb file:'+self.adb +' Device:'+device)
         self.s=device
-        if self.s=='':
-            self.s=nowdevice
-        if self.adb=='None':
-            if os.path.exists(r'adb\adb.exe'):self.adb=r'adb\adb.exe'
-            else:logging.debug('Needed restart daemon!')
-
+        if fastbootflag==0:
+            if self.s=='':
+                self.s=nowdevice
+            if self.adb=='None':
+                if os.path.exists(r'adb\adb.exe'):self.adb=r'adb\adb.exe'
+                else:logging.debug('Needed restart daemon!')
+        elif fastbootflag==1:
+            if self.s=='':
+                self.s=nowdevice
+            if self.fastboot=='None':
+                if os.path.exists(r'adb\fastboot.exe'):self.fastboot=r'adb\fastboot.exe'            
     def start_server(self):
         logging.info('Core:Start-Server')
         self._adbc('start-server')
@@ -713,7 +741,7 @@ def main(args):
 
 def install(p,check=0):
     global uselinuxpkgmanagertoinstalladb
-    global adbfile
+    global adbfile,fastbootfile
     global conf
     global checkflag
     logging.info('Installing adb file.')
@@ -741,13 +769,16 @@ def install(p,check=0):
             print(str(errinform)+Luan.i5)
             adbfile_=r'platform-tools\adb.exe'
             adbfile=adbfile_
+            fastbootfile=r'platform-tools\fastboot.exe'
             conf.set('adbshell', 'adbfile', adbfile_)
+            conf.set('adbshell', 'fastbootfile', fastbootfile)
             with open('adbshell.ini', 'w') as ini:
                 conf.write(ini)
             return
             #errexit(0)
-        logging.info('Set adbfile : adb/adb.exe')
+        logging.info('Set adbfile/fastbootfile : adb/adb.exe adb/fastboot.exe')
         adbfile=r'adb\adb.exe'
+        fastbootfile=r'adb\fastboot.exe'
         try:
             os.remove('adb.zip')
         except Exception as errinform:
@@ -790,8 +821,10 @@ def install(p,check=0):
             except Exception as errinform:
                 print(errinform)
                 errexit(0)
-            adbfile=r'adb/adb'
+            adbfile='adb/adb'
+            fastbootfile='adb/fastboot'
             os.system('chmod 777 adb/adb')
+            os.system('chmod 777 adb/fastboot')
             try:
                 os.remove('adb.zip')
             except Exception as errinform:
@@ -814,28 +847,36 @@ def install(p,check=0):
             except Exception as errinform:
                 print(errinform)
                 errexit(0)
-            adbfile=r'adb/adb'
+            adbfile='adb/adb'
+            fastbootfile='adb/fastboot'
             os.system('chmod 777 adb/adb')
+            os.system('chmod 777 adb/fastboot')
             return
         return
     return
-if not adbfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb 可以在环境变量中设置
+if not adbfile or fastbootfile:#adb文件默认设置 默认adb,自动选择platform-tools或adb 可以在环境变量中设置
     #global conf
     #No Bin Files Found
     if p == "Windows":
         if os.path.exists('adb') == False:
             adbfile=r'platform-tools\adb.exe'
+            fastbootfile=r'platform-tools\fastboot.exe'
         else:
             adbfile=r'adb\adb.exe'
+            fastbootfile=r'adb\fastboot.exe'
     if p == "Linux":
         if os.path.exists('adb') == False:
-            adbfile=r'platform-tools/adb'
+            adbfile='platform-tools/adb'
+            fastbootfile='platform-tools/fastboot'
         else:
-            adbfile=r'adb/adb'
+            adbfile='adb/adb'
+            fastbootfile='adb/fastboot.exe'
     install(p)
     if p == "Windows":
         adbfile=r'platform-tools\adb.exe'
+        fastbootfile=r'platform-tools\fastboot.exe'
         conf.set("adbshell", "adbfile", adbfile)
+        conf.set("adbshell", "fastbootfile", fastbootfile)
         conf.write(open("adbshell.ini", "w"))
 adb=adbcommand(nowdevice)
 if __name__ == '__main__':

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.7.2
+#  Version : 0.7.3
 import sys,os,datetime
 #Core Function
 try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
@@ -41,6 +41,9 @@ class func_():
         self.p=adbshellpyinformation.p
         self.adbfile=adbshellpyinformation.adbfile
         self.changes=changes
+    def fastbootmode(self):
+        logging.info('Func:fastboot')
+        pass
     def kfmark(self):
         logging.info('Func:kfmark')
         try:import adbshellpy_libroot
@@ -66,7 +69,7 @@ class func_():
         self.adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
     def shizuku(self):
         logging.info('Func:shizuku')
-        self.adb.shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
+        self.adb.shell('sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
     def push(self):
         logging.info('Func:push')
         print(Luan.i9)
@@ -421,6 +424,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             return
         if inputtext == 'back':
             print(Luan.e12)
+            parseinput(1)
+            return
+        if inputtext=='fastboot':
+            f.fastbootmode()
             parseinput(1)
             return            
         if inputtext=='kfmark':
