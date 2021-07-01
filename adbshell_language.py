@@ -3,7 +3,7 @@
 #   adbshell_language.py
 #      language mode
 #       By : 神郭
-#  Version : 0.7 Alpha 4
+#  Version : 0.7 Alpha 
 '''
 This is the language setting of Adbshellpy
 Each language is contained in a class
@@ -145,7 +145,7 @@ class chn():
     ┃  文件  传输 : ┃ pull>        push>   screencap>                              
     ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      
     ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                
-    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        
+    ┃  其它  功能 : ┃ APP安装关联:relatedapk    fastboot
      ---------------------------------------------------------------------------------
     ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            
     ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                            
@@ -344,7 +344,7 @@ class eng():
     ┃  File  transfer : ┃ pull>        push>   screencap>                            
     ┃  System  adjust : ┃ windowmode>  input>  settings>  dumpsys>                      
     ┃  App  activated : ┃ piebridge shizuku  icebox  kfmark                
-    ┃  Other function : ┃ relatedapk                                        
+    ┃  Other function : ┃ relatedapk  fastboot
      ---------------------------------------------------------------------------------
     ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            ┃
     ┃  ROOT  玩机 : ┃                  <开发中,敬请期待>                            ┃

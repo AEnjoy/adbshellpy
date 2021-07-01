@@ -1,5 +1,9 @@
+0.7 Alpha 4 →Alpha 5 2021-2-26 21:19:31
+1.Fix:修复shizuku激活提示找不到命令的问题
+2.NEW:fastbootmode-dev
+
 0.7.3→0.7 Alpha 4 2021-2-26 21:19:31
-1.NEW:driver-install
+1.NEW:driver-install-dev
 2.IMPROVE:界面优化,可能解决部分系统字符错位的问题
 3.IMPROVE:自动检索设备时显示设备部分信息
 

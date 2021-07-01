@@ -40,6 +40,9 @@ class func_():
         self.p=adbshellpyinformation.p
         self.adbfile=adbshellpyinformation.adbfile
         self.changes=changes
+    def fastbootmode(self):
+        logging.info('Func:fastboot')
+        pass        
     def kfmark(self):
         logging.info('Func:kfmark')
         try:import adbshellpy_libroot
@@ -65,7 +68,7 @@ class func_():
         self.adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
     def shizuku(self):
         logging.info('Func:shizuku')
-        self.adb.shell('shizuku sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
+        self.adb.shell('sh /sdcard/Android/data/moe.shizuku.privileged.api/files/start.sh')
     def push(self):
         logging.info('Func:push')
         print(Luan.i9)
@@ -428,7 +431,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
         if inputtext == 'back':
             print(Luan.e12)
             parseinput(1)
-            return            
+            return
+        if inputtext=='fastboot':
+            f.fastbootmode()
+            parseinput(1)            
         if inputtext=='kfmark':
             f.kfmark()
             parseinput(1)

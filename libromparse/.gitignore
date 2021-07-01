@@ -6,3 +6,8 @@ __pycache__
 META-INF
 output
 rom
+Imgextractor.exe
+build
+dist
+main.spec
+main.zip
