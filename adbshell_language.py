@@ -40,7 +40,7 @@ class chn():
     a2='正在使用系统软件包管理器安装adb,需要请求sudo,若不想使用此请求,输入n,默认y'
     a3='传输至电脑并打开查看>>>[Y/N 默认N]'
     a4='...LINUX查看?需要提前安装imagemagick>>>[Y/N 默认N]'
-    a5='Compile:请选择compile功能模式: 1).传统  2).新版[默认] :'
+    a5='Compile:请选择compile功能模式: 1).传统  2).新版[默认] 3).多线程编译Test:'
     a6='清除adbshellpy的数据,以恢复原始安装.输入yes继续.'
     a7='您确定设置此项吗?Y/N>>><默认为Y>'
         
@@ -96,7 +96,7 @@ class chn():
     i43='制造商:'
     i44='型号:'
     i45='设备安全状态:'
-
+    i46='程序包: %s\t成功编译.'
 
     ltext1='''
     **********************************Setmode*****************************************
@@ -218,6 +218,33 @@ class chn():
     **********************************Compile*****************************************
     !:输入01 与 1 效果是一致的.
     '''
+    ltext8='''
+    Compile :
+    Compile Mode 3: Test
+    通过对AndroidN+的应用进行dexopt编译以提升性能
+    注意:如果你使用的是Android Q 或更高版本,请谨慎对系统应用进行编译,特别是高危组件:
+    com.android.systemui
+    已知问题: 
+    Android Q
+    1.MIUI Android Q编译系统应用会导致严重掉帧
+    2.Samsung OneUI 2.0+会出现开机无法进入桌面,系统全局黑屏的问题.
+    3.LG UX 9 会在锁屏时死机重启
+    4.com.android.systemui不支持通过手动安装还原!!!
+    Android N / O
+    1.编译不显示进度
+    如果你是三星用户:推荐使用Galaxy Labs 的 App Booster,其原理为编译原理,且无安全风险
+    性能:everything＞speed＞[默认]speed-profile＞quicken＞[不编译]
+    编译耗时:everything＞speed
+    空间占用:everything＞speed＞[默认]speed-profile＞quicken＞spacesave＞[不编译]
+    **********************************Compile*****************************************
+    *  (00).Back [Enter]                                                             *
+    *  (01).使用everything模式编译所有应用[系统,用户]                                  *
+    *  (02).使用everything模式编译所有应用[用户]                                       *
+    *  (03).使用speed模式编译所有应用[系统,用户]                                       *
+    *  (04).使用speed模式编译所有应用[用户]                                            *
+    **********************************Compile*****************************************
+    !:输入01 与 1 效果是一致的.        
+    '''
 class eng():
     EXIT='Press ENTER to exit...'
     EXIT1='Press ENTER to continue or exit...'
@@ -239,7 +266,7 @@ class eng():
     a2="You are using the system package manager to install adb, you need to request sudo, if you don't want to use this request, enter n, default y"
     a3='Transfer to computer and open to view >>>[Y/N default N]'
     a4='...View in Linux? Imagemagick needs to be installed in advance>>>[Y/N default N]'
-    a5='Compile: Please select the compile function mode: 1). Traditional 2). New version[Default]:'
+    a5='Compile: Please select the compile function mode: 1). Traditional 2). New version[Default] 3).Multithreading:'
     a6='Clear the data of adbshellpy to restore the original installation. Enter yes to continue.'
     a7='Are you sure to set this? Y/N>>><default is Y>'
         
@@ -295,7 +322,8 @@ class eng():
     i43='Manufacturer:'
     i44='Model:'
     i45='Security status of devices:'    
-    
+    i46='Package: %s \tSuccessful compilation.'
+
     ltext1='''
     **********************************Setmode*****************************************
     *           setting(default,Enter)      cls        back       exit               *
@@ -419,6 +447,33 @@ class eng():
     *  (16).Clear all compilation[quicken]                                                   
     *  (17).Clear all compilation                                                             
     *  Thanks: CoolApk User:后知                                                     
+    **********************************Compile*****************************************
+    !:Input 01 and 1 have the same effect.
+    '''
+    ltext8='''
+    Compile :
+    Compile Mode 3[Test]:
+    Improve performance by compiling AndroidN+ applications with dexopt
+    Note: If you are using Android Q or higher, please be careful to compile system applications, especially high-risk components:
+    com.android.systemui
+    Known issues:
+    Android Q
+    1.MIUI Android QCompiling system applications will cause severe frame drop
+    2.Samsung OneUI 2.0+There will be a problem that the desktop cannot be entered after booting, and the system is globally black.
+    3.LG UX 9 Will freeze and restart when the screen is locked
+    4.com.android.systemui Does not support manual installation and restoration!!!
+    Android N / O
+    1. Compilation does not show progress
+    If you are a Samsung user: Galaxy Labs' App Booster is recommended. Its principle is the compilation principle and there is no security risk
+    performance:everything＞speed＞[default]speed-profile＞quicken＞[Does not compile]
+    Compilation time:everything＞speed
+    Space occupation:everything＞speed＞[default]speed-profile＞quicken＞spacesave＞[Does not compile]
+    **********************************Compile*****************************************
+    *  (00).Back [Enter]                                                            
+    *  (01).Use everything mode to compile all applications [system, user]
+    *  (02).Use everything mode to compile all applications [user]            
+    *  (03).Use speed mode to compile all applications [system, user]                              
+    *  (04).Use speed mode to compile all applications [user]                                                                   
     **********************************Compile*****************************************
     !:Input 01 and 1 have the same effect.
     '''

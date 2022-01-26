@@ -4,12 +4,12 @@
 #        安卓玩机精灵
 #          Core
 #       By : 神郭
-#  Version : 0.7.3(0.7 Alpha 5)
+#  Version : 0.7.3(0.7 Alpha 6)
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7 Alpha 5'
-builddate='2021-7-1 16:38:43'
+version='0.7 Alpha 6'
+builddate='2022-1-26 18:05:20'
 run=0
 p=platform.system()
 checkflag=True

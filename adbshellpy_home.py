@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.7 Alpha 4
+#  Version : 0.7 Alpha 6
 import sys,os,datetime
 #Core Function
 from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
@@ -68,7 +68,7 @@ class func_():
         self.adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
     def shizuku(self):
         logging.info('Func:shizuku')
-        self.adb.shell('sh /sdcard/Android/data/moe.shizuku.privileged.api/start.sh')
+        self.adb.shell('sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh')
     def push(self):
         logging.info('Func:push')
         print(Luan.i9)
@@ -327,6 +327,91 @@ class func_():
             logging.info('Func:compile end time is:'+str(end))
             logging.info('Func:compile time is: %s '%(end-start))
             print(Luan.i29%(end-start))
+        if a=='3':
+            logging.info('Func:compile mode is 3[Test]')
+            import threading,time
+            event = threading.Event()
+            event.set()            
+            def compile__(semaphore,l=[],m='',f=0):
+                semaphore.acquire()
+                pack=''
+                try:
+                    pack=l[0]
+                    l.remove(l[0])
+                except:
+                    event.clear()#完成
+                if event.is_set():
+                    if f==1:
+                        os.popen(adbfile+' shell cmd pacakge compile -m '+m+' -f '+pack)
+                        print(Luan.i46%pack)
+                    else:
+                        os.popen(adbfile+' shell cmd package compile -m '+m+' '+pack)
+                        print(Luan.i46%pack)
+                time.sleep(1)
+                semaphore.release()
+            semaphore = threading.BoundedSemaphore(8)
+            logging.info('Func:compile mode is 3')
+            print(Luan.ltext8)
+            try:a=int(input(Luan.i30))
+            except:a=0
+            logging.info('Func:compile mode:User Choose:'+str(a))
+            if a==0:return
+            start=datetime.datetime.now()
+            app=[]
+            if a==1 or a==3:
+                hand=os.popen(adbfile+' shell pm list package')
+                for i in hand:#手机里有哪些app
+                    try:
+                        if 'package' in i:
+                            i=i.replace('package:','')
+                            i=i.replace('\n','')
+                            app.append(i)
+                    except:pass
+                if a==1:
+                    while event.is_set():
+                        t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
+                        t.start()
+                        time.sleep(0.5)
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')
+                if a==3:
+                    while event.is_set():
+                        t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
+                        t.start()
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')                    
+            if a==2 or a==4:
+                hand=os.popen(adbfile+' shell pm list package -3')
+                for i in hand:#手机里有哪些app
+                    try:
+                        if 'package' in i:
+                            i=i.replace('package:','')
+                            i=i.replace('\n','')
+                            app.append(i)
+                    except:pass
+                if a==2:
+                    while event.is_set():
+                        t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
+                        t.start()
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')
+                if a==4:
+                    while event.is_set():
+                        t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
+                        t.start()
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')                      
+            end=datetime.datetime.now()
+            print(Luan.i28+str(end))
+            logging.info('Func:compile end time is:'+str(end))
+            logging.info('Func:compile time is: %s '%(end-start))
+            print(Luan.i29%(end-start))            
+
+
     def uninstall(self):
         logging.info('Func:uninstall')
         apkfile=input(Luan.i31)
