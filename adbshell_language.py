@@ -3,7 +3,7 @@
 #   adbshell_language.py
 #      language mode
 #       By : 神郭
-#  Version : 0.7
+#  Version : 0.8
 '''
 This is the language setting of Adbshellpy
 Each language is contained in a class
@@ -89,7 +89,15 @@ class chn():
     i36='欲设置的选项:[回车退出设置]>>>'
     i37='E:指定的ADB File不存在,请检查Path!'
     i38='本地路径>>>'
-    
+    i39='设备信息:\n'
+    i40='Android版本:'
+    i41='Android指纹:'
+    i42='Android安全补丁日期:'
+    i43='制造商:'
+    i44='型号:'
+    i45='设备安全状态:'
+    i46='程序包: %s\t\t成功编译.当前进度:'
+        
     ltext1='''
     **********************************Setmode*****************************************
     *setting(default,Enter) 设置参数 cls 清屏 back 回到上一菜单 exit 退出            *
@@ -125,19 +133,19 @@ class chn():
     '''
     ltext4='''
      _____________________________ADBSystemTOOLBOX____________________________________
-    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       ┃
-    ┃     re-install      update      environment      changes    clean-data        ┃
+    ┃  工具箱指令:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub       
+    ┃  re-install  update   environment   changes  clean-data  driver-install
      ---------------------------------------------------------------------------------
-    ┃  ADB指令集  : ┃ shell   root(√)                                              ┃
-    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   ┃
-    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices)  ┃
+    ┃  ADB指令集  : ┃ shell   root(√)                                              
+    ┃ 设备链接选项: ┃ start_server(√)  kill_server  devices tcpipconnect usb(√)   
+    ┃ 设备高级重启: ┃ reboot shutdown rec bl edl sideload download(SamsumgDevices)  
      ---------------------------------------------------------------------------------
-    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>          ┃    
-    ┃  系统  优化 : ┃ 编译优化compile>                                              ┃
-    ┃  文件  传输 : ┃ pull>        push>   screencap>                               ┃
-    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      ┃
-    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                ┃
-    ┃  其它  功能 : ┃ APP安装关联:relatedapk                                        ┃
+    ┃  应用  专区 : ┃ install> uninstall> disable> enable> clear> applist>             
+    ┃  系统  优化 : ┃ 编译优化compile>                                              
+    ┃  文件  传输 : ┃ pull>        push>   screencap>                              
+    ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      
+    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark   scene             
+    ┃  其它  功能 : ┃ APP安装关联:relatedapk    
      -------------------------------ADBSystemTOOLBOX----------------------------------
     '''
     ltext5='''
@@ -206,6 +214,34 @@ class chn():
     **********************************Compile*****************************************
     !:输入01 与 1 效果是一致的.
     '''
+    ltext8='''
+    Compile :
+    Compile Mode 3: Test
+    通过对AndroidN+的应用进行dexopt编译以提升性能
+    注意:如果你使用的是Android Q 或更高版本,请谨慎对系统应用进行编译,特别是高危组件:
+    com.android.systemui
+    已知问题: 
+    Android Q
+    1.MIUI Android Q编译系统应用会导致严重掉帧
+    2.Samsung OneUI 2.0+会出现开机无法进入桌面,系统全局黑屏的问题.
+    3.LG UX 9 会在锁屏时死机重启
+    4.com.android.systemui不支持通过手动安装还原!!!
+    Android N / O
+    1.编译不显示进度
+    如果你是三星用户:推荐使用Galaxy Labs 的 App Booster,其原理为编译原理,且无安全风险
+    性能:everything＞speed＞[默认]speed-profile＞quicken＞[不编译]
+    编译耗时:everything＞speed
+    空间占用:everything＞speed＞[默认]speed-profile＞quicken＞spacesave＞[不编译]
+    **********************************Compile*****************************************
+    *  (00).Back [Enter]                                                             *
+    *  (01).使用everything模式编译所有应用[系统,用户]                                  *
+    *  (02).使用everything模式编译所有应用[用户]                                       *
+    *  (03).使用speed模式编译所有应用[系统,用户]                                       *
+    *  (04).使用speed模式编译所有应用[用户]                                            *
+    **********************************Compile*****************************************
+    !:输入01 与 1 效果是一致的.        
+    '''
+        
 class eng():
     EXIT='Press ENTER to exit...'
     EXIT1='Press ENTER to continue or exit...'
@@ -276,6 +312,15 @@ class eng():
     i36='The option to be set: [Enter to exit the setting]>>>'
     i37='E: The specified ADB File does not exist, please check Path!'
     i38='Local path>>>'
+    i39='Devices Info:\n'
+    i40='Android Version:'
+    i41='Android Fingerprint:'
+    i42='Android Security_patch:'
+    i43='Manufacturer:'
+    i44='Model:'
+    i45='Security status of devices:'    
+    i46='Package: %s \t\tSuccessful compilation. Progress:'
+    
     
     ltext1='''
     **********************************Setmode*****************************************
@@ -314,7 +359,7 @@ class eng():
     ltext4='''
      _____________________________ADBSystemTOOLBOX____________________________________
     ┃  Toolbox command:  ┃  help>  back   cls  set>  who>  home  exit    FixGithub   
-    ┃     re-install      update      environment      changes    clean-data        
+    ┃  re-install  update   environment   changes  clean-data  driver-install
      ---------------------------------------------------------------------------------
     ┃        ADB command:     ┃ shell   root(√)                                              
     ┃ Device link options:    ┃start_server(√) kill_server devices tcpipconnect usb(√) 
@@ -324,8 +369,8 @@ class eng():
     ┃  System improve : ┃ compile>                                              
     ┃  File  transfer : ┃ pull>        push>   screencap>                            
     ┃  System  adjust : ┃ windowmode>  input>  settings>  dumpsys>                      
-    ┃  App  activated : ┃ piebridge shizuku  icebox  kfmark                
-    ┃  Other function : ┃ relatedapk                                        
+    ┃  App  activated : ┃ piebridge shizuku  icebox  kfmark   scene             
+    ┃  Other function : ┃ relatedapk                                      
      -------------------------------ADBSystemTOOLBOX----------------------------------
     '''
     ltext5='''
@@ -396,6 +441,33 @@ class eng():
     *  (16).Clear all compilation[quicken]                                                   
     *  (17).Clear all compilation                                                             
     *  Thanks: CoolApk User:后知                                                     
+    **********************************Compile*****************************************
+    !:Input 01 and 1 have the same effect.
+    '''
+    ltext8='''
+    Compile :
+    Compile Mode 3[Test]:
+    Improve performance by compiling AndroidN+ applications with dexopt
+    Note: If you are using Android Q or higher, please be careful to compile system applications, especially high-risk components:
+    com.android.systemui
+    Known issues:
+    Android Q
+    1.MIUI Android QCompiling system applications will cause severe frame drop
+    2.Samsung OneUI 2.0+There will be a problem that the desktop cannot be entered after booting, and the system is globally black.
+    3.LG UX 9 Will freeze and restart when the screen is locked
+    4.com.android.systemui Does not support manual installation and restoration!!!
+    Android N / O
+    1. Compilation does not show progress
+    If you are a Samsung user: Galaxy Labs' App Booster is recommended. Its principle is the compilation principle and there is no security risk
+    performance:everything＞speed＞[default]speed-profile＞quicken＞[Does not compile]
+    Compilation time:everything＞speed
+    Space occupation:everything＞speed＞[default]speed-profile＞quicken＞spacesave＞[Does not compile]
+    **********************************Compile*****************************************
+    *  (00).Back [Enter]                                                            
+    *  (01).Use everything mode to compile all applications [system, user]
+    *  (02).Use everything mode to compile all applications [user]            
+    *  (03).Use speed mode to compile all applications [system, user]                              
+    *  (04).Use speed mode to compile all applications [user]                                                                   
     **********************************Compile*****************************************
     !:Input 01 and 1 have the same effect.
     '''

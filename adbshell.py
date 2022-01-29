@@ -1,15 +1,15 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-#   adbshell_alpha.py
-#        安卓玩机精灵
+#       adbshell.py
+#     安卓系统优化精灵
 #          Core
 #       By : 神郭
-#  Version : 0.7.3
+#  Version : 0.8
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7.3'
-builddate='2021-7-1 16:29:45'
+version='0.8'
+builddate='2022-1-29 16:13:00'
 run=0
 p=platform.system()
 checkflag=True
@@ -51,7 +51,7 @@ if os.path.exists('adbshell.ini') ==False:
         elif p=='Linux':adbfile='adb/adb'
     if fastbootfile=='None':
         if p=='Windows':fastbootfile=r'adb\fastboot.exe'
-        elif p=='Linux':fastbootfile='adb/fastboot'    
+        elif p=='Linux':fastbootfile='adb/fastboot'          
     conf = configparser.ConfigParser()
     conf.add_section('adbshell')
     conf.set('adbshell', 'platform', p)
@@ -82,13 +82,12 @@ else:
     #READ INFO
     uselinuxpkgmanagertoinstalladb=conf.get('adbshell', 'uselinuxpkgmanagertoinstalladb')
     adbfile=conf.get('adbshell', 'adbfile')
-    fastbootfile=conf.get('adbshell', 'fastbootfile')
     checkflag=conf.get('adbshell','checkflag')
+    fastbootfile=conf.get('adbshell', 'fastbootfile')
     shellex=conf.get('adbshell','shellex')
     language=conf.get('adbshell','language')
     showserverinfo=conf.get('adbshell','showserverinfo')
     adbinit=conf.getint('adbshell','adbinit')
-
     logging.info('uselinuxpkgmanagertoinstalladb:%s checkflag:%s shellex:%s language:%s showserverinfo:%s adbinit:%s fastbootfile:%s'%(uselinuxpkgmanagertoinstalladb,checkflag,shellex,language,showserverinfo,adbinit,fastbootfile))
     logging.info('READING CONF END')
 #默认设置END
@@ -225,7 +224,7 @@ class update():#bra=branch
         return True
     def isnewversionavailable(self,b=''):
         logging.info('Update Checke.')
-        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/version'
+        url='https://github.com/AEnjoy/adbshellpy/'+self.bra+'/version'
         try:urllib.request.urlretrieve(url,'version.txt')
         except:
             errexit(5)
@@ -254,7 +253,7 @@ class update():#bra=branch
             return
     def download_lib(self,libname): #No .py 后缀
         logging.info('Lib download:'+libname+'.py')
-        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/'+libname+'.py'
+        url='https://github.com/AEnjoy/adbshellpy/'+self.bra+'/'+libname+'.py'
         try:
             urllib.request.urlretrieve(url,libname+'.py')
         except:
@@ -271,7 +270,7 @@ class update():#bra=branch
         print('Done')
     def download_lib_shfile(self,names=''):
         logging.info('Lib download:'+names)
-        url='https://raw.fastgit.org/AEnjoy/adbshellpy/'+self.bra+'/libshfile/'+names
+        url='https://github.com/AEnjoy/adbshellpy/'+self.bra+'/libshfile/'+names
         if os.path.exists('libshfile'):
             os.chdir('libshfile')
         else:
@@ -298,7 +297,7 @@ class update():#bra=branch
         webbrowser.open(github)
     def showinfofromserver(self):
         logging.info('Show info from the server:')
-        url='https://hub.fastgit.org/AEnjoy/adbshellpy/raw/'+self.bra+'/info'
+        url='https://github.com/AEnjoy/adbshellpy/raw/'+self.bra+'/info'
         if self.showserverinfo=='enable':
             try:urllib.request.urlretrieve(url,'info.txt')
             except:
@@ -334,7 +333,7 @@ def who(mode=0):
         hand.readline() #第一行需要跳过
     elif mode==1:
         adb.devices() #First running,activing service.
-        hand=os.popen(adbfile+' devices')        
+        hand=os.popen(adbfile+' devices') 
     clear()
     if len(deviceslist)==0: #第一次执行/没有设备/添加设备列表
         logging.info('First time execution/no device/add device list')
@@ -344,7 +343,20 @@ def who(mode=0):
                     b=b.replace('\tdevice\n','')
                     logging.info('Devices Found:'+b)                    
                     print(Luan.i3+b)
+                    print(Luan.i39+Luan.i40)
+                    adbcommand(b).shell('getprop ro.product.build.version.release')
+                    print(Luan.i41)
+                    adbcommand(b).shell('getprop ro.product.build.fingerprint')
+                    print(Luan.i42)
+                    adbcommand(b).shell('getprop ro.vendor.build.security_patch')
+                    print(Luan.i43)
+                    adbcommand(b).shell('getprop ro.product.manufacturer')
+                    print(Luan.i44)
+                    adbcommand(b).shell('getprop ro.product.model')
+                    print(Luan.i45)
+                    adbcommand(b).shell('getprop ro.crypto.state')
                     deviceslist.append(b)
+                    adbcommand(b).shell('getprop >>logs\\'+b+str(time.time())+'.log')
                 if 'recovery' in b:
                     b=b.replace('\trecovery\n','')
                     logging.info('Devices Found:'+b)                    
@@ -381,8 +393,21 @@ def who(mode=0):
                 if 'device' in b:
                     b=b.replace('\tdevice\n','')
                     logging.info('Devices Found:'+b)
-                    print(Luan.i3+b)                    
+                    print(Luan.i3+b)
+                    print(Luan.i39+Luan.i40)
+                    adbcommand(b).shell('getprop ro.product.build.version.release')
+                    print(Luan.i41)
+                    adbcommand(b).shell('getprop ro.product.build.fingerprint')
+                    print(Luan.i42)
+                    adbcommand(b).shell('getprop ro.vendor.build.security_patch')
+                    print(Luan.i43)
+                    adbcommand(b).shell('getprop ro.product.manufacturer')
+                    print(Luan.i44)
+                    adbcommand(b).shell('getprop ro.product.model')
+                    print(Luan.i45)
+                    adbcommand(b).shell('getprop ro.crypto.state')                    
                     deviceslist.append(b)
+                    adbcommand(b).shell('getprop >>logs\\'+b+str(time.time())+'.log')
                 if 'recovery' in b:
                     b=b.replace('\trecovery\n','')
                     logging.info('Devices Found:'+b)                   
@@ -426,7 +451,6 @@ class adbcommand():
     hel=''
     adb=adbfile
     fastboot=fastbootfile
-    
     s=nowdevice#设备标识符 多设备时使用
     def _adbc(self,command):#######Core#######
         if self.s=='':
@@ -446,7 +470,6 @@ class adbcommand():
         logging.info('Command End.')        
     def __init__(self,device=nowdevice,fastbootflag=0):
         logging.info('Core:Adb file:'+self.adb +' Device:'+device)
-        self.s=device
         if fastbootflag==0:
             if self.s=='':
                 self.s=nowdevice
@@ -457,7 +480,8 @@ class adbcommand():
             if self.s=='':
                 self.s=nowdevice
             if self.fastboot=='None':
-                if os.path.exists(r'adb\fastboot.exe'):self.fastboot=r'adb\fastboot.exe'            
+                if os.path.exists(r'adb\fastboot.exe'):self.fastboot=r'adb\fastboot.exe'
+
     def start_server(self):
         logging.info('Core:Start-Server')
         self._adbc('start-server')
@@ -680,7 +704,7 @@ def main(args):
       'shell','root','start_server','kill_server','devices','tcpipconnect','usb','reboot',
       'disable','enable','clear','applist','pull','push','windowmode','input','settings',
       'dumpsys','screencap','relatedapk','who','kfmark','icebox','update','changes','piebridge',
-      'shizuku'
+      'shizuku','driver-install','fastboot'
      ]#内置命令
   logging.info('Check command')
   if cmd in c:#开发计划3
@@ -715,6 +739,8 @@ def main(args):
       if cmd=='changes':fun.changes_()
       if cmd=='piebridge':fun.piebridge()
       if cmd=='shizuku':fun.shizuku()
+      if cmd=='driver-install':fun.driver_install()
+      if cmd=='fastboot':fun.fastbootmode()
       sys.exit(0)
   logging.info('No Command found.Pass')
   checkflag=opt.installcheck
@@ -741,7 +767,7 @@ def main(args):
 
 def install(p,check=0):
     global uselinuxpkgmanagertoinstalladb
-    global adbfile,fastbootfile
+    global adbfile,fastbootfile,adb
     global conf
     global checkflag
     logging.info('Installing adb file.')

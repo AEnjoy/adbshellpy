@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_libhelper.py
 #       By : 神郭
-#  Version : 0.7
+#  Version : 0.8
 import sys
 class helper():
     def kf(self):
@@ -56,6 +56,8 @@ class helper():
         传输至电脑并打开查看>>>[Y/N 默认N]
         ...LINUX查看?需要提前安装display>>>[Y/N 默认N]
         ''')
+    def driver_install(self):
+        print('用于安装adbwinusb驱动程序以使软件正常运行')
     def dumpsys(self):
         print('''dumpsys:获取或设置一些调试信息(转储所有服务)。
         dumpsys>>>[-t TIMEOUT] [--priority LEVEL] [--help | -l | --skip SERVICES | SERVICE [ARGS]]
@@ -378,7 +380,8 @@ class helper():
         activate:激活黑域 shizuku服务
         who:改变adbshellpy操作的设备
         relatedapk:关联apk文件
-        kfmark:激活快否
+        kfmark,shizuku,piebridge,scene:激活快否,zhizuku,黑彧,scene 5
+        driver-install:安装adb驱动文件.
         ****************************ADBSystemTOOLBOXHELP**********************************
         ''')
         '''
@@ -449,6 +452,9 @@ def main():
         return
     if inputtext=='clean-data':
         h.clen_data()
+        return
+    if inputtext=='driver-install':
+        h.driver_install()
         return
     print('Unkonw command!')
     return

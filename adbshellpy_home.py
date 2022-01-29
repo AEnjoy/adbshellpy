@@ -2,36 +2,35 @@
 # -*- coding: utf-8 -*-
 #   adbshellpy_home.py
 #       By : 神郭
-#  Version : 0.7.3
+#  Version : 0.8
 import sys,os,datetime
 #Core Function
-try:from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
-except:from adbshell_alpha import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
+from adbshell import errexit,update,checkinternet,clear,ParseArguments,adbcommand,install,changes,github,version,builddate,who,nowdevice,shellex,logging,Luan,adbfile
 class adbshellpyinformation:
     def __init__(self):
-        try:from adbshell_alpha import conf
-        except:from adbshell import conf
-        '''
-        try:from adbshell_alpha import adbfile
-        except:from adbshell import adbfile    
-        self.adbfile=adbfile
-        '''
+        from adbshell import conf,branch,aapt,adbfile,p
         self.conf=conf
-    p=sys.platform
-    branch=None
+        self.branch=branch
+        self.aapt=aapt
+        self.adbfile=adbfile
+        self.p=p
+    conf=None
+    p=''
+    branch=''
+    adbfile=''
     uselinuxpkgmanagertoinstalladb=None
-    aapt=None
-    adbfile=''        
+    aapt=''    
     Permissionshow=True
 #HelperView
 import adbshellpy_libhelper
 
 def home():
-    global Luan
+    global Luan,nowdevice
     logging.info('Welcome to adbsystemtoolbox!')
     print(Luan.ltext3+'Version:'+version +'   buildDate:'+builddate)    
     print(Luan.ltext4)
     print(Luan.i7+nowdevice+Luan.i8)
+    
 class func_():
     global Luan
     def __init__(self):
@@ -43,7 +42,7 @@ class func_():
         self.changes=changes
     def fastbootmode(self):
         logging.info('Func:fastboot')
-        pass
+        pass        
     def kfmark(self):
         logging.info('Func:kfmark')
         try:import adbshellpy_libroot
@@ -69,7 +68,7 @@ class func_():
         self.adb.shell('sh /data/data/me.piebridge.brevent/brevent.sh')
     def shizuku(self):
         logging.info('Func:shizuku')
-        self.adb.shell('sh /sdcard/Android/data/moe.shizuku.privileged.api/start.sh')
+        self.adb.shell('sh /storage/emulated/0/Android/data/moe.shizuku.privileged.api/start.sh')
     def push(self):
         logging.info('Func:push')
         print(Luan.i9)
@@ -209,6 +208,9 @@ class func_():
             self.adb.adb_shell().shell_pm_list_package()
             return
         self.adb.adb_shell().shell_pm_list_package(args_)
+    def scene(self):
+        logging.info('Func:scene')
+        self.adb.shell('sh /data/user/0/com.omarea.vtools/files/up.sh')
     def clear(self):
         logging.info('Func:clear')
         Package=input(Luan.i20)
@@ -236,6 +238,10 @@ class func_():
             errexit(4)
             return
         self.adb.adb_shell().shell_pm_disable_user(Package)
+    def driver_install(self):
+        logging.info('Func:driver-install')
+        import driver_install
+        driver_install.install()
     def compile(self):
         logging.info('Func:compile')
         a=input(Luan.a5)
@@ -258,7 +264,7 @@ class func_():
             end=datetime.datetime.now()
             print(Luan.i28+str(end))
             print(Luan.i29%(end-start))
-        if a=='2':
+        if a=='2' or a=='':
             logging.info('Func:compile mode is 2')
             print(Luan.ltext7)
             if os.path.exists('libshfile')==False:
@@ -324,6 +330,101 @@ class func_():
             logging.info('Func:compile end time is:'+str(end))
             logging.info('Func:compile time is: %s '%(end-start))
             print(Luan.i29%(end-start))
+        if a=='3':
+            logging.info('Func:compile mode is 3[Test]')
+            import threading,time
+            event = threading.Event()
+            event.set()
+            numot=0#线程计数
+            apptotle=1#app总数
+            def compile__(semaphore,l=[],m='',f=0):
+                ++numot
+                semaphore.acquire()
+                pack=''
+                try:
+                    pack=l[0]
+                    l.remove(l[0])
+                except:
+                    event.clear()#完成
+                if event.is_set():
+                    if f==1:
+                        os.popen(adbfile+' shell cmd pacakge compile -m '+m+' -f '+pack)
+                        print(Luan.i46 %pack+'%.2f' %(100*(1-(len(l)/apptotle)))+'%')
+                    else:
+                        os.popen(adbfile+' shell cmd package compile -m '+m+' '+pack)
+                        print(Luan.i46 %pack +'%.2f' %(100*(1-(len(l)/apptotle)))+'%')
+                time.sleep(0.5)
+                semaphore.release()
+                --numot
+            semaphore = threading.BoundedSemaphore(8)
+            logging.info('Func:compile mode is 3')
+            print(Luan.ltext8)
+            try:a=int(input(Luan.i30))
+            except:a=0
+            logging.info('Func:compile mode:User Choose:'+str(a))
+            if a==0:return
+            start=datetime.datetime.now()
+            app=[]
+            if a==1 or a==3:
+                hand=os.popen(adbfile+' shell pm list package')
+                for i in hand:#手机里有哪些app
+                    try:
+                        if 'package' in i:
+                            i=i.replace('package:','')
+                            i=i.replace('\n','')
+                            app.append(i)
+                    except:pass
+                apptotle=len(app)
+                if a==1:
+                    while event.is_set():
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
+                            t.start()
+                        time.sleep(0.1)
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')
+                if a==3:
+                    while event.is_set():
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
+                            t.start()
+                        time.sleep(0.1)
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')                    
+            if a==2 or a==4:
+                hand=os.popen(adbfile+' shell pm list package -3')
+                for i in hand:#手机里有哪些app
+                    try:
+                        if 'package' in i:
+                            i=i.replace('package:','')
+                            i=i.replace('\n','')
+                            app.append(i)
+                    except:pass
+                if a==2:
+                    while event.is_set():
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
+                            t.start()
+                        time.sleep(0.1)
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')
+                if a==4:
+                    while event.is_set():
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
+                            t.start()
+                        time.sleep(0.1)
+                    while threading.active_count() != 1:
+                        pass
+                    else:print('Compile Done.')                      
+            end=datetime.datetime.now()
+            print(Luan.i28+str(end))
+            logging.info('Func:compile end time is:'+str(end))
+            logging.info('Func:compile time is: %s '%(end-start))
+            print(Luan.i29%(end-start))
     def uninstall(self):
         logging.info('Func:uninstall')
         apkfile=input(Luan.i31)
@@ -373,8 +474,7 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     global changes,github,version,builddate,adbfile
     p=adbshellpyinformation.p
     #adbfile=adbshellpyinformation.adbfile
-    try:from adbshell_alpha import conf
-    except:from adbshell import conf
+    from adbshell_alpha import conf
     logging.info("Input is:'"+inputtext +"'  Device is:"+nowdevice)
     #通用指令
     if inputtext=='home':
@@ -417,7 +517,11 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
     if inputtext =='changes':
         f.changes_()
         parseinput(1)
-        return        
+        return
+    if inputtext =='driver-install':
+        f.driver_install()
+        parseinput(1)
+        return
     if a==1:#2级目录(adbmode)
         if inputtext == '':
             parseinput(1)
@@ -425,17 +529,17 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
         if inputtext == 'back':
             print(Luan.e12)
             parseinput(1)
-            return
-        if inputtext=='fastboot':
-            f.fastbootmode()
-            parseinput(1)
-            return            
+            return         
         if inputtext=='kfmark':
             f.kfmark()
             parseinput(1)
             return            
         if inputtext == 'icebox':
             f.icebox()
+            parseinput(1)
+            return
+        if inputtext == 'scene':
+            f.scene()
             parseinput(1)
             return
         if inputtext == 'relatedapk':
