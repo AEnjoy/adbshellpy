@@ -1,15 +1,15 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #   adbshell_alpha.py
-#        安卓玩机精灵
+#        安卓系统优化精灵
 #          Core
 #       By : 神郭
-#  Version : 0.7.3(0.7 Alpha 6)
+#  Version : 0.7.3(0.7 Alpha 7)
 import sys , os , platform , getopt , shutil , datetime ,logging,time
 import zipfile as zip
 #默认设置BEGIN 可在adbshell.ini adbshell.py修改默认选项
-version='0.7 Alpha 6'
-builddate='2022-1-26 18:05:20'
+version='0.7 Alpha 7'
+builddate='2022-1-29 16:13:00'
 run=0
 p=platform.system()
 checkflag=True

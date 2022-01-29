@@ -208,6 +208,9 @@ class func_():
             self.adb.adb_shell().shell_pm_list_package()
             return
         self.adb.adb_shell().shell_pm_list_package(args_)
+    def scene(self):
+        logging.info('Func:scene')
+        self.adb.shell('sh /data/user/0/com.omarea.vtools/files/up.sh')
     def clear(self):
         logging.info('Func:clear')
         Package=input(Luan.i20)
@@ -331,8 +334,11 @@ class func_():
             logging.info('Func:compile mode is 3[Test]')
             import threading,time
             event = threading.Event()
-            event.set()            
+            event.set()
+            numot=0#线程计数
+            apptotle=1#app总数
             def compile__(semaphore,l=[],m='',f=0):
+                ++numot
                 semaphore.acquire()
                 pack=''
                 try:
@@ -343,12 +349,13 @@ class func_():
                 if event.is_set():
                     if f==1:
                         os.popen(adbfile+' shell cmd pacakge compile -m '+m+' -f '+pack)
-                        print(Luan.i46%pack)
+                        print(Luan.i46 %pack+'%.2f' %(100*(1-(len(l)/apptotle)))+'%')
                     else:
                         os.popen(adbfile+' shell cmd package compile -m '+m+' '+pack)
-                        print(Luan.i46%pack)
-                time.sleep(1)
+                        print(Luan.i46 %pack +'%.2f' %(100*(1-(len(l)/apptotle)))+'%')
+                time.sleep(0.5)
                 semaphore.release()
+                --numot
             semaphore = threading.BoundedSemaphore(8)
             logging.info('Func:compile mode is 3')
             print(Luan.ltext8)
@@ -367,18 +374,22 @@ class func_():
                             i=i.replace('\n','')
                             app.append(i)
                     except:pass
+                apptotle=len(app)
                 if a==1:
                     while event.is_set():
-                        t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
-                        t.start()
-                        time.sleep(0.5)
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
+                            t.start()
+                        time.sleep(0.1)
                     while threading.active_count() != 1:
                         pass
                     else:print('Compile Done.')
                 if a==3:
                     while event.is_set():
-                        t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
-                        t.start()
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
+                            t.start()
+                        time.sleep(0.1)
                     while threading.active_count() != 1:
                         pass
                     else:print('Compile Done.')                    
@@ -393,15 +404,19 @@ class func_():
                     except:pass
                 if a==2:
                     while event.is_set():
-                        t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
-                        t.start()
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'everything'))
+                            t.start()
+                        time.sleep(0.1)
                     while threading.active_count() != 1:
                         pass
                     else:print('Compile Done.')
                 if a==4:
                     while event.is_set():
-                        t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
-                        t.start()
+                        if numot<=10:
+                            t = threading.Thread(target=compile__,args=(semaphore,app,'speed'))
+                            t.start()
+                        time.sleep(0.1)
                     while threading.active_count() != 1:
                         pass
                     else:print('Compile Done.')                      
@@ -409,9 +424,7 @@ class func_():
             print(Luan.i28+str(end))
             logging.info('Func:compile end time is:'+str(end))
             logging.info('Func:compile time is: %s '%(end-start))
-            print(Luan.i29%(end-start))            
-
-
+            print(Luan.i29%(end-start))
     def uninstall(self):
         logging.info('Func:uninstall')
         apkfile=input(Luan.i31)
@@ -526,6 +539,10 @@ def parseinput(a=1):#1二级目录(adbmode) 2二级目录(othermode)
             return            
         if inputtext == 'icebox':
             f.icebox()
+            parseinput(1)
+            return
+        if inputtext == 'scene':
+            f.scene()
             parseinput(1)
             return
         if inputtext == 'relatedapk':

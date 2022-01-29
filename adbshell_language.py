@@ -96,7 +96,7 @@ class chn():
     i43='制造商:'
     i44='型号:'
     i45='设备安全状态:'
-    i46='程序包: %s\t成功编译.'
+    i46='程序包: %s\t\t成功编译.当前进度:'
 
     ltext1='''
     **********************************Setmode*****************************************
@@ -144,7 +144,7 @@ class chn():
     ┃  系统  优化 : ┃ 编译优化compile>                                              
     ┃  文件  传输 : ┃ pull>        push>   screencap>                              
     ┃  系统  调节 : ┃ windowmode>  input>  settings>  dumpsys>                      
-    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark                
+    ┃  应用  激活 : ┃ piebridge(黑域) shizuku  icebox(冰箱)   kfmark   scene             
     ┃  其它  功能 : ┃ APP安装关联:relatedapk    fastboot
      ---------------------------------------------------------------------------------
     ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            
@@ -322,7 +322,7 @@ class eng():
     i43='Manufacturer:'
     i44='Model:'
     i45='Security status of devices:'    
-    i46='Package: %s \tSuccessful compilation.'
+    i46='Package: %s \t\tSuccessful compilation. Progress:'
 
     ltext1='''
     **********************************Setmode*****************************************
@@ -371,7 +371,7 @@ class eng():
     ┃  System improve : ┃ compile>                                              
     ┃  File  transfer : ┃ pull>        push>   screencap>                            
     ┃  System  adjust : ┃ windowmode>  input>  settings>  dumpsys>                      
-    ┃  App  activated : ┃ piebridge shizuku  icebox  kfmark                
+    ┃  App  activated : ┃ piebridge shizuku  icebox  kfmark   scene             
     ┃  Other function : ┃ relatedapk  fastboot
      ---------------------------------------------------------------------------------
     ┃  Magisk框架 : ┃                  <开发中,敬请期待>                            ┃

@@ -380,7 +380,7 @@ class helper():
         activate:激活黑域 shizuku服务
         who:改变adbshellpy操作的设备
         relatedapk:关联apk文件
-        kfmark,shizuku,piebridge:激活快否,zhizuku,黑彧
+        kfmark,shizuku,piebridge,scene:激活快否,zhizuku,黑彧,scene 5
         driver-install:安装adb驱动文件.
         ****************************ADBSystemTOOLBOXHELP**********************************
         ''')

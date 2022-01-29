@@ -29,7 +29,7 @@ def main():
         copy('README.md', 'dist'+os.sep+'README.md')
         copy('adbshell.ini', 'dist'+os.sep+'adbshell.ini')
         copytree('libshfile', 'dist'+os.sep+'libshfile')
-        z = zipfile.ZipFile('adbshell_alpha.zip', 'w') 
+        z = zipfile.ZipFile('adbshellpy.zip', 'w') 
         for d in os.listdir('dist'):
             z.write('dist'+os.sep+d)
         for c in os.listdir('dist'+os.sep+'libshfile'):
